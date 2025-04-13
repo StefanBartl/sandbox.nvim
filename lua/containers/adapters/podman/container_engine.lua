@@ -20,4 +20,14 @@ function M.list_containers()
   return result
 end
 
+function M.get_logs(container_id)
+  local output = vim.fn.system({"podman", "logs", container_id})
+
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Podman logs error: " .. output, vim.logs.levels.ERROR)
+    return { "[nvim-containers] Failed to get logs for: " .. container_id}
+  end
+  return vim.split(output, "\n", { plain = true })
+end
+
 return M
