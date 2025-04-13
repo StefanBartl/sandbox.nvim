@@ -7,9 +7,9 @@ return {
   get_logs = function(_id)
     error("get_logs not implemented")
   end,
---  exec_in_container = function(_id, command)
---    error("exec_in_container not implemented")
---  end,
+  exec_in_container = function(_id, command)
+    error("exec_in_container not implemented")
+  end,
 --  start_container = function(_id)
 --    error("start_container not implemented")
 --  end,

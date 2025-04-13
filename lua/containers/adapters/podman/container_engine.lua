@@ -1,6 +1,7 @@
 -- Adapter: Podman implementation of ContainerEngine interface
 
 local M = {}
+local unpack = table.unpack or unpack -- for backwards comptability
 
 --- List all containers (running or stopped)
 function M.list_containers()
@@ -28,6 +29,17 @@ function M.get_logs(container_id)
     return { "[nvim-containers] Failed to get logs for: " .. container_id}
   end
   return vim.split(output, "\n", { plain = true })
+end
+
+function M.exec_in_container(container_id, command)
+  command = command or { "sh" }
+  local args = { "podman", "exec", "-it", container_id, unpack(command) }
+
+  vim.cmd("vnew")
+  local buf = vim.api.nvim_get_current_buf()
+  vim.fn.termopen(args)
+  vim.api.nvim_buf_set_name(buf, "nvim-containers://exec/" .. container_id)
+  vim.bo[buf].bufhidden = "wipe"
 end
 
 return M

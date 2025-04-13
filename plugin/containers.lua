@@ -37,3 +37,27 @@ vim.api.nvim_create_user_command("ContainerLogs", function(opts)
 
   view(logs, id)
 end, { nargs = 1 })
+
+-- TODO: autocompletion for container-ids ?
+vim.api.nvim_create_user_command("ContainerExec", function(opts)
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.exec_in_container")
+
+  local id = opts.fargs[1]
+  if not id or id == "" then
+    vim.notify("Usage: :ContainerExec <container-id> [<shell>]", vim.log.levels.WARN)
+    return
+  end
+
+  local shell = opts.fargs[2] or "sh"
+
+  local ok, err = pcall(usecase, engine, id, { shell })
+  if not ok then
+    vim.notify("Failed to exec in container: " .. err, vim.log.levels.ERROR)
+    return
+  end
+end, {
+  nargs = "*",
+  complete = "file",
+})
+
