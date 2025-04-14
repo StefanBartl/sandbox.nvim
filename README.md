@@ -27,13 +27,13 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 ```lua
 {
-  "lavalue/nvim-containers.nvim",
+  "StefanBartl/nvim-containers.nvim",
   config = function()
     require("containers").setup({
       engine = "podman", -- or "docker", "nerdctl"
     })
   end,
-  cmd = { "ContainerList", "ContainerLogs", "ContainerExec" }
+  cmd = { "ContainerList", "ContainerLogs", "ContainerExec", "ContainerStart", "ContainerStop", "ContainerKill"  }
 }
 ```
 
