@@ -6,7 +6,7 @@ This guide explains how to add a new functionality ("use case") to the `nvim-con
 
 ## 1. Define the Purpose
 
-Clearly describe what the new use case should do:
+Clearly describe what the new use case should do.
 
 > Examples:
 > - Show logs of a container
@@ -27,19 +27,19 @@ restart_container = function(id)
 end
 ```
 
-> Use `_` to prevent "unused variable" warnings if needed.
+> Use `_` prefix to avoid "unused variable" warnings if needed.
 
 ---
 
 ## 3. Implement the Adapter (e.g. for Podman)
 
-Add the actual logic for the method in the selected adapter.
+Add the logic for the method in the corresponding adapter module.
 
-**File:** `lua/containers/adapters/podman/container_engine.lua`
+**File:** `lua/containers/adapters/podman/containers/restart.lua`
 
 ```lua
-function M.restart_container(container_id)
-  local output = vim.fn.system({ "podman", "restart", container_id })
+return function(id)
+  local output = vim.fn.system({ "podman", "restart", id })
   if vim.v.shell_error ~= 0 then
     return false, "Podman restart failed: " .. output
   end
@@ -47,13 +47,21 @@ function M.restart_container(container_id)
 end
 ```
 
+Make sure it’s exported in the aggregator:
+
+**File:** `adapters/podman/container_engine.lua`
+
+```lua
+restart_container = require("containers.adapters.podman.containers.restart"),
+```
+
 ---
 
 ## 4. Create the Use Case
 
-Encapsulate the action in a function that only depends on the interface, not the implementation.
+Encapsulate the action in a reusable function.
 
-**File:** `lua/containers/core/usecases/restart_container.lua`
+**File:** `lua/containers/core/usecases/containers/restart_container.lua`
 
 ```lua
 --- Restart a container via the injected engine
@@ -68,21 +76,20 @@ end
 
 ## 5. Register a Neovim Command
 
-Expose the functionality via a `:Command` that uses the use case and active engine.
+Expose it through a user-facing command.
 
-**File:** `plugin/containers.lua`
+**File:** `plugin/containers/container_cmds.lua`
 
 ```lua
 vim.api.nvim_create_user_command("ContainerRestart", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.restart_container")
-  local id = opts.args
+  local usecase = require("containers.core.usecases.containers.restart_container")
 
-  local ok, result = pcall(usecase, engine, id)
+  local ok, result = pcall(usecase, engine, opts.args)
   if not ok then
     vim.notify("Restart failed: " .. result, vim.log.levels.ERROR)
   else
-    vim.notify("Container restarted: " .. id)
+    vim.notify("Container restarted: " .. opts.args)
   end
 end, { nargs = 1 })
 ```
@@ -91,30 +98,20 @@ end, { nargs = 1 })
 
 ## 6. (Optional) Add a View
 
-If your use case outputs data (like logs), create a UI module.
+If output needs to be shown in a buffer, create a view module.
 
 **Example:** `lua/containers/ui/log_view.lua`
 
-```lua
-return function(lines, container_id)
-  vim.cmd("vnew")
-  local buf = vim.api.nvim_get_current_buf()
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_name(buf, "nvim-containers://logs/" .. container_id)
-  vim.bo[buf].filetype = "log"
-end
-```
-
 ---
 
-## 7. Update Plugin Declaration
+## 7. Plugin Declaration (lazy.nvim)
 
-In your Neovim plugin setup (e.g. lazy.nvim):
-
-```vim
+```lua
 {
   "lavalue/nvim-containers",
-  cmd = { "ContainerList", "ContainerRestart" }, -- important!
+  cmd = {
+    "ContainerList", "ContainerRestart"
+  },
   config = function()
     require("containers").setup({
       engine = "podman",
@@ -123,48 +120,44 @@ In your Neovim plugin setup (e.g. lazy.nvim):
 }
 ```
 
-## 8. Test Your Use Case
+---
 
-Use `:Lazy reload`, restart Neovim, or run:
+## 8. File Organization
 
-```vim
-:ContainerRestart <container-id>
-```
-
-Check for correctness and error handling.
+| Folder | Content |
+|--------|---------|
+| `core/usecases/containers/` | container-related logic |
+| `core/usecases/images/`     | image-related logic     |
+| `adapters/podman/containers/` | container command implementations |
+| `adapters/podman/images/`     | image command implementations |
 
 ---
 
-## Summary of File Touchpoints
+## 9. Debugging Tips
+
+- `:messages` shows all notifications
+- Use `vim.inspect(tbl)` to log tables
+- Check `vim.v.shell_error` after CLI calls
+
+---
+
+## 10. Future Use Case Ideas
+
+- Container stats
+- Image tagging
+- Save/load images
+- Volume & network management
+
+---
+
+## Summary
 
 | File | Purpose |
 |------|---------|
 | `core/ports/container_engine.lua` | Define the interface |
-| `core/usecases/<name>.lua` | Declare use case |
-| `adapters/<engine>/container_engine.lua` | Implement method |
-| `plugin/containers.lua` | Register Neovim command |
-| `ui/<optional>.lua` | Show data in a buffer |
+| `core/usecases/containers/*.lua`  | Use case logic        |
+| `adapters/podman/containers/*.lua`| Podman implementation |
+| `plugin/containers/container_cmds.lua` | Neovim command |
+| `ui/*.lua`                        | Optional buffer view  |
 
 ---
-
-## Example: exec_in_container
-
-- Use case file: `core/usecases/exec_in_container.lua`
-- Calls: `engine.exec_in_container(id, {"sh"})`
-- Port method: `exec_in_container(id: string, command: string[])`
-- Adapter (e.g. podman): spawns interactive shell using `vim.fn.termopen(...)`
-- Command: `:ContainerExec <id> [shell]`
-
----
-
-## Naming Convention
-
-- Use `ContainerX` for Neovim commands: `:ContainerStart`, `:ContainerLogs`, ...
-- Use `snake_case` for file/module names: `start_container.lua`
-- Use `_id`, `_command` for unused arguments in placeholder functions
-
----
-
-## Need Help?
-
-Feel free to open an issue or discussion on Codeberg if you're unsure how to implement a new use case. Welcome, contributors!
