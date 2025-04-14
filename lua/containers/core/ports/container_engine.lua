@@ -41,4 +41,7 @@ return {
   remove_image = function(image_id)
     error(image_id .. ": remove_image not implemented")
   end,
+  prune_images = function()
+    error("prune_images not implemented")
+  end,
 }

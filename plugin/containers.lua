@@ -204,3 +204,13 @@ vim.api.nvim_create_user_command("ImageRemove", function(opts)
     vim.notify("Failed to remove image: " .. err, vim.log.levels.ERROR)
   end
 end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("ImagePrune", function()
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.prune_images")
+
+  local ok, err = pcall(usecase, engine)
+  if not ok then
+    vim.notify("Failed to prune images: " .. err, vim.log.levels.ERROR)
+  end
+end, {})
