@@ -86,6 +86,22 @@ function M.kill_container(container_id)
   })
 end
 
+function M.remove_container(container_id)
+  local cmd = { "podman", "rm", container_id }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code, _)
+      vim.schedule(function()
+        if code == 0 then
+          vim.notify("Container removed: " .. container_id, vim.log.levels.INFO)
+        else
+          vim.notify("Failed to remove container: " .. container_id, vim.log.levels.ERROR)
+        end
+      end)
+    end,
+  })
+end
+
 function M.inspect_container(container_id)
   local output = vim.fn.system({ "podman", "inspect", container_id })
 

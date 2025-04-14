@@ -19,6 +19,9 @@ return {
   kill_container = function(id)
     error(id .. ": kill_container not implemented.")
   end,
+  remove_container = function(id)
+    error(id .. ": remove_container not implemented.")
+  end,
   inspect_container = function(id)
     error(id .. ": inspect_container not implemented.")
   end

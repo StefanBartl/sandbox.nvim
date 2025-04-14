@@ -112,6 +112,23 @@ vim.api.nvim_create_user_command("ContainerKill", function(opts)
   end
 end, { nargs = 1 })
 
+vim.api.nvim_create_user_command("ContainerRemove", function(opts)
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.remove_container")
+
+  local id = opts.args
+  if not id or id == "" then
+    vim.notify("Usage: :ContainerRemove <container-id>", vim.logs.levels.WARN)
+    return
+  end
+
+  local ok, err = pcall(usecase, engine, id)
+  if not ok then
+    vim.notify("Failed to remove container: " .. err, vim.log.levels.ERROR)
+    return
+  end
+end, { nargs = 1 })
+
 vim.api.nvim_create_user_command("ContainerInspect", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.inspect_container")
