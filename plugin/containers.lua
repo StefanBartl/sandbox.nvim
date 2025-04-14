@@ -3,7 +3,7 @@
 vim.api.nvim_create_user_command("ContainerList", function()
   local core = require("containers")
   local engine = core.get_engine()
-  local usecase = require("containers.core.usecases.list_containers")
+  local usecase = require("containers.core.usecases.containers.list_containers")
 
   local ok, containers = pcall(usecase, engine)
 
@@ -20,7 +20,7 @@ end, {})
 
 vim.api.nvim_create_user_command("ContainerLogs", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.get_container_logs")
+  local usecase = require("containers.core.usecases.containers.get_container_logs")
   local view = require("containers.ui.log_view")
 
   local id = opts.args
@@ -41,7 +41,7 @@ end, { nargs = 1 })
 -- TODO: autocompletion for container-ids ?
 vim.api.nvim_create_user_command("ContainerExec", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.exec_in_container")
+  local usecase = require("containers.core.usecases.containers.exec_in_container")
 
   local id = opts.fargs[1]
   if not id or id == "" then
@@ -63,7 +63,7 @@ end, {
 
 vim.api.nvim_create_user_command("ContainerStart", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.start_container")
+  local usecase = require("containers.core.usecases.scontainers.tart_container")
 
   local id = opts.args
   if not id or id == "" then
@@ -80,7 +80,7 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("ContainerStop", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.stop_container")
+  local usecase = require("containers.core.usecases.containers.stop_container")
 
   local id = opts.args
   if not id or id == "" then
@@ -97,7 +97,7 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("ContainerKill", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.kill_container")
+  local usecase = require("containers.core.usecases.containers.kill_container")
 
   local id = opts.args
   if not id or id == "" then
@@ -114,7 +114,7 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("ContainerRemove", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.remove_container")
+  local usecase = require("containers.core.usecases.containers.remove_container")
 
   local id = opts.args
   if not id or id == "" then
@@ -131,7 +131,7 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("ContainerPrune", function()
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.prune_containers")
+  local usecase = require("containers.core.usecases.containers.prune_containers")
 
   local ok, err = pcall(usecase, engine)
   if not ok then
@@ -141,7 +141,7 @@ end, {})
 
 vim.api.nvim_create_user_command("ContainerInspect", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.inspect_container")
+  local usecase = require("containers.core.usecases.containers.inspect_container")
   local view = require("containers.ui.inspect_view")
 
   local id = opts.args
@@ -161,7 +161,7 @@ end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("ImageList", function()
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.list_images")
+  local usecase = require("containers.core.usecases.images.list_images")
   local view = require("containers.ui.image_list_view")
 
   local ok, result = pcall(usecase, engine)
@@ -181,7 +181,7 @@ vim.api.nvim_create_user_command("ImagePull", function(opts)
   end
 
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.pull_image")
+  local usecase = require("containers.core.usecases.images.pull_image")
 
   local ok, err = pcall(usecase, engine, image)
   if not ok then
@@ -197,7 +197,7 @@ vim.api.nvim_create_user_command("ImageRemove", function(opts)
   end
 
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.remove_image")
+  local usecase = require("containers.core.usecases.images.remove_image")
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
