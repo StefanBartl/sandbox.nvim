@@ -22,6 +22,9 @@ return {
   remove_container = function(id)
     error(id .. ": remove_container not implemented.")
   end,
+  prune_containers = function()
+    error("prune_containers not implemented.")
+  end,
   inspect_container = function(id)
     error(id .. ": inspect_container not implemented.")
   end

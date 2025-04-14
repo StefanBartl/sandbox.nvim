@@ -129,6 +129,16 @@ vim.api.nvim_create_user_command("ContainerRemove", function(opts)
   end
 end, { nargs = 1 })
 
+vim.api.nvim_create_user_command("ContainerPrune", function()
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.prune_containers")
+
+  local ok, err = pcall(usecase, engine)
+  if not ok then
+    vim.notify("Failed to prune containers: " .. err, vim.log.levels.ERROR)
+  end
+end, {})
+
 vim.api.nvim_create_user_command("ContainerInspect", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.inspect_container")
