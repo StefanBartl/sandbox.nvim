@@ -37,7 +37,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 }
 ```
 
-> ⚠️ If you set `lazy = true`, you must explicitly list all supported commands:
+> ⚠️ If you set `lazy = true`, you must explicitly list all supported commands you want to use:
 >
 > ```lua
 > cmd = {
@@ -48,6 +48,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 >   "ContainerStop",
 >   "ContainerKill",
 >   "ContainerInspect",
+    "ContainerRemove",
+    "ContainerPrune"
 > }
 > ```
 >
@@ -66,6 +68,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 | `:ContainerStop <id>` | Stop a container |
 | `:ContainerKill <id>` | Kill a container |
 | `:ContainerInspect <id>` | Show full container metadata |
+| `:ContainerRemove <id>` | Remove a specific container |
+| `:ContainerPrune` | Remove all stopped containers |
 
 More commands will be added soon.
 
