@@ -172,3 +172,20 @@ vim.api.nvim_create_user_command("ImageList", function()
 
   view(result)
 end, {})
+
+vim.api.nvim_create_user_command("ImagePull", function(opts)
+  local image = opts.args
+  if not image or image == "" then
+    vim.notify("Usage: :ImagePull <image>", vim.log.levels.WARN)
+    return
+  end
+
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.pull_image")
+
+  local ok, err = pcall(usecase, engine, image)
+  if not ok then
+    vim.notify("Failed to pull image: " .. err, vim.log.levels.ERROR)
+  end
+end, { nargs = 1 })
+
