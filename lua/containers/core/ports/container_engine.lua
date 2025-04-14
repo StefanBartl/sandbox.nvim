@@ -2,18 +2,21 @@
 
 return {
   list_containers = function()
-    error("list_containers not implemented")
+    error("list_containers not implemented.")
   end,
-  get_logs = function(_id)
-    error("get_logs not implemented")
+  get_logs = function(id)
+    error(id .. ": get_logs not implemented.")
   end,
-  exec_in_container = function(_id, command)
-    error("exec_in_container not implemented")
+  exec_in_container = function(id, command)
+    error(id .. ": exec_in_container not implemented. Command:  " .. vim.inspect(command))
   end,
---  start_container = function(_id)
---    error("start_container not implemented")
---  end,
---  stop_container = function(_id)
---    error("stop_container not implemented")
---  end,
+  start_container = function(id)
+    error(id .. ": start_container not implemented.")
+  end,
+  stop_container = function(id)
+    error(id .. ": stop_container not implemented.")
+  end,
+  kill_container = function(id)
+    error(id .. ": kill_container not implemented.")
+  end
 }

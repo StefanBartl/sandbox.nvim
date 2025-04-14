@@ -22,7 +22,7 @@ function M.list_containers()
 end
 
 function M.get_logs(container_id)
-  local output = vim.fn.system({"podman", "logs", container_id})
+  local output = vim.fn.system({ "podman", "logs", container_id })
 
   if vim.v.shell_error ~= 0 then
     vim.notify("Podman logs error: " .. output, vim.logs.levels.ERROR)
@@ -41,5 +41,50 @@ function M.exec_in_container(container_id, command)
   vim.api.nvim_buf_set_name(buf, "nvim-containers://exec/" .. container_id)
   vim.bo[buf].bufhidden = "wipe"
 end
+
+function M.start_container(container_id)
+  local output = vim.fn.system({ "podman", "start", container_id })
+
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Podman start error: " .. output, vim.logd.levels.ERROR)
+    return false
+  end
+
+  vim.notify("Container started: " .. container_id, vim.log.levels.INFO)
+  return true
+end
+
+function M.stop_container(container_id)
+  local cmd = { "podman", "stop", "--timeout", "1", container_id }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code, _)
+      vim.schedule(function()
+        if code == 0 then
+          vim.notify("Container stopped: " .. container_id, vim.log.levels.INFO)
+        else
+          vim.notify("Error stopping container: exit code " .. code, vim.log.levels.ERROR)
+        end
+      end)
+    end,
+  })
+end
+
+function M.kill_container(container_id)
+  local cmd = { "podman", "kill", container_id }
+
+  vim.fn.jobstart(cmd, {
+    on_exit = function(_, code, _)
+      vim.schedule(function()
+        if code == 0 then
+          vim.notify("Container killed: " .. container_id, vim.log.levels.INFO)
+        else
+          vim.notify("Error killing container (code " .. code .. "): " .. container_id, vim.log.levels.ERROR)
+        end
+      end)
+    end,
+  })
+end
+
 
 return M

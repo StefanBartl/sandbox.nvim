@@ -22,12 +22,12 @@ Update the core interface `ContainerEngine` with a new method.
 **File:** `lua/containers/core/ports/container_engine.lua`
 
 ```lua
-restart_container = function(_id)
-  error("restart_container not implemented")
+restart_container = function(id)
+  error(id .. ": restart_container not implemented")
 end
 ```
 
-> Use `_id` to prevent "unused variable" warnings.
+> Use `_` to prevent "unused variable" warnings if needed.
 
 ---
 
@@ -144,6 +144,16 @@ Check for correctness and error handling.
 | `adapters/<engine>/container_engine.lua` | Implement method |
 | `plugin/containers.lua` | Register Neovim command |
 | `ui/<optional>.lua` | Show data in a buffer |
+
+---
+
+## Example: exec_in_container
+
+- Use case file: `core/usecases/exec_in_container.lua`
+- Calls: `engine.exec_in_container(id, {"sh"})`
+- Port method: `exec_in_container(id: string, command: string[])`
+- Adapter (e.g. podman): spawns interactive shell using `vim.fn.termopen(...)`
+- Command: `:ContainerExec <id> [shell]`
 
 ---
 
