@@ -133,4 +133,39 @@ function M.inspect_container(container_id)
   return result[1]
 end
 
+function M.list_images()
+  local output = vim.fn.system({ "podman", "images", "--format", "json" })
+
+  if vim.v.shell_error ~= 0 then
+    return { "[nvim-containers] Failed to list images: " .. output }
+  end
+
+  local ok, result = pcall(vim.fn.json_decode, output)
+  if not ok then
+    return { "[nvim-containers] Invalid image JSON output" }
+  end
+
+  return result
+end
+
+function M.pull_image(name)
+  local output = vim.fn.system({ "podman", "pull", name })
+
+  if vim.v.shell_error ~= 0 then
+    return false, output
+  end
+
+  return true
+end
+
+function M.remove_image(id)
+  local output = vim.fn.system({ "podman", "rmi", id })
+
+  if vim.v.shell_error ~= 0 then
+    return false, output
+  end
+
+  return true
+end
+
 return M

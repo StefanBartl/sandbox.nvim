@@ -158,3 +158,17 @@ vim.api.nvim_create_user_command("ContainerInspect", function(opts)
 
   view(result, id)
 end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("ImageList", function()
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.list_images")
+  local view = require("containers.ui.image_list_view")
+
+  local ok, result = pcall(usecase, engine)
+  if not ok then
+    vim.notify("Failed to list images: " .. result, vim.log.levels.ERROR)
+    return
+  end
+
+  view(result)
+end, {})

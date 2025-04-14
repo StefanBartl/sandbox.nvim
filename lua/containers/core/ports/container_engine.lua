@@ -1,6 +1,8 @@
 -- Defines the expected interface for container engines
 
 return {
+
+-- Container interfaces
   list_containers = function()
     error("list_containers not implemented.")
   end,
@@ -27,5 +29,16 @@ return {
   end,
   inspect_container = function(id)
     error(id .. ": inspect_container not implemented.")
-  end
+  end,
+
+-- Image interfaces
+  list_images = function()
+    error("list_images not implemented")
+  end,
+  pull_image = function(image_name)
+    error(image_name .. ": pull_image not implemented")
+  end,
+  remove_image = function(image_id)
+    error(image_id .. ": remove_image not implemented")
+  end,
 }
