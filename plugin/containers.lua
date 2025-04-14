@@ -63,7 +63,7 @@ end, {
 
 vim.api.nvim_create_user_command("ContainerStart", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.start_constainer")
+  local usecase = require("containers.core.usecases.start_container")
 
   local id = opts.args
   if not id or id == "" then
