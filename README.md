@@ -6,17 +6,18 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 ---
 
-## Features (Planned & In Progress)
+## Features
 
 - ✅ List running and stopped containers
 - ✅ View logs of any container in a buffer
-- ✅ Execute a shell inside a container
-- 🛠️ Start/stop/remove containers
-- 🛠️ Image management (list, pull, remove)
-- 🛠️ Volume inspection
+- ✅ Execute shell inside a container
+- ✅ Start, stop, kill and inspect containers
+- ✅ Remove containers and prune stopped ones
+- ✅ List, pull and remove container images
+- ✅ Prune dangling images
 - 🧠 Hexagonal architecture (engine-agnostic)
 - 🧩 Easily extendable (Podman, Docker, nerdctl, etc.)
-- 📦 Designed for plugin managers (e.g. lazy.nvim)
+- 📦 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 - 🚫 No external Lua dependencies
 
 ---
@@ -28,7 +29,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 ```lua
 {
   "StefanBartl/nvim-containers.nvim",
-  event = "VeryLazy", -- or set lazy = false for eager loading
+  event = "VeryLazy", -- or set lazy = false to load on startup
   config = function()
     require("containers").setup({
       engine = "podman", -- or "docker", "nerdctl"
@@ -37,23 +38,17 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 }
 ```
 
-> ⚠️ If you set `lazy = true`, you must explicitly list all supported commands you want to use:
+> ⚠️ If you use `lazy = true`, you must explicitly list all supported commands:
 >
 > ```lua
 > cmd = {
->   "ContainerList",
->   "ContainerLogs",
->   "ContainerExec",
->   "ContainerStart",
->   "ContainerStop",
->   "ContainerKill",
->   "ContainerInspect",
-    "ContainerRemove",
-    "ContainerPrune"
+>   "ContainerList", "ContainerLogs", "ContainerExec",
+>   "ContainerStart", "ContainerStop", "ContainerKill",
+>   "ContainerInspect", "ContainerRemove", "ContainerPrune",
+>   "ImageList", "ImagePull", "ImageRemove", "ImagePrune"
 > }
 > ```
->
-> For most setups, `event = "VeryLazy"` is recommended – it avoids startup delay without needing manual command registration.
+> For most setups, `event = "VeryLazy"` is recommended.
 
 ---
 
@@ -70,8 +65,10 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 | `:ContainerInspect <id>` | Show full container metadata |
 | `:ContainerRemove <id>` | Remove a specific container |
 | `:ContainerPrune` | Remove all stopped containers |
-
-More commands will be added soon.
+| `:ImageList` | Show all local images |
+| `:ImagePull <name>` | Pull an image from remote |
+| `:ImageRemove <id>` | Remove an image by ID or name |
+| `:ImagePrune` | Remove all dangling images |
 
 ---
 
@@ -79,12 +76,12 @@ More commands will be added soon.
 
 | Engine | Status | Notes |
 |--------|--------|-------|
-| **Podman** | ✅ Supported | Uses `podman ps -a --format json` etc. |
-| **Docker** | 🛠️ In Progress | Drop-in adapter planned |
+| **Podman** | ✅ Supported | Uses `podman` CLI for all commands |
+| **Docker** | 🛠️ In Progress | Adapter planned |
 | **nerdctl** | 🔜 Planned | |
 | **containerd** | 🔜 Research phase | |
 
-All adapters implement the same interface defined under `core/ports/container_engine.lua`.
+All adapters implement the interface defined under `core/ports/container_engine.lua`.
 
 ---
 
