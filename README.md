@@ -28,14 +28,30 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 ```lua
 {
   "StefanBartl/nvim-containers.nvim",
+  event = "VeryLazy", -- or set lazy = false for eager loading
   config = function()
     require("containers").setup({
       engine = "podman", -- or "docker", "nerdctl"
     })
   end,
-  cmd = { "ContainerList", "ContainerLogs", "ContainerExec", "ContainerStart", "ContainerStop", "ContainerKill"  }
 }
 ```
+
+> ⚠️ If you set `lazy = true`, you must explicitly list all supported commands:
+>
+> ```lua
+> cmd = {
+>   "ContainerList",
+>   "ContainerLogs",
+>   "ContainerExec",
+>   "ContainerStart",
+>   "ContainerStop",
+>   "ContainerKill",
+>   "ContainerInspect",
+> }
+> ```
+>
+> For most setups, `event = "VeryLazy"` is recommended – it avoids startup delay without needing manual command registration.
 
 ---
 
@@ -46,8 +62,10 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 | `:ContainerList` | List all containers (running/stopped) |
 | `:ContainerLogs <id>` | Show logs for a container |
 | `:ContainerExec <id>` | Execute shell inside container |
-| `:ContainerStart <id>` | (Planned) Start container |
-| `:ContainerStop <id>` | (Planned) Stop container |
+| `:ContainerStart <id>` | Start a container |
+| `:ContainerStop <id>` | Stop a container |
+| `:ContainerKill <id>` | Kill a container |
+| `:ContainerInspect <id>` | Show full container metadata |
 
 More commands will be added soon.
 
@@ -89,6 +107,6 @@ Pull Requests and Issues are very welcome!
 
 This is **alpha software**. Expect changes, rough edges, and bugs.
 Your feedback will help shape the future of container management in Neovim.
+```
 
 ---
-
