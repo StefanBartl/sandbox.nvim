@@ -189,3 +189,18 @@ vim.api.nvim_create_user_command("ImagePull", function(opts)
   end
 end, { nargs = 1 })
 
+vim.api.nvim_create_user_command("ImageRemove", function(opts)
+  local id = opts.args
+  if not id or id == "" then
+    vim.notify("Usage: :ImageRemove <image-id>", vim.log.levels.WARN)
+    return
+  end
+
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.remove_image")
+
+  local ok, err = pcall(usecase, engine, id)
+  if not ok then
+    vim.notify("Failed to remove image: " .. err, vim.log.levels.ERROR)
+  end
+end, { nargs = 1 })
