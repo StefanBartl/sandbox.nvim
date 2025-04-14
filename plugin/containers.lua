@@ -111,3 +111,23 @@ vim.api.nvim_create_user_command("ContainerKill", function(opts)
     return
   end
 end, { nargs = 1 })
+
+vim.api.nvim_create_user_command("ContainerInspect", function(opts)
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.inspect_container")
+  local view = require("containers.ui.inspect_view")
+
+  local id = opts.args
+  if not id or id == "" then
+    vim.notify("Usage: :ContainerInspect <container-id>", vim.log.levels.WARN)
+    return
+  end
+
+  local ok, result = pcall(usecase, engine, id)
+  if not ok then
+    vim.notify("Failed to inspect container: " .. result, vim.log.levels.ERROR)
+    return
+  end
+
+  view(result, id)
+end, { nargs = 1 })

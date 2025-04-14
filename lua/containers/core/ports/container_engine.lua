@@ -18,5 +18,8 @@ return {
   end,
   kill_container = function(id)
     error(id .. ": kill_container not implemented.")
+  end,
+  inspect_container = function(id)
+    error(id .. ": inspect_container not implemented.")
   end
 }
