@@ -10,15 +10,15 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 - ✅ List running and stopped containers
 - ✅ View logs of any container in a buffer
-- ✅ Execute shell inside a container
-- ✅ Start, stop, kill and inspect containers
-- ✅ Remove containers and prune stopped ones
-- ✅ List, pull and remove container images
-- ✅ Prune dangling images
-- 🧠 Hexagonal architecture (engine-agnostic)
-- 🧩 Easily extendable (Podman, Docker, nerdctl, etc.)
-- 📦 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
+- ✅ Execute shell or one-off commands inside a container
+- ✅ Start, stop, kill, inspect, and remove containers
+- ✅ Remove all stopped containers (prune)
+- ✅ List, pull, remove and prune container images
+- 🧠 Hexagonal architecture (engine-agnostic, clean ports & adapters)
+- 🧩 Easily extendable (Podman, Docker, nerdctl planned)
+- 🚀 Unified support for Docker and Podman
 - 🚫 No external Lua dependencies
+- 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
 ---
 
@@ -32,7 +32,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   event = "VeryLazy", -- or set lazy = false to load on startup
   config = function()
     require("containers").setup({
-      engine = "podman", -- or "docker", "nerdctl"
+      engine = "podman", -- or "docker"
     })
   end,
 }
@@ -42,33 +42,33 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 >
 > ```lua
 > cmd = {
->   "ContainerList", "ContainerLogs", "ContainerExec",
+>   "ContainerList", "ContainerLogs", "ContainerExec", "ContainerExecOnce",
 >   "ContainerStart", "ContainerStop", "ContainerKill",
 >   "ContainerInspect", "ContainerRemove", "ContainerPrune",
 >   "ImageList", "ImagePull", "ImageRemove", "ImagePrune"
 > }
 > ```
-> For most setups, `event = "VeryLazy"` is recommended.
 
 ---
 
 ## Usage
 
 | Command | Description |
-|--------|-------------|
-| `:ContainerList` | List all containers (running/stopped) |
+|---------|-------------|
+| `:ContainerList` | List all containers (running and stopped) |
 | `:ContainerLogs <id>` | Show logs for a container |
-| `:ContainerExec <id>` | Execute shell inside container |
+| `:ContainerExec <id> [shell]` | Open interactive shell inside container |
+| `:ContainerExecOnce <id> <command>` | Run one-off command and show output |
 | `:ContainerStart <id>` | Start a container |
 | `:ContainerStop <id>` | Stop a container |
 | `:ContainerKill <id>` | Kill a container |
-| `:ContainerInspect <id>` | Show full container metadata |
-| `:ContainerRemove <id>` | Remove a specific container |
-| `:ContainerPrune` | Remove all stopped containers |
-| `:ImageList` | Show all local images |
-| `:ImagePull <name>` | Pull an image from remote |
-| `:ImageRemove <id>` | Remove an image by ID or name |
-| `:ImagePrune` | Remove all dangling images |
+| `:ContainerInspect <id>` | Inspect container details |
+| `:ContainerRemove <id>` | Remove a container |
+| `:ContainerPrune` | Prune (remove) all stopped containers |
+| `:ImageList` | List available images |
+| `:ImagePull <image>` | Pull an image |
+| `:ImageRemove <image-id>` | Remove an image |
+| `:ImagePrune` | Prune (remove) dangling images |
 
 ---
 
@@ -76,23 +76,24 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 | Engine | Status | Notes |
 |--------|--------|-------|
-| **Podman** | ✅ Supported | Uses `podman` CLI for all commands |
-| **Docker** | 🛠️ In Progress | Adapter planned |
-| **nerdctl** | 🔜 Planned | |
-| **containerd** | 🔜 Research phase | |
+| **Podman** | ✅ Supported and stable |
+| **Docker** | ✅ Supported |
+| **nerdctl** | 🔜 Planned |
+| **containerd** | 🔜 Research phase |
 
-All adapters implement the interface defined under `core/ports/container_engine.lua`.
+Each engine is implemented through clean ports & adapters, fully pluggable.
 
 ---
 
 ## Development & Contribution
 
-Clone this repo and symlink or add to your Neovim runtime path for local development.
+Clone the repository and either symlink or load it into your Neovim runtime path.
 
-### File layout
-- Add new engines under `adapters/<engine>/container_engine.lua`
-- Add new use cases under `core/usecases/`
-- Add new commands under `plugin/containers.lua`
+### File Layout
+- Engine adapters: `lua/containers/adapters/<engine>/`
+- Use cases: `lua/containers/core/usecases/`
+- User commands: `lua/containers/plugin/container_commands.lua` and `lua/containers/plugin/image_commands.lua`
+- UI views: `lua/containers/ui/`
 
 Pull Requests and Issues are very welcome!
 
@@ -106,7 +107,7 @@ Pull Requests and Issues are very welcome!
 
 ## Disclaimer
 
-This is **alpha software**. Expect changes, rough edges, and bugs.
-Your feedback will help shape the future of container management in Neovim.
+This is **alpha software**. Expect breaking changes, rough edges, and missing features.
+Your feedback is highly appreciated and will help shape the project!
 
 ---
