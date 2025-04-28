@@ -4,7 +4,7 @@
   Combines container and image adapters into a full implementation of the ContainerEngine port.
 ]]
 
-local containers = require("containers.adapters.docker.containers")
+local containers = require("containers.adapters.docker.containers_engine")
 local images_engine = require("containers.adapters.docker.images_engine") -- <--- richtig images_engine.lua laden!
 
 --- Docker operations exposed by the Docker adapter

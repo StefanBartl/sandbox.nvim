@@ -4,8 +4,8 @@
   Combines container and image adapters into a full implementation of the ContainerEngine port.
 ]]
 
-local containers = require("containers.adapters.podman.containers")
-local images = require("containers.adapters.podman.images")
+local containers = require("containers.adapters.podman.containers_engine")
+local images = require("containers.adapters.podman.images_engine")
 
 return {
   -- Container operations
