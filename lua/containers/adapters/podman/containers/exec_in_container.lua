@@ -19,9 +19,15 @@ function M.exec_in_container(container_id, command)
   vim.cmd("vnew")
 
   local buf = vim.api.nvim_get_current_buf()
-  vim.fn.termopen(args)
   vim.api.nvim_buf_set_name(buf, "nvim-containers://exec/" .. container_id)
+
+  vim.fn.termopen(args)
+
   vim.bo[buf].bufhidden = "wipe"
+
+  -- Explicitly set the current buffer and enter terminal insert mode
+  vim.api.nvim_set_current_buf(buf)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
 end
 
 return M
