@@ -65,6 +65,37 @@ vim.api.nvim_create_user_command("ContainerExec", function(opts)
   end
 end, { nargs = "*", complete = "file" })
 
+
+--- Execute a one-off command inside a container and show the output
+--- Unlike `:ContainerExec`, this does not open an interactive shell session.
+--- Usage: :ContainerExecOnce <container-id> <command> [<arg1> <arg2> ...]
+--- @param opts table: Contains fargs (the parsed arguments from the command line)
+vim.api.nvim_create_user_command("ContainerExecOnce", function(opts)
+  local engine = require("containers").get_engine()
+  local usecase = require("containers.core.usecases.containers.exec_in_container")
+
+  local id = opts.fargs[1]
+  if not id or id == "" then
+    vim.notify("Usage: :ContainerExec <container-id> [<command>...]", vim.log.levels.WARN)
+    return
+  end
+
+  local command = {}
+  for i = 2, #opts.fargs do
+    table.insert(command, opts.fargs[i])
+  end
+
+  if vim.tbl_isempty(command) then
+    command = nil
+  end
+
+  local ok, err = pcall(usecase, engine, id, command)
+  if not ok then
+    vim.notify("Failed to exec in container: " .. err, vim.log.levels.ERROR)
+  end
+end, { nargs = "+", complete = "file" })
+
+
 --- Start a stopped container
 --- Usage: :ContainerStart <container-id>
 vim.api.nvim_create_user_command("ContainerStart", function(opts)
