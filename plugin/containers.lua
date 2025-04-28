@@ -63,20 +63,28 @@ end, {
 
 vim.api.nvim_create_user_command("ContainerStart", function(opts)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.scontainers.tart_container")
+  if not engine then
+    vim.notify("[nvim-containers] No container engine configured.", vim.log.levels.ERROR)
+    return
+  end
+
+  local usecase = require("containers.core.usecases.containers.start_container")
 
   local id = opts.args
   if not id or id == "" then
-    vim.notify("Usage: :ContainerStart <container-id>", vim.logs.levels.WARN)
+    vim.notify("Usage: :ContainerStart <container-id>", vim.log.levels.WARN)
     return
   end
 
-  local ok, err = pcall(usecase, engine, id)
-  if not ok then
-    vim.notify("Failed to start container: " .. err, vim.logs.levels.ERROR)
+  local success = usecase(engine, id)
+  if not success then
+    vim.notify("Failed to start container: " .. id, vim.log.levels.ERROR)
     return
   end
+
+  vim.notify("Container started successfully: " .. id, vim.log.levels.INFO)
 end, { nargs = 1 })
+
 
 vim.api.nvim_create_user_command("ContainerStop", function(opts)
   local engine = require("containers").get_engine()
@@ -93,6 +101,8 @@ vim.api.nvim_create_user_command("ContainerStop", function(opts)
     vim.notify("Failed to stop container: " .. err, vim.logs.level.ERROR)
     return
   end
+
+   vim.notify("Container stopped successfully: " .. id, vim.log.levels.INFO)
 end, { nargs = 1 })
 
 vim.api.nvim_create_user_command("ContainerKill", function(opts)
@@ -124,7 +134,7 @@ vim.api.nvim_create_user_command("ContainerRemove", function(opts)
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to remove container: " .. err, vim.log.levels.ERROR)
+    vim.notify("Failed to remove container: " .. err .. "\n Is it stopped?", vim.log.levels.ERROR)
     return
   end
 end, { nargs = 1 })

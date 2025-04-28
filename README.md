@@ -108,6 +108,5 @@ Pull Requests and Issues are very welcome!
 
 This is **alpha software**. Expect changes, rough edges, and bugs.
 Your feedback will help shape the future of container management in Neovim.
-```
 
 ---
