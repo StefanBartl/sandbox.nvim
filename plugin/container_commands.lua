@@ -1,12 +1,18 @@
--- Command definitions for lazy-loading
+--[[
+  User Commands for Container Operations
 
+  Provides Neovim commands to manage containers
+  (list, logs, exec, start, stop, kill, remove, prune, inspect)
+  using the active container engine (Docker or Podman).
+]]
+
+--- List all containers (running and stopped)
 vim.api.nvim_create_user_command("ContainerList", function()
   local core = require("containers")
   local engine = core.get_engine()
   local usecase = require("containers.core.usecases.containers.list_containers")
 
   local ok, containers = pcall(usecase, engine)
-
   if not ok or type(containers) ~= "table" then
     local error_view = require("containers.ui.error_view")
     error_view({ "Failed to list containers:", vim.inspect(containers) })
@@ -15,9 +21,10 @@ vim.api.nvim_create_user_command("ContainerList", function()
 
   local view = require("containers.ui.list_view")
   view(containers)
-
 end, {})
 
+--- Show logs of a specific container
+--- Usage: :ContainerLogs <container-id>
 vim.api.nvim_create_user_command("ContainerLogs", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.get_container_logs")
@@ -38,7 +45,8 @@ vim.api.nvim_create_user_command("ContainerLogs", function(opts)
   view(logs, id)
 end, { nargs = 1 })
 
--- TODO: autocompletion for container-ids ?
+--- Open a shell session inside a running container
+--- Usage: :ContainerExec <container-id> [<shell>]
 vim.api.nvim_create_user_command("ContainerExec", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.exec_in_container")
@@ -54,13 +62,11 @@ vim.api.nvim_create_user_command("ContainerExec", function(opts)
   local ok, err = pcall(usecase, engine, id, { shell })
   if not ok then
     vim.notify("Failed to exec in container: " .. err, vim.log.levels.ERROR)
-    return
   end
-end, {
-  nargs = "*",
-  complete = "file",
-})
+end, { nargs = "*", complete = "file" })
 
+--- Start a stopped container
+--- Usage: :ContainerStart <container-id>
 vim.api.nvim_create_user_command("ContainerStart", function(opts)
   local engine = require("containers").get_engine()
   if not engine then
@@ -85,60 +91,70 @@ vim.api.nvim_create_user_command("ContainerStart", function(opts)
   vim.notify("Container started successfully: " .. id, vim.log.levels.INFO)
 end, { nargs = 1 })
 
-
+--- Stop a running container
+--- Usage: :ContainerStop <container-id>
 vim.api.nvim_create_user_command("ContainerStop", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.stop_container")
 
   local id = opts.args
   if not id or id == "" then
-    vim.notify("Usage: :ContainerStop <container-id>", vim.logs.levels.WARN)
+    vim.notify("Usage: :ContainerStop <container-id>", vim.log.levels.WARN)
     return
   end
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to stop container: " .. err, vim.logs.level.ERROR)
+    vim.notify("Failed to stop container: " .. err, vim.log.levels.ERROR)
     return
   end
 
-   vim.notify("Container stopped successfully: " .. id, vim.log.levels.INFO)
+  vim.notify("Container stopped successfully: " .. id, vim.log.levels.INFO)
 end, { nargs = 1 })
 
+--- Force kill a container
+--- Usage: :ContainerKill <container-id>
 vim.api.nvim_create_user_command("ContainerKill", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.kill_container")
 
   local id = opts.args
   if not id or id == "" then
-    vim.notify("Usage: :ContainerKill <container-id>", vim.logs.levels.WARN)
+    vim.notify("Usage: :ContainerKill <container-id>", vim.log.levels.WARN)
     return
   end
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to kill container: " .. err, vim.logs.level.ERROR)
+    vim.notify("Failed to kill container: " .. err, vim.log.levels.ERROR)
     return
   end
+
+  vim.notify("Container killed successfully: " .. id, vim.log.levels.INFO)
 end, { nargs = 1 })
 
+--- Remove a container (must be stopped first)
+--- Usage: :ContainerRemove <container-id>
 vim.api.nvim_create_user_command("ContainerRemove", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.remove_container")
 
   local id = opts.args
   if not id or id == "" then
-    vim.notify("Usage: :ContainerRemove <container-id>", vim.logs.levels.WARN)
+    vim.notify("Usage: :ContainerRemove <container-id>", vim.log.levels.WARN)
     return
   end
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to remove container: " .. err .. "\n Is it stopped?", vim.log.levels.ERROR)
+    vim.notify("Failed to remove container: " .. err .. "\nIs it stopped?", vim.log.levels.ERROR)
     return
   end
+
+  vim.notify("Container removed successfully: " .. id, vim.log.levels.INFO)
 end, { nargs = 1 })
 
+--- Remove all stopped containers
 vim.api.nvim_create_user_command("ContainerPrune", function()
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.prune_containers")
@@ -146,9 +162,14 @@ vim.api.nvim_create_user_command("ContainerPrune", function()
   local ok, err = pcall(usecase, engine)
   if not ok then
     vim.notify("Failed to prune containers: " .. err, vim.log.levels.ERROR)
+    return
   end
+
+  vim.notify("All stopped containers pruned successfully!", vim.log.levels.INFO)
 end, {})
 
+--- Inspect detailed information about a container
+--- Usage: :ContainerInspect <container-id>
 vim.api.nvim_create_user_command("ContainerInspect", function(opts)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.inspect_container")
@@ -168,59 +189,3 @@ vim.api.nvim_create_user_command("ContainerInspect", function(opts)
 
   view(result, id)
 end, { nargs = 1 })
-
-vim.api.nvim_create_user_command("ImageList", function()
-  local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.images.list_images")
-  local view = require("containers.ui.image_list_view")
-
-  local ok, result = pcall(usecase, engine)
-  if not ok then
-    vim.notify("Failed to list images: " .. result, vim.log.levels.ERROR)
-    return
-  end
-
-  view(result)
-end, {})
-
-vim.api.nvim_create_user_command("ImagePull", function(opts)
-  local image = opts.args
-  if not image or image == "" then
-    vim.notify("Usage: :ImagePull <image>", vim.log.levels.WARN)
-    return
-  end
-
-  local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.images.pull_image")
-
-  local ok, err = pcall(usecase, engine, image)
-  if not ok then
-    vim.notify("Failed to pull image: " .. err, vim.log.levels.ERROR)
-  end
-end, { nargs = 1 })
-
-vim.api.nvim_create_user_command("ImageRemove", function(opts)
-  local id = opts.args
-  if not id or id == "" then
-    vim.notify("Usage: :ImageRemove <image-id>", vim.log.levels.WARN)
-    return
-  end
-
-  local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.images.remove_image")
-
-  local ok, err = pcall(usecase, engine, id)
-  if not ok then
-    vim.notify("Failed to remove image: " .. err, vim.log.levels.ERROR)
-  end
-end, { nargs = 1 })
-
-vim.api.nvim_create_user_command("ImagePrune", function()
-  local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.prune_images")
-
-  local ok, err = pcall(usecase, engine)
-  if not ok then
-    vim.notify("Failed to prune images: " .. err, vim.log.levels.ERROR)
-  end
-end, {})

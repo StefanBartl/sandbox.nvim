@@ -3,8 +3,8 @@
 local config = require("containers.config")
 
 local engines = {
-  podman = require("containers.adapters.podman.container_engine"),
-  -- docker = require("containers.adapters.docker.container_engine"), -- planned
+  podman = require("containers.adapters.podman.engine"),
+  docker = require("containers.adapters.docker.engine"),
 }
 
 local M = {}
@@ -14,7 +14,12 @@ function M.setup(opts)
 end
 
 function M.get_engine()
-  return engines[config.options.engine]
+  local engine = engines[config.options.engine]
+  if not engine then
+    vim.notify("[nvim-containers] Invalid engine: " .. tostring(config.options.engine), vim.log.levels.ERROR)
+    return nil
+  end
+  return engine
 end
 
 return M

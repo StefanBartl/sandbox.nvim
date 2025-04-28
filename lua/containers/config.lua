@@ -3,7 +3,7 @@
 local M = {}
 
 M.options = {
-  engine = "podman", -- default engine
+  engine = "docker", -- default engine
 }
 
 function M.setup(opts)
