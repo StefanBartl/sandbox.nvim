@@ -16,6 +16,9 @@ function M.exec_in_container(container_id, command)
   vim.fn.termopen(args)
   vim.api.nvim_buf_set_name(buf, "nvim-containers://exec/" .. container_id)
   vim.bo[buf].bufhidden = "wipe"
+
+  -- Automatically enter Terminal Insert Mode
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
 end
 
 return M
