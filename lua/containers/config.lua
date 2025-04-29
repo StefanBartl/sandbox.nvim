@@ -13,7 +13,7 @@ function M.setup(opts)
 
   -- If no engine is explicitly set, detect automatically
   if not M.options.engine then
-    M.options.engine = require("containers.detect_engine")()
+    M.options.engine = require("containers.engine_utils").get_engine()
   end
 end
 
