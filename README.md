@@ -107,7 +107,7 @@ Pull Requests and Issues are very welcome!
 
 ## Disclaimer
 
-This is **alpha software**. Expect breaking changes, rough edges, and missing features.
+⚠️ This is **alpha software**. Expect breaking changes, rough edges, and missing features.
 Your feedback is highly appreciated and will help shape the project!
 
 ---
