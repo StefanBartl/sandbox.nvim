@@ -18,8 +18,6 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - 🚫 No external Lua dependencies
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
-
-**⚠️ Alpha Version** – Breaking changes can and will happen.
 ---
 
 ## Installation
@@ -107,7 +105,7 @@ Pull Requests and Issues are very welcome!
 
 ## Disclaimer
 
-This is **alpha software**. Expect breaking changes, rough edges, and missing features.
+⚠️ This is **alpha software**. Expect breaking changes, rough edges, and missing features.
 Your feedback is highly appreciated and will help shape the project!
 
 ---
