@@ -3,7 +3,8 @@
 local M = {}
 
 --- List all containers (running and stopped) using Podman
---- @return table[]: List of containers, each as a standardized object (id, name, status, image)
+--- Sorts containers: running first, then others.
+--- @return table[]: List of containers (each with id, name, status, image)
 function M.list_containers()
   local output = vim.fn.system({ "podman", "ps", "-a", "--format", "json" })
 
@@ -27,6 +28,18 @@ function M.list_containers()
       image = container.Image,
     })
   end
+
+  table.sort(containers, function(a, b)
+    if a.status == b.status then
+      return a.name < b.name
+    elseif a.status == "running" then
+      return true
+    elseif b.status == "running" then
+      return false
+    else
+      return a.name < b.name
+    end
+  end)
 
   return containers
 end
