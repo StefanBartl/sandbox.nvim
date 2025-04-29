@@ -16,6 +16,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - 🧠 Hexagonal architecture (engine-agnostic, clean ports & adapters)
 - 🧩 Easily extendable (Podman, Docker, nerdctl planned)
 - 🚀 Unified support for Docker and Podman
+- 🩺 Integrated Neovim healthcheck support (`:checkhealth nvim-containers`)
 - 🚫 No external Lua dependencies
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
@@ -57,6 +58,27 @@ cmd = {
   "ImageList", "ImagePull", "ImageRemove", "ImagePrune"
 }
 ```
+
+---
+
+## Health Check Support
+
+**nvim-containers.nvim** integrates with Neovim's `:checkhealth` system to diagnose common issues.
+
+To run the health check, simply execute:
+
+```vim
+:checkhealth nvim-containers
+```
+
+The plugin will verify:
+
+- Whether the selected container engine (`podman` or `docker`) is correctly configured
+- Whether the corresponding CLI executable is available in your `PATH`
+
+This helps you quickly identify misconfigurations or missing dependencies.
+
+If an unsupported engine is set, or if the CLI binary is missing, clear error messages will be displayed.
 
 ---
 
