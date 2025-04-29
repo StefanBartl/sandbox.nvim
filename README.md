@@ -2,8 +2,6 @@
 
 Manage your containers (Podman, Docker, and more) directly from Neovim – with clean architecture, pluggable backends, and a TUI-native experience.
 
-**⚠️ Alpha Version** – Breaking changes can and will happen.
-
 ---
 
 ## Features
@@ -20,6 +18,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - 🚫 No external Lua dependencies
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
+
+**⚠️ Alpha Version** – Breaking changes can and will happen.
 ---
 
 ## Installation
