@@ -9,10 +9,14 @@ local engines = {
 
 local M = {}
 
+--- Setup the plugin
+--- @param opts table|nil: Optional user configuration
 function M.setup(opts)
   config.setup(opts)
 end
 
+--- Get the active engine implementation
+--- @return table|nil
 function M.get_engine()
   local engine = engines[config.options.engine]
   if not engine then
@@ -23,4 +27,3 @@ function M.get_engine()
 end
 
 return M
-
