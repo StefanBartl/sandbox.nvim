@@ -4,6 +4,19 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 ---
 
+- [Features](#features)
+- [Installation](#installation)
+  - [lazy.nvim](#lazynvim)
+- [Health Check Support](#health-check-support)
+- [Usage](#usage)
+- [Supported Engines](#supported-engines)
+- [Development & Contribution](#development--contribution)
+  - [File Layout](#file-layout)
+- [License](#license)
+- [Disclaimer](#disclaimer)
+
+---
+
 ## Features
 
 - ✅ List running and stopped containers
