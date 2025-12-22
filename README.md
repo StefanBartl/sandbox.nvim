@@ -1,4 +1,12 @@
 # nvim-containers.nvim
+![status](https://img.shields.io/badge/status-beta-orange.svg)
+![Lazy.nvim compatible](https://img.shields.io/badge/lazy.nvim-supported-success)
+![Neovim](https://img.shields.io/badge/Neovim-0.9+-success.svg)
+![Lua](https://img.shields.io/badge/language-Lua-yellow.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
+
+> 🔧 Beta stage – under active development. Changes possible.
 
 Manage your containers (Podman, Docker, and more) directly from Neovim – with clean architecture, pluggable backends, and a TUI-native experience.
 
@@ -151,7 +159,24 @@ Pull Requests and Issues are very welcome!
 
 ## Disclaimer
 
-⚠️ This is **alpha software**. Expect breaking changes, rough edges, and missing features.
-Your feedback is highly appreciated and will help shape the project!
+ℹ️ This plugin is under active development – some features are planned or experimental.
+Expect changes in upcoming releases.
 
 ---
+
+## Feedback
+
+Your feedback is very welcome!
+
+Please use the [GitHub issue tracker](https://github.com/StefanBartl/nvim-containers/issues) to:
+- Report bugs
+- Suggest new features
+- Ask questions about usage
+- Share thoughts on UI or functionality
+
+For general discussion, feel free to open a [GitHub Discussion](https://github.com/StefanBartl/nvim-containers/discussions).
+
+If you find this plugin helpful, consider giving it a ⭐ on GitHub — it helps others discover the project.
+
+---
+
