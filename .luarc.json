@@ -1,0 +1,70 @@
+{
+    "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+    "runtime.version": "LuaJIT",
+    "runtime.path": [
+        "lua/?.lua",
+        "lua/?/init.lua",
+        "tests/?.lua"
+    ],
+    "completion.callSnippet": "Replace",
+    "hint": {
+     "enable": true,
+     "arrayIndex": true,
+     "await": true,
+     "awaitPropagate": true,
+     "paramName": "All",
+     "paramType": true,
+     "semicolon": "All",
+     "setType": true,
+    },
+    "type": {
+        "checkTableShape": true,
+        "inferParamType": true,
+    },
+    "type.castNumberToInteger": true,
+    "diagnostics.libraryFiles": "Disable",
+    "diagnostics.globals": [
+        "assert",
+        "after_each",
+        "before_each",
+        "describe",
+        "it",
+        "neq",
+        "mock",
+        "pending",
+        "setup",
+        "spy",
+        "stub",
+        "teardown",
+        "vim"
+    ],
+    "workspace.useGitIgnore": true,
+    "workspace.library": [
+        "${3rd}/luv/library",
+        "${3rd}/busted/library",
+        "${3rd}/luassert/library",
+        "$HOME/.local/share/nvim/lazy/plenary.nvim",
+        "$HOME/.local/share/nvim/lazy/nui.nvim",
+        "$HOME/.local/share/nvim/lazy/nvim-web-devicons",
+        "$HOME/.local/share/nvim/lazy/snacks.nvim"
+    ],
+    "workspace.checkThirdParty": false,
+    "workspace.ignoreDir": [
+        ".dependencies",
+        ".git",
+        ".luarocks",
+        ".lua",
+        ".neotest",
+        "build",
+        "dist",
+        "node_modules",
+        "vendor"
+    ],
+    "files.exclude": [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/build/**"
+    ]
+}
+
