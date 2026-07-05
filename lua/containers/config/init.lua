@@ -2,12 +2,14 @@
 
 local M = {}
 
-M.options = {
-  engine = nil, -- no default here anymore, to allow dynamic detection
-}
+---@type Containers.Config.Options
+local defaults = require("containers.config.DEFAULTS")
+
+---@type Containers.Config.Options
+M.options = vim.deepcopy(defaults)
 
 --- Setup configuration with user options
---- @param opts table|nil: Optional user configuration
+--- @param opts Containers.Config.Options|nil: Optional user configuration
 function M.setup(opts)
   M.options = vim.tbl_deep_extend("force", M.options, opts or {})
 

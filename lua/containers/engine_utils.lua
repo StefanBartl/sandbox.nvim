@@ -1,5 +1,7 @@
 -- Utility to detect available container engine
 
+local notify = require("containers.notify")
+
 local M = {}
 
 --- Check if a command is available on the system
@@ -10,14 +12,14 @@ function M.is_executable(cmd)
 end
 
 --- Detect which container engine is available
---- @return "podman"|"docker"
+--- @return Containers.Engine
 function M.get_engine()
   if M.is_executable("podman") then
     return "podman"
   elseif M.is_executable("docker") then
     return "docker"
   else
-    vim.notify("[nvim-containers] No supported container engine (podman/docker) found in PATH.", vim.log.levels.ERROR)
+    notify.error("No supported container engine (podman/docker) found in PATH.")
     return "docker" -- fallback to docker to avoid crash, user will see error
   end
 end
