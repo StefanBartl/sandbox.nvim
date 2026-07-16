@@ -6,19 +6,6 @@ return function(containers)
     return
   end
 
-  local target_bufname = "nvim-containers://container-list"
-
-  -- Check if a buffer with the target name already exists
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_valid(buf) and vim.api.nvim_buf_get_name(buf) == target_bufname then
-      vim.api.nvim_buf_delete(buf, { force = true })
-    end
-  end
-
-  vim.cmd("vnew")
-  local buf = vim.api.nvim_get_current_buf()
-  vim.api.nvim_buf_set_name(buf, target_bufname)
-
   local lines = {}
   for _, container in ipairs(containers) do
     table.insert(lines, string.format(
@@ -29,10 +16,7 @@ return function(containers)
     ))
   end
 
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.bo[buf].modifiable = false
-  vim.bo[buf].buftype = "nofile"
-  vim.bo[buf].bufhidden = "wipe"
-  vim.bo[buf].swapfile = false
-  vim.bo[buf].filetype = "log"
+  require("lib.nvim.window").open_named_scratch(
+    "nvim-containers://container-list", lines, { filetype = "log", split = "left" }
+  )
 end
