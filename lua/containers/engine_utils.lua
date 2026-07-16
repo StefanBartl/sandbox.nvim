@@ -4,11 +4,13 @@ local notify = require("containers.notify")
 
 local M = {}
 
---- Check if a command is available on the system
+--- Check if a command is available on the system.
+--- Delegates to lib.nvim.core.has_exec, which memoizes the result per binary
+--- name (this module's own version re-checked vim.fn.executable every call).
 --- @param cmd string
 --- @return boolean
 function M.is_executable(cmd)
-  return vim.fn.executable(cmd) == 1
+  return require("lib.nvim.core").has_exec(cmd)
 end
 
 --- Detect which container engine is available
