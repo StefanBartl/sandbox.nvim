@@ -1,14 +1,16 @@
 ---@module 'containers.adapters.wsl.stop_distro'
 ---@brief Terminates a running WSL distribution.
 
+local run_argv = require("containers.util.run_argv")
+
 local M = {}
 
 ---@param name string
 ---@return boolean
 function M.stop_distro(name)
-	local output = vim.fn.system({ "wsl", "--terminate", name })
+	local ok, output = run_argv.run_blocking_captured({ "wsl", "--terminate", name })
 
-	if vim.v.shell_error ~= 0 then
+	if not ok then
 		vim.notify("[nvim-containers] WSL terminate error for '" .. name .. "': " .. output, vim.log.levels.ERROR)
 		return false
 	end

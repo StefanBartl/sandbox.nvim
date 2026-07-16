@@ -1,15 +1,17 @@
 ---@module 'containers.adapters.wsl.list_distros'
 ---@brief Lists all registered WSL distributions and their running state.
 
+local run_argv = require("containers.util.run_argv")
+
 local M = {}
 
 --- Parses WSL distro list output and returns structured distro info.
---- `wsl --list --verbose` outputs UTF-16 LE on Windows; vim.fn.system decodes it.
+--- `wsl --list --verbose` outputs UTF-16 LE on Windows; vim.system decodes it.
 ---@return WslDistro[]
 function M.list_distros()
-	local output = vim.fn.system({ "wsl", "--list", "--verbose" })
+	local ok, output = run_argv.run_blocking_captured({ "wsl", "--list", "--verbose" })
 
-	if vim.v.shell_error ~= 0 then
+	if not ok then
 		vim.notify("[nvim-containers] WSL list error: " .. output, vim.log.levels.ERROR)
 		return {}
 	end

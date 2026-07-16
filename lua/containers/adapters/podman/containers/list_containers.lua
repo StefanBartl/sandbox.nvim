@@ -1,20 +1,22 @@
 -- Podman Adapter: Function to list all containers
 
+local run_argv = require("containers.util.run_argv")
+
 local M = {}
 
 --- List all containers (running and stopped) using Podman
 --- Sorts containers: running first, then others.
 --- @return table[]: List of containers (each with id, name, status, image)
 function M.list_containers()
-  local output = vim.fn.system({ "podman", "ps", "-a", "--format", "json" })
+  local ok, output = run_argv.run_blocking_captured({ "podman", "ps", "-a", "--format", "json" })
 
-  if vim.v.shell_error ~= 0 then
+  if not ok then
     vim.notify("Podman error: " .. output, vim.log.levels.ERROR)
     return {}
   end
 
-  local ok, result = pcall(vim.fn.json_decode, output)
-  if not ok then
+  local decode_ok, result = pcall(vim.fn.json_decode, output)
+  if not decode_ok then
     vim.notify("JSON decode error: " .. result, vim.log.levels.ERROR)
     return {}
   end

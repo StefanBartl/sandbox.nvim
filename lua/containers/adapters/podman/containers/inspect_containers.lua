@@ -1,14 +1,16 @@
+local run_argv = require("containers.util.run_argv")
+
 local M = {}
 
 function M.inspect_container(container_id)
-  local output = vim.fn.system({ "podman", "inspect", container_id })
+  local ok, output = run_argv.run_blocking_captured({ "podman", "inspect", container_id })
 
-  local ok, result = pcall(vim.fn.json_decode, output)
-  if not ok or type(result) ~= "table" then
+  local decode_ok, result = pcall(vim.fn.json_decode, output)
+  if not decode_ok or type(result) ~= "table" then
     return { "[nvim-containers] Invalid JSON output:\n" .. output }
   end
 
-  if vim.v.shell_error ~= 0 or result[1] == nil then
+  if not ok or result[1] == nil then
     return { "[nvim-containers] Error inspecting container:\n" .. output }
   end
 
