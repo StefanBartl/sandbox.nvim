@@ -1,12 +1,17 @@
---[[
-  User Commands for Image Operations
+---@module 'containers.bindings.usrcmds.image_commands'
+---@brief Image operation handlers (list, pull, remove, prune) using the
+--- active container engine (Docker/Podman).
+---@description
+--- Exported as plain functions rather than registering commands directly, so
+--- lib.nvim.usercmd.composer's :Image verb (bindings/usrcmds/init.lua) can
+--- build typed routes + <Tab> completion around them. Each function's own
+--- body is unchanged from before the composer migration; only the
+--- registration site moved.
 
-  Provides Neovim commands to manage container images
-  (list, pull, remove, prune) using the active container engine (Docker or Podman).
-]]
+local M = {}
 
 --- List all available images
-vim.api.nvim_create_user_command("ImageList", function()
+function M.list()
   local core = require("containers")
   local config = require("containers.config")
   local engine = core.get_engine()
@@ -29,14 +34,13 @@ vim.api.nvim_create_user_command("ImageList", function()
   end
 
   view(result)
-end, {})
+end
 
 --- Pull a specific image by name
---- Usage: :ImagePull <image-name>
-vim.api.nvim_create_user_command("ImagePull", function(opts)
-  local image = opts.args
+---@param image string
+function M.pull(image)
   if not image or image == "" then
-    vim.notify("Usage: :ImagePull <image>", vim.log.levels.WARN)
+    vim.notify("Usage: :Image pull <image>", vim.log.levels.WARN)
     return
   end
 
@@ -50,14 +54,13 @@ vim.api.nvim_create_user_command("ImagePull", function(opts)
   end
 
   vim.notify("Image pulled successfully: " .. image, vim.log.levels.INFO)
-end, { nargs = 1 })
+end
 
 --- Remove a specific image by ID
---- Usage: :ImageRemove <image-id>
-vim.api.nvim_create_user_command("ImageRemove", function(opts)
-  local id = opts.args
+---@param id string
+function M.remove(id)
   if not id or id == "" then
-    vim.notify("Usage: :ImageRemove <image-id>", vim.log.levels.WARN)
+    vim.notify("Usage: :Image remove <image-id>", vim.log.levels.WARN)
     return
   end
 
@@ -71,10 +74,10 @@ vim.api.nvim_create_user_command("ImageRemove", function(opts)
   end
 
   vim.notify("Image removed successfully: " .. id, vim.log.levels.INFO)
-end, { nargs = 1 })
+end
 
 --- Prune (remove) all dangling images
-vim.api.nvim_create_user_command("ImagePrune", function()
+function M.prune()
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.images.prune_images")
 
@@ -85,4 +88,6 @@ vim.api.nvim_create_user_command("ImagePrune", function()
   end
 
   vim.notify("All dangling images pruned successfully!", vim.log.levels.INFO)
-end, {})
+end
+
+return M

@@ -1,21 +1,30 @@
----@module 'plugin.wsl_commands'
----@brief Neovim user commands for WSL distro management.
+---@module 'containers.bindings.usrcmds.wsl_commands'
+---@brief WSL distro management handlers.
 ---@description
---- These commands are only registered when WSL is detected as available on the system.
---- They operate independently of the container engine (Docker/Podman).
+--- These operate independently of the container engine (Docker/Podman) and
+--- are only wired up as a :Wsl composer verb when wsl.exe is actually
+--- reachable (M.available(), checked by bindings/usrcmds/init.lua before
+--- calling composer.verb("Wsl", ...) -- this file no longer registers
+--- commands itself, so on Linux/macOS it's simply never wired up rather than
+--- registering commands that would always fail).
+---
+--- Exported as plain functions rather than registering commands directly, so
+--- lib.nvim.usercmd.composer can build typed routes + <Tab> completion
+--- around them. Each function's own body is unchanged from before the
+--- composer migration; only the registration site moved.
 
 local engine_utils = require("containers.engine_utils")
 
--- Guard: only register WSL commands on systems where wsl.exe is accessible.
--- On Linux/macOS this will be false unless running inside WSL with wsl.exe in PATH.
-if not engine_utils.is_executable("wsl") then
-  return
+local M = {}
+
+---@return boolean
+function M.available()
+  return engine_utils.is_executable("wsl")
 end
 
-local wsl_engine = require("containers.adapters.wsl.engine")
-
 --- List all registered WSL distributions
-vim.api.nvim_create_user_command("WslList", function()
+function M.list()
+  local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.list_distros")
 
   local ok, distros = pcall(usecase, wsl_engine)
@@ -46,17 +55,17 @@ vim.api.nvim_create_user_command("WslList", function()
   vim.bo[buf].buftype    = "nofile"
   vim.bo[buf].bufhidden  = "wipe"
   vim.bo[buf].filetype   = "log"
-end, {})
+end
 
 --- Start a WSL distro
---- Usage: :WslStart <distro-name>
-vim.api.nvim_create_user_command("WslStart", function(opts)
-  local name = opts.args
+---@param name string
+function M.start(name)
   if not name or name == "" then
-    vim.notify("Usage: :WslStart <distro-name>", vim.log.levels.WARN)
+    vim.notify("Usage: :Wsl start <distro-name>", vim.log.levels.WARN)
     return
   end
 
+  local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.start_distro")
   local ok, err = pcall(usecase, wsl_engine, name)
   if not ok then
@@ -65,17 +74,17 @@ vim.api.nvim_create_user_command("WslStart", function(opts)
   end
 
   vim.notify("[nvim-containers] WSL distro started: " .. name, vim.log.levels.INFO)
-end, { nargs = 1 })
+end
 
 --- Stop (terminate) a WSL distro
---- Usage: :WslStop <distro-name>
-vim.api.nvim_create_user_command("WslStop", function(opts)
-  local name = opts.args
+---@param name string
+function M.stop(name)
   if not name or name == "" then
-    vim.notify("Usage: :WslStop <distro-name>", vim.log.levels.WARN)
+    vim.notify("Usage: :Wsl stop <distro-name>", vim.log.levels.WARN)
     return
   end
 
+  local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.stop_distro")
   local ok, err = pcall(usecase, wsl_engine, name)
   if not ok then
@@ -84,28 +93,27 @@ vim.api.nvim_create_user_command("WslStop", function(opts)
   end
 
   vim.notify("[nvim-containers] WSL distro terminated: " .. name, vim.log.levels.INFO)
-end, { nargs = 1 })
+end
 
 --- Open a shell or run a command inside a WSL distro
---- Usage: :WslExec <distro-name> [<command> ...]
-vim.api.nvim_create_user_command("WslExec", function(opts)
-  local name = opts.fargs[1]
+---@param name string
+---@param command string[]|nil
+function M.exec(name, command)
   if not name or name == "" then
-    vim.notify("Usage: :WslExec <distro-name> [<command>...]", vim.log.levels.WARN)
+    vim.notify("Usage: :Wsl exec <distro-name> [<command>...]", vim.log.levels.WARN)
     return
   end
 
-  local command = {}
-  for i = 2, #opts.fargs do
-    command[#command + 1] = opts.fargs[i]
-  end
-  if #command == 0 then
+  if command and #command == 0 then
     command = nil
   end
 
+  local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.exec_in_distro")
   local ok, err = pcall(usecase, wsl_engine, name, command)
   if not ok then
     vim.notify("[nvim-containers] WSL exec failed: " .. err, vim.log.levels.ERROR)
   end
-end, { nargs = "+", complete = "file" })
+end
+
+return M

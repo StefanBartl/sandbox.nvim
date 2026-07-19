@@ -7,7 +7,7 @@
 
 > 🔧 Beta stage – under active development. Changes possible.
 
-> Pairs well with [lib.nvim](https://github.com/StefanBartl/lib.nvim), an optional shared-utilities library used here for notifications and cross-platform helpers.
+> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Container`/`:Image`/`:Wsl`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/containers/ui/` both depend on it directly. `containers.notify`/`containers.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it.
 
 Manage your containers (Podman, Docker, and more) directly from Neovim – with clean architecture, pluggable backends, and a TUI-native experience.
 
@@ -39,7 +39,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - 🧩 Easily extendable (Podman, Docker, nerdctl planned)
 - 🚀 Unified support for Docker and Podman
 - 🩺 Integrated Neovim healthcheck support (`:checkhealth nvim-containers`)
-- 🪶 No required Lua dependencies ([lib.nvim](https://github.com/StefanBartl/lib.nvim) is used opportunistically if installed)
+- ⌨️ `:Container`/`:Image`/`:Wsl` subcommand trees with `<Tab>` completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s `usercmd.composer` — a required dependency)
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
 ---
@@ -60,6 +60,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 ```lua
 {
   "StefanBartl/nvim-containers.nvim",
+  dependencies = { "StefanBartl/lib.nvim" },
   event = "VimEnter",
   config = function()
     require("containers").setup({
@@ -75,6 +76,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 ```lua
 {
   "StefanBartl/nvim-containers.nvim",
+  dependencies = { "StefanBartl/lib.nvim" },
   lazy = false,
   config = function()
     require("containers").setup({})
@@ -86,12 +88,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 ```lua
 {
   "StefanBartl/nvim-containers.nvim",
-  cmd = {
-    "ContainerList", "ContainerLogs", "ContainerExec", "ContainerExecOnce",
-    "ContainerStart", "ContainerStop", "ContainerKill",
-    "ContainerInspect", "ContainerRemove", "ContainerPrune",
-    "ImageList", "ImagePull", "ImageRemove", "ImagePrune"
-  },
+  dependencies = { "StefanBartl/lib.nvim" },
+  cmd = { "Container", "Image", "Wsl" },
   config = function()
     require("containers").setup({})
   end,
@@ -157,7 +155,7 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 ### File Layout
 - Engine adapters: `lua/containers/adapters/<engine>/`
 - Use cases: `lua/containers/core/usecases/`
-- User commands: `lua/containers/bindings/usrcmds/` (thin `plugin/*.lua` entrypoints require these)
+- User commands: `lua/containers/bindings/usrcmds/` (registered via `lib.nvim.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
 - UI views: `lua/containers/ui/`
 
 Pull Requests and Issues are very welcome!

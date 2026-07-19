@@ -76,23 +76,45 @@ end
 
 ## 5. Register a Neovim Command
 
-Expose it through a user-facing command.
+Commands are built via [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim)
+as subcommands of the existing `:Container`/`:Image`/`:Wsl` verbs — you do
+not register a new top-level command for a new use case, you add a route.
 
-**File:** `plugin/containers/container_cmds.lua`
+First, export a plain handler function from the relevant commands module.
+
+**File:** `lua/containers/bindings/usrcmds/container_commands.lua`
 
 ```lua
-vim.api.nvim_create_user_command("ContainerRestart", function(opts)
+--- Restart a container
+---@param id string
+function M.restart(id)
   local engine = require("containers").get_engine()
   local usecase = require("containers.core.usecases.containers.restart_container")
 
-  local ok, result = pcall(usecase, engine, opts.args)
+  local ok, result = pcall(usecase, engine, id)
   if not ok then
     vim.notify("Restart failed: " .. result, vim.log.levels.ERROR)
   else
-    vim.notify("Container restarted: " .. opts.args)
+    vim.notify("Container restarted: " .. id)
   end
-end, { nargs = 1 })
+end
 ```
+
+Then add a route for it in the `:Container` verb's route table.
+
+**File:** `lua/containers/bindings/usrcmds/init.lua`
+
+```lua
+{ path = { "restart" },
+  args = { { name = "id", type = "CONTAINER_ID" } },
+  desc = "Restart a container",
+  run = function(ctx) container_cmds.restart(ctx.args.id) end },
+```
+
+The `CONTAINER_ID` arg type gives `:Container restart <Tab>` live
+completion against the active engine for free — no extra work needed. Now
+`:Container restart <id>` works, plus `<Tab>` completion and the entry in
+`composer.document()`'s auto-generated docs (if wired up).
 
 ---
 
@@ -106,12 +128,14 @@ If output needs to be shown in a buffer, create a view module.
 
 ## 7. Plugin Declaration (lazy.nvim)
 
+New subcommands don't need a new entry in `cmd = {...}` — they live under
+the existing `:Container` verb.
+
 ```lua
 {
-  "lavalue/nvim-containers",
-  cmd = {
-    "ContainerList", "ContainerRestart"
-  },
+  "StefanBartl/nvim-containers.nvim",
+  dependencies = { "StefanBartl/lib.nvim" },
+  cmd = { "Container", "Image", "Wsl" },
   config = function()
     require("containers").setup({
       engine = "podman",
@@ -157,7 +181,8 @@ If output needs to be shown in a buffer, create a view module.
 | `core/ports/container_engine.lua` | Define the interface |
 | `core/usecases/containers/*.lua`  | Use case logic        |
 | `adapters/podman/containers/*.lua`| Podman implementation |
-| `plugin/containers/container_cmds.lua` | Neovim command |
+| `bindings/usrcmds/container_commands.lua` | Exported handler function |
+| `bindings/usrcmds/init.lua`       | Composer route (`:Container <subcommand>`) |
 | `ui/*.lua`                        | Optional buffer view  |
 
 ---

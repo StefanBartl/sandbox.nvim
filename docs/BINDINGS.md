@@ -1,58 +1,53 @@
 # nvim-containers: Bindings Reference
 
-All functionality is exposed via user commands. There are no default keymaps
-or autocmds.
+All functionality is exposed via three user commands, `:Container`,
+`:Image`, and (only when `wsl.exe` is reachable) `:Wsl` — built on
+[`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
+`<Tab>` completion at every level: subcommand name, then container/image/
+distro names (resolved live from the active engine, cached briefly to avoid
+shelling out on every keystroke). There are no default keymaps or autocmds.
 
-## User Commands
+## `:Container <subcommand>`
 
-### Container commands
+| Subcommand | Args | Description |
+|---|---|---|
+| `list` | — | List all containers (running and stopped) |
+| `logs` | `{id}` | Show logs for a container |
+| `exec` | `{id} [shell]` | Open an interactive shell inside a container |
+| `exec-once` | `{id} [command...]` | Run a one-off command and show the output |
+| `start` | `{id} [--buffer\|-b]` | Start a container |
+| `stop` | `{id} [--buffer\|-b]` | Stop a container |
+| `kill` | `{id} [--buffer\|-b]` | Kill a container |
+| `remove` | `{id} [--buffer\|-b]` | Remove a stopped container |
+| `prune` | `[--buffer\|-b]` | Remove all stopped containers |
+| `inspect` | `{id}` | Inspect container details |
 
-| Command | Description |
-|---------|-------------|
-| `:ContainerList` | List all containers (running and stopped) |
-| `:ContainerLogs <id>` | Show logs for a container |
-| `:ContainerExec <id> [shell]` | Open interactive shell inside container |
-| `:ContainerExecOnce <id> <command>` | Run one-off command and show output |
-| `:ContainerStart <id>` | Start a container |
-| `:ContainerStop <id>` | Stop a container |
-| `:ContainerKill <id>` | Kill a container |
-| `:ContainerInspect <id>` | Inspect container details |
-| `:ContainerRemove <id>` | Remove a container |
-| `:ContainerPrune` | Prune (remove) all stopped containers |
+`--buffer` (or its short alias `-b`) streams the CLI's raw output into a
+scrollable terminal buffer instead of collapsing it into a `vim.notify`
+summary — useful for verbose operations (start/stop/prune). Example:
+`:Container start web --buffer`, `:Container prune -b`.
 
-### Container commands (terminal-buffer variants)
+## `:Image <subcommand>`
 
-Stream CLI output directly into a scrollable terminal buffer instead of `vim.notify`.
+| Subcommand | Args | Description |
+|---|---|---|
+| `list` | — | List available images |
+| `pull` | `{name} [--buffer\|-b]` | Pull an image |
+| `remove` | `{id}` | Remove an image |
+| `prune` | `[--buffer\|-b]` | Remove all dangling images |
 
-| Command | Description |
-|---------|-------------|
-| `:ContainerStartBuffer <id>` | Start a container, stream output into a terminal buffer |
-| `:ContainerStopBuffer <id>` | Stop a container, stream output into a terminal buffer |
-| `:ContainerKillBuffer <id>` | Kill a container, stream output into a terminal buffer |
-| `:ContainerRemoveBuffer <id>` | Remove a container, stream output into a terminal buffer |
-| `:ContainerPruneBuffer` | Prune stopped containers, stream output into a terminal buffer |
-| `:ImagePullBuffer <image>` | Pull an image, stream output into a terminal buffer |
-| `:ImagePruneBuffer` | Prune dangling images, stream output into a terminal buffer |
+## `:Wsl <subcommand>`
 
-### Image commands
+Only registered when `wsl.exe` is reachable in `PATH` (Windows with WSL
+installed; checked once at `require("containers.bindings.usrcmds").setup()`
+time via `wsl_commands.available()`).
 
-| Command | Description |
-|---------|-------------|
-| `:ImageList` | List available images |
-| `:ImagePull <image>` | Pull an image |
-| `:ImageRemove <image-id>` | Remove an image |
-| `:ImagePrune` | Prune (remove) dangling images |
-
-### WSL commands
-
-Only registered when `wsl.exe` is available in `PATH` (i.e. on Windows with WSL installed).
-
-| Command | Description |
-|---------|-------------|
-| `:WslList` | List all registered WSL distributions |
-| `:WslStart <distro-name>` | Start a WSL distro |
-| `:WslStop <distro-name>` | Stop (terminate) a WSL distro |
-| `:WslExec <distro-name> [command...]` | Open a shell or run a command inside a WSL distro |
+| Subcommand | Args | Description |
+|---|---|---|
+| `list` | — | List all registered WSL distributions |
+| `start` | `{name}` | Start a WSL distro |
+| `stop` | `{name}` | Stop (terminate) a WSL distro |
+| `exec` | `{name} [command...]` | Open a shell or run a command inside a WSL distro |
 
 ## Keymaps
 
