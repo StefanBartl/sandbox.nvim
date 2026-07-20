@@ -11,7 +11,7 @@ function M.list_containers()
   local ok, output = run_argv.run_blocking_captured({ "docker", "ps", "-a", "--format", "{{json .}}" })
 
   if not ok then
-    return nil, "Docker error: " .. output
+    return nil, output
   end
 
   local containers = {}
@@ -44,7 +44,7 @@ function M.list_containers()
   end)
 
   if #decode_errors > 0 then
-    return containers, "Docker JSON decode error(s):\n" .. table.concat(decode_errors, "\n")
+    return containers, "JSON decode error(s):\n" .. table.concat(decode_errors, "\n")
   end
 
   return containers, nil

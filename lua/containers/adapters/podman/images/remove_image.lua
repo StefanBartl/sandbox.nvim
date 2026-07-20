@@ -23,7 +23,7 @@ function M.remove_image(id, on_done)
             on_done(true, nil)
           else
             local err = table.concat(stderr_lines, "\n")
-            on_done(false, err ~= "" and err or ("Failed to remove image: " .. id))
+            on_done(false, err ~= "" and err or ("exit code " .. code))
           end
         end
       end)

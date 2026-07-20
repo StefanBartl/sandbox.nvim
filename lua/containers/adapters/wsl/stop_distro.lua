@@ -12,7 +12,7 @@ function M.stop_distro(name)
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "--terminate", name })
 
 	if not ok then
-		return false, "WSL terminate error for '" .. name .. "': " .. output
+		return false, output
 	end
 
 	return true, nil

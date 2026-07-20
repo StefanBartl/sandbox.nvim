@@ -9,6 +9,7 @@
 --- registration site moved.
 
 local notify = require("containers.notify")
+local friendly_error = require("containers.util.friendly_error")
 local M = {}
 
 --- List all containers (running and stopped)
@@ -28,7 +29,7 @@ function M.list()
   end
 
   if err then
-    notify.warn(err)
+    notify.warn("Some containers could not be parsed: " .. friendly_error(err), { err = err })
   end
 
   local view = require("containers.ui.list_view")
@@ -51,7 +52,7 @@ function M.logs(id)
   local usecase = require("containers.core.usecases.containers.get_container_logs")
   local logs, err = usecase(engine, id)
   if not logs then
-    notify.error("Failed to get logs: " .. (err or id))
+    notify.error("Failed to get logs for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
     return
   end
 
@@ -75,7 +76,7 @@ function M.exec(id, shell)
 
   local ok, err = pcall(usecase, engine, id, { shell })
   if not ok then
-    notify.error("Failed to exec in container: " .. err)
+    notify.error("Failed to exec in container " .. id .. ": " .. tostring(err), { id = id, err = err })
   end
 end
 
@@ -98,7 +99,7 @@ function M.exec_once(id, command)
 
   local ok, err = pcall(usecase, engine, id, command)
   if not ok then
-    notify.error("Failed to exec in container: " .. err)
+    notify.error("Failed to exec in container " .. id .. ": " .. tostring(err), { id = id, err = err })
   end
 end
 
@@ -118,7 +119,7 @@ function M.start(id)
   local usecase = require("containers.core.usecases.containers.start_container")
   local ok, err = usecase(engine, id)
   if not ok then
-    notify.error("Failed to start container: " .. (err or id))
+    notify.error("Failed to start container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
     return
   end
 
@@ -143,7 +144,7 @@ function M.stop(id)
     if ok then
       notify.info("Container stopped successfully: " .. id)
     else
-      notify.error("Failed to stop container: " .. (err or id))
+      notify.error("Failed to stop container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
     end
   end)
 end
@@ -166,7 +167,7 @@ function M.kill(id)
     if ok then
       notify.info("Container killed successfully: " .. id)
     else
-      notify.error("Failed to kill container: " .. (err or id))
+      notify.error("Failed to kill container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
     end
   end)
 end
@@ -189,7 +190,10 @@ function M.remove(id)
     if ok then
       notify.info("Container removed successfully: " .. id)
     else
-      notify.error("Failed to remove container: " .. (err or id) .. "\nIs it stopped?")
+      notify.error(
+        "Failed to remove container " .. id .. ": " .. friendly_error(err) .. "\nIs it stopped?",
+        { id = id, err = err }
+      )
     end
   end)
 end
@@ -206,7 +210,7 @@ function M.prune()
     if ok then
       notify.info("All stopped containers pruned successfully!")
     else
-      notify.error("Failed to prune containers: " .. (err or "unknown error"))
+      notify.error("Failed to prune containers: " .. friendly_error(err), { err = err })
     end
   end)
 end
@@ -225,7 +229,7 @@ function M.inspect(id)
 
   local ok, result = pcall(usecase, engine, id)
   if not ok then
-    notify.error("Failed to inspect container: " .. result)
+    notify.error("Failed to inspect container " .. id .. ": " .. tostring(result), { id = id, err = result })
     return
   end
 

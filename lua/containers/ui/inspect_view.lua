@@ -1,7 +1,7 @@
 --- @param data table | string[]
 --- @param container_id string
 return function(data, container_id)
-  local lines = {}
+  local lines
 
   if type(data) == "table" then
     lines = vim.split(vim.inspect(data), "\n", { plain = true })

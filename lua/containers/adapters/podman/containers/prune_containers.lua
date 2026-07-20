@@ -12,7 +12,7 @@ function M.prune_containers(on_done)
           if code == 0 then
             on_done(true, nil)
           else
-            on_done(false, "Failed to prune containers")
+            on_done(false, "exit code " .. code)
           end
         end
       end)

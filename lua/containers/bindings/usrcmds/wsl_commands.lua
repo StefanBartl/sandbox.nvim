@@ -15,6 +15,7 @@
 
 local engine_utils = require("containers.engine_utils")
 local notify = require("containers.notify")
+local friendly_error = require("containers.util.friendly_error")
 
 local M = {}
 
@@ -30,7 +31,7 @@ function M.list()
 
   local distros, err = usecase(wsl_engine)
   if not distros then
-    notify.error("Failed to list WSL distros: " .. (err or "unknown error"))
+    notify.error("Failed to list WSL distros: " .. friendly_error(err), { err = err })
     return
   end
 
@@ -70,7 +71,7 @@ function M.start(name)
   local usecase = require("containers.core.usecases.wsl.start_distro")
   local ok, err = usecase(wsl_engine, name)
   if not ok then
-    notify.error("WSL start failed: " .. (err or name))
+    notify.error("Failed to start WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err })
     return
   end
 
@@ -89,7 +90,7 @@ function M.stop(name)
   local usecase = require("containers.core.usecases.wsl.stop_distro")
   local ok, err = usecase(wsl_engine, name)
   if not ok then
-    notify.error("WSL stop failed: " .. (err or name))
+    notify.error("Failed to stop WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err })
     return
   end
 
@@ -113,7 +114,7 @@ function M.exec(name, command)
   local usecase = require("containers.core.usecases.wsl.exec_in_distro")
   local ok, err = pcall(usecase, wsl_engine, name, command)
   if not ok then
-    notify.error("WSL exec failed: " .. err)
+    notify.error("Failed to exec in WSL distro " .. name .. ": " .. tostring(err), { name = name, err = err })
   end
 end
 

@@ -11,12 +11,12 @@ function M.list_containers()
   local ok, output = run_argv.run_blocking_captured({ "podman", "ps", "-a", "--format", "json" })
 
   if not ok then
-    return nil, "Podman error: " .. output
+    return nil, output
   end
 
   local decode_ok, result = pcall(vim.fn.json_decode, output)
   if not decode_ok then
-    return nil, "JSON decode error: " .. result
+    return nil, result
   end
 
   local containers = {}

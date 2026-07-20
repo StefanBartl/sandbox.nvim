@@ -10,7 +10,7 @@ function M.list_images()
   local ok, output = run_argv.run_blocking_captured({ "docker", "images", "--format", "{{json .}}" })
 
   if not ok then
-    return nil, "Failed to list images: " .. output
+    return nil, output
   end
 
   local images = {}

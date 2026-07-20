@@ -13,7 +13,7 @@ function M.list_distros()
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "--list", "--verbose" })
 
 	if not ok then
-		return nil, "WSL list error: " .. output
+		return nil, output
 	end
 
 	-- Strip carriage returns and leading/trailing whitespace introduced by UTF-16 decoding

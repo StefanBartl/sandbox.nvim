@@ -13,7 +13,7 @@ function M.kill_container(container_id, on_done)
           if code == 0 then
             on_done(true, nil)
           else
-            on_done(false, "Error killing container (code " .. code .. "): " .. container_id)
+            on_done(false, "exit code " .. code)
           end
         end
       end)

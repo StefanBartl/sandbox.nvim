@@ -11,7 +11,7 @@ function M.start_container(container_id)
   local ok, output = run_argv.run_blocking_captured({ "docker", "start", container_id })
 
   if not ok then
-    return false, "Docker start error: " .. output
+    return false, output
   end
 
   return true, nil

@@ -9,7 +9,7 @@ function M.start_container(container_id)
   local ok, output = run_argv.run_blocking_captured({ "podman", "start", container_id })
 
   if not ok then
-    return false, "Podman start error: " .. output
+    return false, output
   end
 
   return true, nil

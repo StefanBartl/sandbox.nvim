@@ -9,6 +9,7 @@
 --- registration site moved.
 
 local notify = require("containers.notify")
+local friendly_error = require("containers.util.friendly_error")
 local M = {}
 
 --- List all available images
@@ -22,12 +23,12 @@ function M.list()
   local usecase = require("containers.core.usecases.images.list_images")
   local images, err = usecase(engine)
   if not images then
-    notify.error("Failed to list images: " .. (err or "unknown error"))
+    notify.error("Failed to list images: " .. friendly_error(err), { err = err })
     return
   end
 
   if err then
-    notify.warn(err)
+    notify.warn("Some images could not be parsed: " .. friendly_error(err), { err = err })
   end
 
   local view
@@ -59,7 +60,7 @@ function M.pull(image)
   local usecase = require("containers.core.usecases.images.pull_image")
   local ok, err = usecase(engine, image)
   if not ok then
-    notify.error("Failed to pull image: " .. (err or image))
+    notify.error("Failed to pull image " .. image .. ": " .. friendly_error(err), { image = image, err = err })
     return
   end
 
@@ -84,7 +85,7 @@ function M.remove(id)
     if ok then
       notify.info("Image removed successfully: " .. id)
     else
-      notify.error("Failed to remove image: " .. (err or id))
+      notify.error("Failed to remove image " .. id .. ": " .. friendly_error(err), { id = id, err = err })
     end
   end)
 end
@@ -101,7 +102,7 @@ function M.prune()
     if ok then
       notify.info("All dangling images pruned successfully!")
     else
-      notify.error("Failed to prune images: " .. (err or "unknown error"))
+      notify.error("Failed to prune images: " .. friendly_error(err), { err = err })
     end
   end)
 end

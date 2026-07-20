@@ -11,7 +11,7 @@ function M.get_logs(container_id)
   local ok, output = run_argv.run_blocking_captured({ "podman", "logs", container_id })
 
   if not ok then
-    return nil, "Podman logs error: " .. output
+    return nil, output
   end
 
   return vim.split(output, "\n", { plain = true }), nil

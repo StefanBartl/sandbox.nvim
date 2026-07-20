@@ -15,7 +15,7 @@ function M.stop_container(container_id, on_done)
           if code == 0 then
             on_done(true, nil)
           else
-            on_done(false, "Error stopping container: exit code " .. code)
+            on_done(false, "exit code " .. code)
           end
         end
       end)

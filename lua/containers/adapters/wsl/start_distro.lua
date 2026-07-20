@@ -17,7 +17,7 @@ function M.start_distro(name)
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "-d", name, "--", "echo" })
 
 	if not ok then
-		return false, "WSL start error for '" .. name .. "': " .. output
+		return false, output
 	end
 
 	return true, nil

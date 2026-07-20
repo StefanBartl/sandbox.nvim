@@ -15,7 +15,7 @@ function M.remove_container(container_id, on_done)
           if code == 0 then
             on_done(true, nil)
           else
-            on_done(false, "Failed to remove container: " .. container_id)
+            on_done(false, "exit code " .. code)
           end
         end
       end)

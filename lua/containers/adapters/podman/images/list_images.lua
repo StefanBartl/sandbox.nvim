@@ -10,12 +10,12 @@ function M.list_images()
   local ok, output = run_argv.run_blocking_captured({ "podman", "images", "--format", "json" })
 
   if not ok then
-    return nil, "Failed to list images: " .. output
+    return nil, output
   end
 
   local decode_ok, result = pcall(vim.fn.json_decode, output)
   if not decode_ok then
-    return nil, "Invalid image JSON output"
+    return nil, "invalid image JSON output"
   end
 
   return result, nil

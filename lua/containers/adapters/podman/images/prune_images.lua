@@ -22,7 +22,7 @@ function M.prune_images(on_done)
             on_done(true, nil)
           else
             local err = table.concat(stderr_lines, "\n")
-            on_done(false, err ~= "" and err or "Image prune failed")
+            on_done(false, err ~= "" and err or ("exit code " .. code))
           end
         end
       end)
