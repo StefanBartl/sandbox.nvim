@@ -44,16 +44,22 @@ return {
   end,
 
 -- Image interfaces
+  --- @return table[]|nil images, string|nil err
   list_images = function()
     error("list_images not implemented")
   end,
+  --- @param image_name string
+  --- @return boolean ok, string|nil err
   pull_image = function(image_name)
     error(image_name .. ": pull_image not implemented")
   end,
-  remove_image = function(image_id)
+  --- @param image_id string
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  remove_image = function(image_id, _on_done)
     error(image_id .. ": remove_image not implemented")
   end,
-  prune_images = function()
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  prune_images = function(_on_done)
     error("prune_images not implemented")
   end,
 }

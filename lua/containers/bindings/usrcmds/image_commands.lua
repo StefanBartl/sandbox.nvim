@@ -13,15 +13,21 @@ local M = {}
 
 --- List all available images
 function M.list()
-  local core = require("containers")
   local config = require("containers.config")
-  local engine = core.get_engine()
-  local usecase = require("containers.core.usecases.images.list_images")
-
-  local ok, result = pcall(usecase, engine)
-  if not ok then
-    notify.error("Failed to list images: " .. result)
+  local engine = require("containers").get_engine()
+  if not engine then
     return
+  end
+
+  local usecase = require("containers.core.usecases.images.list_images")
+  local images, err = usecase(engine)
+  if not images then
+    notify.error("Failed to list images: " .. (err or "unknown error"))
+    return
+  end
+
+  if err then
+    notify.warn(err)
   end
 
   local view
@@ -34,7 +40,7 @@ function M.list()
     return
   end
 
-  view(result)
+  view(images)
 end
 
 --- Pull a specific image by name
@@ -46,11 +52,14 @@ function M.pull(image)
   end
 
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.images.pull_image")
+  if not engine then
+    return
+  end
 
-  local ok, err = pcall(usecase, engine, image)
+  local usecase = require("containers.core.usecases.images.pull_image")
+  local ok, err = usecase(engine, image)
   if not ok then
-    notify.error("Failed to pull image: " .. err)
+    notify.error("Failed to pull image: " .. (err or image))
     return
   end
 
@@ -66,29 +75,35 @@ function M.remove(id)
   end
 
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.images.remove_image")
-
-  local ok, err = pcall(usecase, engine, id)
-  if not ok then
-    notify.error("Failed to remove image: " .. err)
+  if not engine then
     return
   end
 
-  notify.info("Image removed successfully: " .. id)
+  local usecase = require("containers.core.usecases.images.remove_image")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Image removed successfully: " .. id)
+    else
+      notify.error("Failed to remove image: " .. (err or id))
+    end
+  end)
 end
 
 --- Prune (remove) all dangling images
 function M.prune()
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.images.prune_images")
-
-  local ok, err = pcall(usecase, engine)
-  if not ok then
-    notify.error("Failed to prune images: " .. err)
+  if not engine then
     return
   end
 
-  notify.info("All dangling images pruned successfully!")
+  local usecase = require("containers.core.usecases.images.prune_images")
+  usecase(engine, function(ok, err)
+    if ok then
+      notify.info("All dangling images pruned successfully!")
+    else
+      notify.error("Failed to prune images: " .. (err or "unknown error"))
+    end
+  end)
 end
 
 return M
