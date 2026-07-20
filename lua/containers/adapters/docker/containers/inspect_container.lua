@@ -14,12 +14,12 @@ function M.inspect_container(container_id)
   -- Try to decode JSON output
   local decode_ok, result = pcall(vim.fn.json_decode, output)
   if not decode_ok or type(result) ~= "table" then
-    return { "[nvim-containers] Invalid JSON output:\n" .. output }
+    return { "[sandbox.nvim] Invalid JSON output:\n" .. output }
   end
 
   -- Handle shell errors or missing result
   if not ok or result[1] == nil then
-    return { "[nvim-containers] Error inspecting container:\n" .. output }
+    return { "[sandbox.nvim] Error inspecting container:\n" .. output }
   end
 
   return result[1]

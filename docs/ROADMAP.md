@@ -1,4 +1,4 @@
-# `nvim-containers`: Roadmap
+# `sandbox.nvim`: Roadmap
 
 ## `@types`
 

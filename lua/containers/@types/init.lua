@@ -1,5 +1,5 @@
 ---@module 'containers.@types'
---- Shared type annotations for nvim-containers.
+--- Shared type annotations for sandbox.nvim.
 
 ---@alias Containers.Engine "podman"|"docker"
 

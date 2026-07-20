@@ -14,7 +14,7 @@ function M.exec_in_container(container_id, command)
   vim.cmd("vnew")
   local buf = vim.api.nvim_get_current_buf()
   vim.fn.termopen(args)
-  vim.api.nvim_buf_set_name(buf, "nvim-containers://exec/" .. container_id)
+  vim.api.nvim_buf_set_name(buf, "sandbox.nvim://exec/" .. container_id)
   vim.bo[buf].bufhidden = "wipe"
 
   -- Automatically enter Terminal Insert Mode

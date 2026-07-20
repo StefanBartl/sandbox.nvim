@@ -19,6 +19,6 @@ return function(images)
   end
 
   require("lib.nvim.window").open_named_scratch(
-    "nvim-containers://image-list", lines, { filetype = "log", split = "left" }
+    "sandbox.nvim://image-list", lines, { filetype = "log", split = "left" }
   )
 end

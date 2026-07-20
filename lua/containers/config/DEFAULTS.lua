@@ -1,4 +1,4 @@
--- Default values for nvim-containers' own configuration.
+-- Default values for sandbox.nvim' own configuration.
 -- See config/init.lua for how these are merged with user-supplied options.
 
 ---@type Containers.Config.Options

@@ -11,7 +11,7 @@
 local ok, lib_logger = pcall(require, "lib.nvim.logger")
 
 local M = ok and lib_logger.new({
-  name = "nvim-containers",
+  name = "sandbox.nvim",
   notify_level = "off",
 }) or {
   trace = function() end,

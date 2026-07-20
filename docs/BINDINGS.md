@@ -1,4 +1,4 @@
-# nvim-containers: Bindings Reference
+# sandbox.nvim: Bindings Reference
 
 All functionality is exposed via three user commands, `:Container`,
 `:Image`, and (only when `wsl.exe` is reachable) `:Wsl` — built on

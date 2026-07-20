@@ -7,11 +7,11 @@ function M.inspect_container(container_id)
 
   local decode_ok, result = pcall(vim.fn.json_decode, output)
   if not decode_ok or type(result) ~= "table" then
-    return { "[nvim-containers] Invalid JSON output:\n" .. output }
+    return { "[sandbox.nvim] Invalid JSON output:\n" .. output }
   end
 
   if not ok or result[1] == nil then
-    return { "[nvim-containers] Error inspecting container:\n" .. output }
+    return { "[sandbox.nvim] Error inspecting container:\n" .. output }
   end
 
   return result[1]

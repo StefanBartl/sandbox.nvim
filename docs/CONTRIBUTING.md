@@ -1,4 +1,4 @@
-# Contributing to nvim-containers
+# Contributing to sandbox.nvim
 
 Thank you for your interest!
 

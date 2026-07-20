@@ -1,4 +1,4 @@
--- Healthcheck for nvim-containers.nvim
+-- Healthcheck for sandbox.nvim
 
 local config = require("containers.config")
 local health = vim.health
@@ -8,7 +8,7 @@ local M = {}
 
 --- Perform plugin health check
 function M.check()
-	health.start("nvim-containers.nvim healthcheck")
+	health.start("sandbox.nvim healthcheck")
 
 	local engine = config.options.engine
 

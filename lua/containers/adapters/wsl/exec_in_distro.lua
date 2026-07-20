@@ -22,7 +22,7 @@ function M.exec_in_distro(name, command)
 
 	vim.cmd("vnew")
 	local buf = vim.api.nvim_get_current_buf()
-	api.nvim_buf_set_name(buf, "nvim-containers://wsl/" .. name)
+	api.nvim_buf_set_name(buf, "sandbox.nvim://wsl/" .. name)
 	vim.fn.termopen(args)
 	vim.bo[buf].bufhidden = "wipe"
 	api.nvim_set_current_buf(buf)

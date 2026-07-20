@@ -38,7 +38,7 @@ function M.list()
   -- Reuse the existing list_view pattern with a compatible shape
   vim.cmd("vnew")
   local buf = vim.api.nvim_get_current_buf()
-  vim.api.nvim_buf_set_name(buf, "nvim-containers://wsl-list")
+  vim.api.nvim_buf_set_name(buf, "sandbox.nvim://wsl-list")
 
   local lines = { "NAME                    STATE       DEFAULT" }
   lines[#lines + 1] = string.rep("-", 50)

@@ -55,7 +55,7 @@ function M.start(id)
     notify.warn("Usage: :Container start <container-id> --buffer")
     return
   end
-  open_term_buffer("nvim-containers://term/start/" .. id, { engine_name, "start", id })
+  open_term_buffer("sandbox.nvim://term/start/" .. id, { engine_name, "start", id })
 end
 
 --- Stop a container, streaming output into a terminal buffer
@@ -69,7 +69,7 @@ function M.stop(id)
     notify.warn("Usage: :Container stop <container-id> --buffer")
     return
   end
-  open_term_buffer("nvim-containers://term/stop/" .. id, { engine_name, "stop", "--time=1", id })
+  open_term_buffer("sandbox.nvim://term/stop/" .. id, { engine_name, "stop", "--time=1", id })
 end
 
 --- Kill a container, streaming output into a terminal buffer
@@ -83,7 +83,7 @@ function M.kill(id)
     notify.warn("Usage: :Container kill <container-id> --buffer")
     return
   end
-  open_term_buffer("nvim-containers://term/kill/" .. id, { engine_name, "kill", id })
+  open_term_buffer("sandbox.nvim://term/kill/" .. id, { engine_name, "kill", id })
 end
 
 --- Remove a container, streaming output into a terminal buffer
@@ -97,7 +97,7 @@ function M.remove(id)
     notify.warn("Usage: :Container remove <container-id> --buffer")
     return
   end
-  open_term_buffer("nvim-containers://term/remove/" .. id, { engine_name, "rm", id })
+  open_term_buffer("sandbox.nvim://term/remove/" .. id, { engine_name, "rm", id })
 end
 
 --- Prune all stopped containers, streaming output into a terminal buffer
@@ -106,7 +106,7 @@ function M.prune()
   if not engine_name then
     return
   end
-  open_term_buffer("nvim-containers://term/prune", { engine_name, "container", "prune", "-f" })
+  open_term_buffer("sandbox.nvim://term/prune", { engine_name, "container", "prune", "-f" })
 end
 
 --- Pull an image, streaming output into a terminal buffer
@@ -120,7 +120,7 @@ function M.pull(name)
     notify.warn("Usage: :Image pull <image-name> --buffer")
     return
   end
-  open_term_buffer("nvim-containers://term/pull/" .. name, { engine_name, "pull", name })
+  open_term_buffer("sandbox.nvim://term/pull/" .. name, { engine_name, "pull", name })
 end
 
 --- Prune dangling images, streaming output into a terminal buffer
@@ -129,7 +129,7 @@ function M.image_prune()
   if not engine_name then
     return
   end
-  open_term_buffer("nvim-containers://term/image-prune", { engine_name, "image", "prune", "-f" })
+  open_term_buffer("sandbox.nvim://term/image-prune", { engine_name, "image", "prune", "-f" })
 end
 
 return M

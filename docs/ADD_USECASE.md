@@ -1,6 +1,6 @@
-# Adding a New Use Case to `nvim-containers`
+# Adding a New Use Case to `sandbox.nvim`
 
-This guide explains how to add a new functionality ("use case") to the `nvim-containers` plugin following its hexagonal architecture design.
+This guide explains how to add a new functionality ("use case") to the `sandbox.nvim` plugin following its hexagonal architecture design.
 
 ---
 
@@ -133,7 +133,7 @@ the existing `:Container` verb.
 
 ```lua
 {
-  "StefanBartl/nvim-containers.nvim",
+  "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   cmd = { "Container", "Image", "Wsl" },
   config = function()

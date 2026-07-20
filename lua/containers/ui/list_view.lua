@@ -18,6 +18,6 @@ return function(containers)
   end
 
   require("lib.nvim.window").open_named_scratch(
-    "nvim-containers://container-list", lines, { filetype = "log", split = "left" }
+    "sandbox.nvim://container-list", lines, { filetype = "log", split = "left" }
   )
 end

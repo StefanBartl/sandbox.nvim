@@ -10,6 +10,6 @@ return function(data, container_id)
   end
 
   require("lib.nvim.window").open_named_scratch(
-    "nvim-containers://inspect/" .. container_id, lines, { filetype = "lua", split = "left" }
+    "sandbox.nvim://inspect/" .. container_id, lines, { filetype = "lua", split = "left" }
   )
 end

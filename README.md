@@ -1,4 +1,4 @@
-# nvim-containers.nvim
+# sandbox.nvim
 ![status](https://img.shields.io/badge/status-beta-orange.svg)
 ![Lazy.nvim compatible](https://img.shields.io/badge/lazy.nvim-supported-success)
 ![Neovim](https://img.shields.io/badge/Neovim-0.9+-success.svg)
@@ -38,7 +38,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - 🧠 Hexagonal architecture (engine-agnostic, clean ports & adapters)
 - 🧩 Easily extendable (Podman, Docker, nerdctl planned)
 - 🚀 Unified support for Docker and Podman
-- 🩺 Integrated Neovim healthcheck support (`:checkhealth nvim-containers`)
+- 🩺 Integrated Neovim healthcheck support (`:checkhealth sandbox`)
 - ⌨️ `:Container`/`:Image`/`:Wsl` subcommand trees with `<Tab>` completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s `usercmd.composer` — a required dependency)
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
@@ -59,7 +59,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 *Load after UI init (recommended):*
 ```lua
 {
-  "StefanBartl/nvim-containers.nvim",
+  "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   event = "VimEnter",
   config = function()
@@ -75,7 +75,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 *Load at startup (eager):*
 ```lua
 {
-  "StefanBartl/nvim-containers.nvim",
+  "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   lazy = false,
   config = function()
@@ -87,7 +87,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 *Load on first use of a command:*
 ```lua
 {
-  "StefanBartl/nvim-containers.nvim",
+  "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   cmd = { "Container", "Image", "Wsl" },
   config = function()
@@ -99,7 +99,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 ℹ️ Important:
 You must call `require("containers").setup({})` to initialize the plugin's configuration.
 The engine option is optional.
-If omitted, **nvim-containers** will automatically:
+If omitted, **sandbox.nvim** will automatically:
     - Prefer **Podman** if installed
     - Fall back to **Docker** otherwise
 Explicitly setting engine = "podman" or engine = "docker" will override automatic detection.
@@ -108,12 +108,12 @@ Explicitly setting engine = "podman" or engine = "docker" will override automati
 
 ## Health Check Support
 
-**nvim-containers.nvim** integrates with Neovim's `:checkhealth` system to diagnose common issues.
+**sandbox.nvim** integrates with Neovim's `:checkhealth` system to diagnose common issues.
 
 To run the health check, simply execute:
 
 ```vim
-:checkhealth nvim-containers
+:checkhealth sandbox
 ```
 
 The plugin will verify:
@@ -173,13 +173,13 @@ Expect changes in upcoming releases.
 
 Your feedback is very welcome!
 
-Please use the [GitHub issue tracker](https://github.com/StefanBartl/nvim-containers/issues) to:
+Please use the [GitHub issue tracker](https://github.com/StefanBartl/sandbox.nvim/issues) to:
 - Report bugs
 - Suggest new features
 - Ask questions about usage
 - Share thoughts on UI or functionality
 
-For general discussion, feel free to open a [GitHub Discussion](https://github.com/StefanBartl/nvim-containers/discussions).
+For general discussion, feel free to open a [GitHub Discussion](https://github.com/StefanBartl/sandbox.nvim/discussions).
 
 If you find this plugin helpful, consider giving it a ⭐ on GitHub — it helps others discover the project.
 
