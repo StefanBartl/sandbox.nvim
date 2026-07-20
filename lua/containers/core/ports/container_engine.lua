@@ -7,6 +7,8 @@ return {
   list_containers = function()
     error("list_containers not implemented.")
   end,
+  --- @param id string
+  --- @return string[]|nil lines, string|nil err
   get_logs = function(id)
     error(id .. ": get_logs not implemented.")
   end,
@@ -33,7 +35,8 @@ return {
   remove_container = function(id, _on_done)
     error(id .. ": remove_container not implemented.")
   end,
-  prune_containers = function()
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  prune_containers = function(_on_done)
     error("prune_containers not implemented.")
   end,
   inspect_container = function(id)

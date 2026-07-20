@@ -39,20 +39,23 @@ end
 ---@param id string
 function M.logs(id)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.containers.get_container_logs")
-  local view = require("containers.ui.log_view")
+  if not engine then
+    return
+  end
 
   if not id or id == "" then
     notify.warn("Usage: :Container logs <container-id>")
     return
   end
 
-  local ok, logs = pcall(usecase, engine, id)
-  if not ok then
-    notify.error("Failed to get logs: " .. logs)
+  local usecase = require("containers.core.usecases.containers.get_container_logs")
+  local logs, err = usecase(engine, id)
+  if not logs then
+    notify.error("Failed to get logs: " .. (err or id))
     return
   end
 
+  local view = require("containers.ui.log_view")
   view(logs, id)
 end
 
@@ -194,15 +197,18 @@ end
 --- Remove all stopped containers
 function M.prune()
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.containers.prune_containers")
-
-  local ok, err = pcall(usecase, engine)
-  if not ok then
-    notify.error("Failed to prune containers: " .. err)
+  if not engine then
     return
   end
 
-  notify.info("All stopped containers pruned successfully!")
+  local usecase = require("containers.core.usecases.containers.prune_containers")
+  usecase(engine, function(ok, err)
+    if ok then
+      notify.info("All stopped containers pruned successfully!")
+    else
+      notify.error("Failed to prune containers: " .. (err or "unknown error"))
+    end
+  end)
 end
 
 --- Inspect detailed information about a container

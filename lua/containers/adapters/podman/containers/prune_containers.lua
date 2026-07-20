@@ -1,16 +1,19 @@
-local notify = require("containers.notify")
 local M = {}
 
-function M.prune_containers()
+--- Remove all stopped containers
+--- @param on_done? fun(ok: boolean, err: string|nil)
+function M.prune_containers(on_done)
   local cmd = { "podman", "container", "prune", "-f" }
 
   vim.fn.jobstart(cmd, {
     on_exit = function(_, code, _)
       vim.schedule(function()
-        if code == 0 then
-          notify.info("Pruned all stopped containers")
-        else
-          notify.error("Failed to prune containers")
+        if on_done then
+          if code == 0 then
+            on_done(true, nil)
+          else
+            on_done(false, "Failed to prune containers")
+          end
         end
       end)
     end,
