@@ -1,5 +1,6 @@
 -- Docker Adapter: Function to remove a container
 
+local notify = require("containers.notify")
 local M = {}
 
 --- Remove a specific container
@@ -11,9 +12,9 @@ function M.remove_container(container_id)
     on_exit = function(_, code, _)
       vim.schedule(function()
         if code == 0 then
-          vim.notify("[nvim-containers] Container removed: " .. container_id, vim.log.levels.INFO)
+          notify.info("Container removed: " .. container_id)
         else
-          vim.notify("[nvim-containers] Failed to remove container: " .. container_id, vim.log.levels.ERROR)
+          notify.error("Failed to remove container: " .. container_id)
         end
       end)
     end,

@@ -1,6 +1,7 @@
 -- Docker Adapter: Function to list all containers (running and stopped)
 
 local run_argv = require("containers.util.run_argv")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -11,7 +12,7 @@ function M.list_containers()
   local ok, output = run_argv.run_blocking_captured({ "docker", "ps", "-a", "--format", "{{json .}}" })
 
   if not ok then
-    vim.notify("[nvim-containers] Docker error: " .. output, vim.log.levels.ERROR)
+    notify.error("Docker error: " .. output)
     return {}
   end
 
@@ -27,7 +28,7 @@ function M.list_containers()
         image = container.Image or "<no image>",
       })
     else
-      vim.notify("[nvim-containers] Docker JSON decode error:\n" .. tostring(line), vim.log.levels.ERROR)
+      notify.error("Docker JSON decode error:\n" .. tostring(line))
     end
   end
 

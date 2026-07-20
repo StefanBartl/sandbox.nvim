@@ -1,6 +1,7 @@
 -- Podman Adapter: Function to list all containers
 
 local run_argv = require("containers.util.run_argv")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -11,13 +12,13 @@ function M.list_containers()
   local ok, output = run_argv.run_blocking_captured({ "podman", "ps", "-a", "--format", "json" })
 
   if not ok then
-    vim.notify("Podman error: " .. output, vim.log.levels.ERROR)
+    notify.error("Podman error: " .. output)
     return {}
   end
 
   local decode_ok, result = pcall(vim.fn.json_decode, output)
   if not decode_ok then
-    vim.notify("JSON decode error: " .. result, vim.log.levels.ERROR)
+    notify.error("JSON decode error: " .. result)
     return {}
   end
 

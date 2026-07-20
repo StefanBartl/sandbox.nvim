@@ -2,6 +2,7 @@
 ---@brief Lists all registered WSL distributions and their running state.
 
 local run_argv = require("containers.util.run_argv")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -12,7 +13,7 @@ function M.list_distros()
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "--list", "--verbose" })
 
 	if not ok then
-		vim.notify("[nvim-containers] WSL list error: " .. output, vim.log.levels.ERROR)
+		notify.error("WSL list error: " .. output)
 		return {}
 	end
 

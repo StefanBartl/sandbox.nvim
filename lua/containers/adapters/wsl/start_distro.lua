@@ -5,6 +5,7 @@
 --- distro brings it to Running state. A no-op `echo` is used for this purpose.
 
 local run_argv = require("containers.util.run_argv")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -16,7 +17,7 @@ function M.start_distro(name)
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "-d", name, "--", "echo" })
 
 	if not ok then
-		vim.notify("[nvim-containers] WSL start error for '" .. name .. "': " .. output, vim.log.levels.ERROR)
+		notify.error("WSL start error for '" .. name .. "': " .. output)
 		return false
 	end
 

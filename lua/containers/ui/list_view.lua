@@ -1,8 +1,9 @@
 --- Display a list of containers in a vertical split buffer
 --- @param containers table[]: List of standardized container objects (id, name, status, image)
+local notify = require("containers.notify")
 return function(containers)
   if type(containers) ~= "table" then
-    vim.notify("[nvim-containers] Invalid container list: not a table", vim.log.levels.ERROR)
+    notify.error("Invalid container list: not a table")
     return
   end
 

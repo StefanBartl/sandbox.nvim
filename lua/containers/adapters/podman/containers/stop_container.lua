@@ -1,3 +1,4 @@
+local notify = require("containers.notify")
 local M = {}
 
 --- Stop a specific container
@@ -10,7 +11,7 @@ function M.stop_container(container_id)
     on_exit = function(_, code, _)
       vim.schedule(function()
         if code ~= 0 then
-          vim.notify("Error stopping container: exit code " .. code, vim.log.levels.ERROR)
+          notify.error("Error stopping container: exit code " .. code)
         end
       end)
     end,

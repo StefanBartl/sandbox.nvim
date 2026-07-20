@@ -1,5 +1,6 @@
 -- Podman Adapter: Remove image
 
+local notify = require("containers.notify")
 local M = {}
 
 --- Remove an image by ID or name
@@ -11,23 +12,23 @@ function M.remove_image(id)
     on_stdout = function(_, data)
       if data then
         vim.schedule(function()
-          vim.notify(table.concat(data, "\n"), vim.log.levels.INFO)
+          notify.info(table.concat(data, "\n"))
         end)
       end
     end,
     on_stderr = function(_, data)
       if data then
         vim.schedule(function()
-          vim.notify(table.concat(data, "\n"), vim.log.levels.ERROR)
+          notify.error(table.concat(data, "\n"))
         end)
       end
     end,
     on_exit = function(_, code)
       vim.schedule(function()
         if code == 0 then
-          vim.notify("Image removed: " .. id, vim.log.levels.INFO)
+          notify.info("Image removed: " .. id)
         else
-          vim.notify("Failed to remove image: " .. id, vim.log.levels.ERROR)
+          notify.error("Failed to remove image: " .. id)
         end
       end)
     end,

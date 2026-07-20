@@ -1,3 +1,4 @@
+local notify = require("containers.notify")
 local M = {}
 
 --- Remove a specific container
@@ -10,9 +11,9 @@ function M.remove_container(container_id)
     on_exit = function(_, code, _)
       vim.schedule(function()
         if code == 0 then
-          vim.notify("Container removed: " .. container_id, vim.log.levels.INFO)
+          notify.info("Container removed: " .. container_id)
         else
-          vim.notify("Failed to remove container: " .. container_id, vim.log.levels.ERROR)
+          notify.error("Failed to remove container: " .. container_id)
         end
       end)
     end,

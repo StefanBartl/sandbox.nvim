@@ -1,3 +1,4 @@
+local notify = require("containers.notify")
 local M = {}
 
 --- Kill a specific container
@@ -10,9 +11,9 @@ function M.kill_container(container_id)
     on_exit = function(_, code, _)
       vim.schedule(function()
         if code == 0 then
-          vim.notify("Container killed: " .. container_id, vim.log.levels.INFO)
+          notify.info("Container killed: " .. container_id)
         else
-          vim.notify("Error killing container (code " .. code .. "): " .. container_id, vim.log.levels.ERROR)
+          notify.error("Error killing container (code " .. code .. "): " .. container_id)
         end
       end)
     end,

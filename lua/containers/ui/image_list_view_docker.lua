@@ -1,8 +1,9 @@
 --- View for listing all Docker or Podman images
 --- @param images table[]
+local notify = require("containers.notify")
 return function(images)
   if type(images) ~= "table" then
-    vim.notify("[nvim-containers] Invalid image list: not a table", vim.log.levels.ERROR)
+    notify.error("Invalid image list: not a table")
     return
   end
 

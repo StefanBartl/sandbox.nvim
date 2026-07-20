@@ -8,6 +8,7 @@
 --- own body is unchanged from before the composer migration; only the
 --- registration site moved.
 
+local notify = require("containers.notify")
 local M = {}
 
 --- List all containers (running and stopped)
@@ -35,13 +36,13 @@ function M.logs(id)
   local view = require("containers.ui.log_view")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container logs <container-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Container logs <container-id>")
     return
   end
 
   local ok, logs = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to get logs: " .. logs, vim.log.levels.ERROR)
+    notify.error("Failed to get logs: " .. logs)
     return
   end
 
@@ -56,7 +57,7 @@ function M.exec(id, shell)
   local usecase = require("containers.core.usecases.containers.exec_in_container")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container exec <container-id> [<shell>]", vim.log.levels.WARN)
+    notify.warn("Usage: :Container exec <container-id> [<shell>]")
     return
   end
 
@@ -64,7 +65,7 @@ function M.exec(id, shell)
 
   local ok, err = pcall(usecase, engine, id, { shell })
   if not ok then
-    vim.notify("Failed to exec in container: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to exec in container: " .. err)
   end
 end
 
@@ -77,7 +78,7 @@ function M.exec_once(id, command)
   local usecase = require("containers.core.usecases.containers.exec_in_container")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container exec-once <container-id> [<command>...]", vim.log.levels.WARN)
+    notify.warn("Usage: :Container exec-once <container-id> [<command>...]")
     return
   end
 
@@ -87,7 +88,7 @@ function M.exec_once(id, command)
 
   local ok, err = pcall(usecase, engine, id, command)
   if not ok then
-    vim.notify("Failed to exec in container: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to exec in container: " .. err)
   end
 end
 
@@ -96,24 +97,24 @@ end
 function M.start(id)
   local engine = require("containers").get_engine()
   if not engine then
-    vim.notify("[nvim-containers] No container engine configured.", vim.log.levels.ERROR)
+    notify.error("No container engine configured.")
     return
   end
 
   local usecase = require("containers.core.usecases.containers.start_container")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container start <container-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Container start <container-id>")
     return
   end
 
   local success = usecase(engine, id)
   if not success then
-    vim.notify("Failed to start container: " .. id, vim.log.levels.ERROR)
+    notify.error("Failed to start container: " .. id)
     return
   end
 
-  vim.notify("Container started successfully: " .. id, vim.log.levels.INFO)
+  notify.info("Container started successfully: " .. id)
 end
 
 --- Stop a running container
@@ -123,17 +124,17 @@ function M.stop(id)
   local usecase = require("containers.core.usecases.containers.stop_container")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container stop <container-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Container stop <container-id>")
     return
   end
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to stop container: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to stop container: " .. err)
     return
   end
 
-  vim.notify("Container stopped successfully: " .. id, vim.log.levels.INFO)
+  notify.info("Container stopped successfully: " .. id)
 end
 
 --- Force kill a container
@@ -143,17 +144,17 @@ function M.kill(id)
   local usecase = require("containers.core.usecases.containers.kill_container")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container kill <container-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Container kill <container-id>")
     return
   end
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to kill container: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to kill container: " .. err)
     return
   end
 
-  vim.notify("Container killed successfully: " .. id, vim.log.levels.INFO)
+  notify.info("Container killed successfully: " .. id)
 end
 
 --- Remove a container (must be stopped first)
@@ -163,17 +164,17 @@ function M.remove(id)
   local usecase = require("containers.core.usecases.containers.remove_container")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container remove <container-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Container remove <container-id>")
     return
   end
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to remove container: " .. err .. "\nIs it stopped?", vim.log.levels.ERROR)
+    notify.error("Failed to remove container: " .. err .. "\nIs it stopped?")
     return
   end
 
-  vim.notify("Container removed successfully: " .. id, vim.log.levels.INFO)
+  notify.info("Container removed successfully: " .. id)
 end
 
 --- Remove all stopped containers
@@ -183,11 +184,11 @@ function M.prune()
 
   local ok, err = pcall(usecase, engine)
   if not ok then
-    vim.notify("Failed to prune containers: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to prune containers: " .. err)
     return
   end
 
-  vim.notify("All stopped containers pruned successfully!", vim.log.levels.INFO)
+  notify.info("All stopped containers pruned successfully!")
 end
 
 --- Inspect detailed information about a container
@@ -198,13 +199,13 @@ function M.inspect(id)
   local view = require("containers.ui.inspect_view")
 
   if not id or id == "" then
-    vim.notify("Usage: :Container inspect <container-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Container inspect <container-id>")
     return
   end
 
   local ok, result = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to inspect container: " .. result, vim.log.levels.ERROR)
+    notify.error("Failed to inspect container: " .. result)
     return
   end
 

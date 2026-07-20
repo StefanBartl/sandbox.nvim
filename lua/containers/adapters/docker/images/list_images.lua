@@ -1,6 +1,7 @@
 -- Docker Adapter: Function to list all images
 
 local run_argv = require("containers.util.run_argv")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -24,7 +25,7 @@ function M.list_images()
         size = image.Size or "<no size>",
       })
     else
-      vim.notify("[nvim-containers] JSON decode error: " .. tostring(line), vim.log.levels.ERROR)
+      notify.error("JSON decode error: " .. tostring(line))
     end
   end
 

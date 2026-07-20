@@ -8,6 +8,7 @@
 --- body is unchanged from before the composer migration; only the
 --- registration site moved.
 
+local notify = require("containers.notify")
 local M = {}
 
 --- List all available images
@@ -19,7 +20,7 @@ function M.list()
 
   local ok, result = pcall(usecase, engine)
   if not ok then
-    vim.notify("Failed to list images: " .. result, vim.log.levels.ERROR)
+    notify.error("Failed to list images: " .. result)
     return
   end
 
@@ -29,7 +30,7 @@ function M.list()
   elseif config.options.engine == "podman" then
     view = require("containers.ui.image_list_view_podman")
   else
-    vim.notify("[nvim-containers] Unknown engine: " .. tostring(config.options.engine), vim.log.levels.ERROR)
+    notify.error("Unknown engine: " .. tostring(config.options.engine))
     return
   end
 
@@ -40,7 +41,7 @@ end
 ---@param image string
 function M.pull(image)
   if not image or image == "" then
-    vim.notify("Usage: :Image pull <image>", vim.log.levels.WARN)
+    notify.warn("Usage: :Image pull <image>")
     return
   end
 
@@ -49,18 +50,18 @@ function M.pull(image)
 
   local ok, err = pcall(usecase, engine, image)
   if not ok then
-    vim.notify("Failed to pull image: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to pull image: " .. err)
     return
   end
 
-  vim.notify("Image pulled successfully: " .. image, vim.log.levels.INFO)
+  notify.info("Image pulled successfully: " .. image)
 end
 
 --- Remove a specific image by ID
 ---@param id string
 function M.remove(id)
   if not id or id == "" then
-    vim.notify("Usage: :Image remove <image-id>", vim.log.levels.WARN)
+    notify.warn("Usage: :Image remove <image-id>")
     return
   end
 
@@ -69,11 +70,11 @@ function M.remove(id)
 
   local ok, err = pcall(usecase, engine, id)
   if not ok then
-    vim.notify("Failed to remove image: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to remove image: " .. err)
     return
   end
 
-  vim.notify("Image removed successfully: " .. id, vim.log.levels.INFO)
+  notify.info("Image removed successfully: " .. id)
 end
 
 --- Prune (remove) all dangling images
@@ -83,11 +84,11 @@ function M.prune()
 
   local ok, err = pcall(usecase, engine)
   if not ok then
-    vim.notify("Failed to prune images: " .. err, vim.log.levels.ERROR)
+    notify.error("Failed to prune images: " .. err)
     return
   end
 
-  vim.notify("All dangling images pruned successfully!", vim.log.levels.INFO)
+  notify.info("All dangling images pruned successfully!")
 end
 
 return M

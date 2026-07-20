@@ -12,6 +12,7 @@
 --- separate `*Buffer` commands (ContainerStartBuffer, etc. pre-migration).
 --- Each function's own body is unchanged; only how it gets invoked moved.
 
+local notify = require("containers.notify")
 local M = {}
 
 local function open_term_buffer(name, cmd)
@@ -37,7 +38,7 @@ end
 local function require_engine()
   local engine_name = require("containers.config").options.engine
   if not engine_name then
-    vim.notify("[nvim-containers] No engine configured", vim.log.levels.ERROR)
+    notify.error("No engine configured")
     return nil
   end
   return engine_name
@@ -51,7 +52,7 @@ function M.start(id)
     return
   end
   if not id or id == "" then
-    vim.notify("Usage: :Container start <container-id> --buffer", vim.log.levels.WARN)
+    notify.warn("Usage: :Container start <container-id> --buffer")
     return
   end
   open_term_buffer("nvim-containers://term/start/" .. id, { engine_name, "start", id })
@@ -65,7 +66,7 @@ function M.stop(id)
     return
   end
   if not id or id == "" then
-    vim.notify("Usage: :Container stop <container-id> --buffer", vim.log.levels.WARN)
+    notify.warn("Usage: :Container stop <container-id> --buffer")
     return
   end
   open_term_buffer("nvim-containers://term/stop/" .. id, { engine_name, "stop", "--time=1", id })
@@ -79,7 +80,7 @@ function M.kill(id)
     return
   end
   if not id or id == "" then
-    vim.notify("Usage: :Container kill <container-id> --buffer", vim.log.levels.WARN)
+    notify.warn("Usage: :Container kill <container-id> --buffer")
     return
   end
   open_term_buffer("nvim-containers://term/kill/" .. id, { engine_name, "kill", id })
@@ -93,7 +94,7 @@ function M.remove(id)
     return
   end
   if not id or id == "" then
-    vim.notify("Usage: :Container remove <container-id> --buffer", vim.log.levels.WARN)
+    notify.warn("Usage: :Container remove <container-id> --buffer")
     return
   end
   open_term_buffer("nvim-containers://term/remove/" .. id, { engine_name, "rm", id })
@@ -116,7 +117,7 @@ function M.pull(name)
     return
   end
   if not name or name == "" then
-    vim.notify("Usage: :Image pull <image-name> --buffer", vim.log.levels.WARN)
+    notify.warn("Usage: :Image pull <image-name> --buffer")
     return
   end
   open_term_buffer("nvim-containers://term/pull/" .. name, { engine_name, "pull", name })

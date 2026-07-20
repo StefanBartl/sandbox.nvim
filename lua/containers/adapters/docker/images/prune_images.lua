@@ -1,5 +1,6 @@
 -- Docker Adapter: Function to prune dangling images
 
+local notify = require("containers.notify")
 local M = {}
 
 --- Prune all dangling images
@@ -10,23 +11,23 @@ function M.prune_images()
     on_stdout = function(_, data)
       if data then
         vim.schedule(function()
-          vim.notify(table.concat(data, "\n"), vim.log.levels.INFO)
+          notify.info(table.concat(data, "\n"))
         end)
       end
     end,
     on_stderr = function(_, data)
       if data then
         vim.schedule(function()
-          vim.notify(table.concat(data, "\n"), vim.log.levels.ERROR)
+          notify.error(table.concat(data, "\n"))
         end)
       end
     end,
     on_exit = function(_, code)
       vim.schedule(function()
         if code == 0 then
-          vim.notify("[nvim-containers] Image prune completed", vim.log.levels.INFO)
+          notify.info("Image prune completed")
         else
-          vim.notify("[nvim-containers] Image prune failed", vim.log.levels.ERROR)
+          notify.error("Image prune failed")
         end
       end)
     end,

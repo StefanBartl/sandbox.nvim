@@ -1,3 +1,4 @@
+local notify = require("containers.notify")
 local M = {}
 
 function M.prune_containers()
@@ -7,9 +8,9 @@ function M.prune_containers()
     on_exit = function(_, code, _)
       vim.schedule(function()
         if code == 0 then
-          vim.notify("Pruned all stopped containers", vim.log.levels.INFO)
+          notify.info("Pruned all stopped containers")
         else
-          vim.notify("Failed to prune containers", vim.log.levels.ERROR)
+          notify.error("Failed to prune containers")
         end
       end)
     end,

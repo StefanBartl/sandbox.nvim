@@ -1,6 +1,7 @@
 -- Docker Adapter: Function to retrieve logs of a container
 
 local run_argv = require("containers.util.run_argv")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -11,7 +12,7 @@ function M.get_logs(container_id)
   local ok, output = run_argv.run_blocking_captured({ "docker", "logs", container_id })
 
   if not ok then
-    vim.notify("[nvim-containers] Docker logs error: " .. output, vim.log.levels.ERROR)
+    notify.error("Docker logs error: " .. output)
     return { "[nvim-containers] Failed to get logs for: " .. container_id }
   end
 

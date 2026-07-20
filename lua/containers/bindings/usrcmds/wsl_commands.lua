@@ -14,6 +14,7 @@
 --- composer migration; only the registration site moved.
 
 local engine_utils = require("containers.engine_utils")
+local notify = require("containers.notify")
 
 local M = {}
 
@@ -29,7 +30,7 @@ function M.list()
 
   local ok, distros = pcall(usecase, wsl_engine)
   if not ok or type(distros) ~= "table" then
-    vim.notify("[nvim-containers] Failed to list WSL distros", vim.log.levels.ERROR)
+    notify.error("Failed to list WSL distros")
     return
   end
 
@@ -61,7 +62,7 @@ end
 ---@param name string
 function M.start(name)
   if not name or name == "" then
-    vim.notify("Usage: :Wsl start <distro-name>", vim.log.levels.WARN)
+    notify.warn("Usage: :Wsl start <distro-name>")
     return
   end
 
@@ -69,18 +70,18 @@ function M.start(name)
   local usecase = require("containers.core.usecases.wsl.start_distro")
   local ok, err = pcall(usecase, wsl_engine, name)
   if not ok then
-    vim.notify("[nvim-containers] WSL start failed: " .. err, vim.log.levels.ERROR)
+    notify.error("WSL start failed: " .. err)
     return
   end
 
-  vim.notify("[nvim-containers] WSL distro started: " .. name, vim.log.levels.INFO)
+  notify.info("WSL distro started: " .. name)
 end
 
 --- Stop (terminate) a WSL distro
 ---@param name string
 function M.stop(name)
   if not name or name == "" then
-    vim.notify("Usage: :Wsl stop <distro-name>", vim.log.levels.WARN)
+    notify.warn("Usage: :Wsl stop <distro-name>")
     return
   end
 
@@ -88,11 +89,11 @@ function M.stop(name)
   local usecase = require("containers.core.usecases.wsl.stop_distro")
   local ok, err = pcall(usecase, wsl_engine, name)
   if not ok then
-    vim.notify("[nvim-containers] WSL stop failed: " .. err, vim.log.levels.ERROR)
+    notify.error("WSL stop failed: " .. err)
     return
   end
 
-  vim.notify("[nvim-containers] WSL distro terminated: " .. name, vim.log.levels.INFO)
+  notify.info("WSL distro terminated: " .. name)
 end
 
 --- Open a shell or run a command inside a WSL distro
@@ -100,7 +101,7 @@ end
 ---@param command string[]|nil
 function M.exec(name, command)
   if not name or name == "" then
-    vim.notify("Usage: :Wsl exec <distro-name> [<command>...]", vim.log.levels.WARN)
+    notify.warn("Usage: :Wsl exec <distro-name> [<command>...]")
     return
   end
 
@@ -112,7 +113,7 @@ function M.exec(name, command)
   local usecase = require("containers.core.usecases.wsl.exec_in_distro")
   local ok, err = pcall(usecase, wsl_engine, name, command)
   if not ok then
-    vim.notify("[nvim-containers] WSL exec failed: " .. err, vim.log.levels.ERROR)
+    notify.error("WSL exec failed: " .. err)
   end
 end
 
