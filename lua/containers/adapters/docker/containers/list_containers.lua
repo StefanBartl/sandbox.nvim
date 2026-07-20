@@ -1,22 +1,21 @@
 -- Docker Adapter: Function to list all containers (running and stopped)
 
 local run_argv = require("containers.util.run_argv")
-local notify = require("containers.notify")
 
 local M = {}
 
 --- List all containers (running and stopped) using Docker
 --- Sorts containers: running first, then others.
---- @return table[]: List of container objects with fields {id, name, status, image}
+--- @return table[]|nil containers, string|nil err
 function M.list_containers()
   local ok, output = run_argv.run_blocking_captured({ "docker", "ps", "-a", "--format", "{{json .}}" })
 
   if not ok then
-    notify.error("Docker error: " .. output)
-    return {}
+    return nil, "Docker error: " .. output
   end
 
   local containers = {}
+  local decode_errors = {}
 
   for _, line in ipairs(vim.split(output, "\n", { trimempty = true })) do
     local decode_ok, container = pcall(vim.fn.json_decode, line)
@@ -28,7 +27,7 @@ function M.list_containers()
         image = container.Image or "<no image>",
       })
     else
-      notify.error("Docker JSON decode error:\n" .. tostring(line))
+      table.insert(decode_errors, tostring(line))
     end
   end
 
@@ -44,7 +43,11 @@ function M.list_containers()
     end
   end)
 
-  return containers
+  if #decode_errors > 0 then
+    return containers, "Docker JSON decode error(s):\n" .. table.concat(decode_errors, "\n")
+  end
+
+  return containers, nil
 end
 
 return M

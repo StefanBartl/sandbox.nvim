@@ -13,15 +13,22 @@ local M = {}
 
 --- List all containers (running and stopped)
 function M.list()
-  local core = require("containers")
-  local engine = core.get_engine()
-  local usecase = require("containers.core.usecases.containers.list_containers")
-
-  local ok, containers = pcall(usecase, engine)
-  if not ok or type(containers) ~= "table" then
-    local error_view = require("containers.ui.error_view")
-    error_view({ "Failed to list containers:", vim.inspect(containers) })
+  local engine = require("containers").get_engine()
+  if not engine then
     return
+  end
+
+  local usecase = require("containers.core.usecases.containers.list_containers")
+  local containers, err = usecase(engine)
+
+  if not containers then
+    local error_view = require("containers.ui.error_view")
+    error_view({ "Failed to list containers:", err or "unknown error" })
+    return
+  end
+
+  if err then
+    notify.warn(err)
   end
 
   local view = require("containers.ui.list_view")
@@ -97,20 +104,18 @@ end
 function M.start(id)
   local engine = require("containers").get_engine()
   if not engine then
-    notify.error("No container engine configured.")
     return
   end
-
-  local usecase = require("containers.core.usecases.containers.start_container")
 
   if not id or id == "" then
     notify.warn("Usage: :Container start <container-id>")
     return
   end
 
-  local success = usecase(engine, id)
-  if not success then
-    notify.error("Failed to start container: " .. id)
+  local usecase = require("containers.core.usecases.containers.start_container")
+  local ok, err = usecase(engine, id)
+  if not ok then
+    notify.error("Failed to start container: " .. (err or id))
     return
   end
 
@@ -121,60 +126,69 @@ end
 ---@param id string
 function M.stop(id)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.containers.stop_container")
+  if not engine then
+    return
+  end
 
   if not id or id == "" then
     notify.warn("Usage: :Container stop <container-id>")
     return
   end
 
-  local ok, err = pcall(usecase, engine, id)
-  if not ok then
-    notify.error("Failed to stop container: " .. err)
-    return
-  end
-
-  notify.info("Container stopped successfully: " .. id)
+  local usecase = require("containers.core.usecases.containers.stop_container")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Container stopped successfully: " .. id)
+    else
+      notify.error("Failed to stop container: " .. (err or id))
+    end
+  end)
 end
 
 --- Force kill a container
 ---@param id string
 function M.kill(id)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.containers.kill_container")
+  if not engine then
+    return
+  end
 
   if not id or id == "" then
     notify.warn("Usage: :Container kill <container-id>")
     return
   end
 
-  local ok, err = pcall(usecase, engine, id)
-  if not ok then
-    notify.error("Failed to kill container: " .. err)
-    return
-  end
-
-  notify.info("Container killed successfully: " .. id)
+  local usecase = require("containers.core.usecases.containers.kill_container")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Container killed successfully: " .. id)
+    else
+      notify.error("Failed to kill container: " .. (err or id))
+    end
+  end)
 end
 
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)
   local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.containers.remove_container")
+  if not engine then
+    return
+  end
 
   if not id or id == "" then
     notify.warn("Usage: :Container remove <container-id>")
     return
   end
 
-  local ok, err = pcall(usecase, engine, id)
-  if not ok then
-    notify.error("Failed to remove container: " .. err .. "\nIs it stopped?")
-    return
-  end
-
-  notify.info("Container removed successfully: " .. id)
+  local usecase = require("containers.core.usecases.containers.remove_container")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Container removed successfully: " .. id)
+    else
+      notify.error("Failed to remove container: " .. (err or id) .. "\nIs it stopped?")
+    end
+  end)
 end
 
 --- Remove all stopped containers

@@ -1,19 +1,20 @@
-local notify = require("containers.notify")
 local M = {}
 
 --- Kill a specific container
 --- @param container_id string: ID or name of the container to kill
---- @return nil
-function M.kill_container(container_id)
+--- @param on_done? fun(ok: boolean, err: string|nil)
+function M.kill_container(container_id, on_done)
   local cmd = { "podman", "kill", container_id }
 
   vim.fn.jobstart(cmd, {
     on_exit = function(_, code, _)
       vim.schedule(function()
-        if code == 0 then
-          notify.info("Container killed: " .. container_id)
-        else
-          notify.error("Error killing container (code " .. code .. "): " .. container_id)
+        if on_done then
+          if code == 0 then
+            on_done(true, nil)
+          else
+            on_done(false, "Error killing container (code " .. code .. "): " .. container_id)
+          end
         end
       end)
     end,
