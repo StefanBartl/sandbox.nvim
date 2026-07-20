@@ -2,19 +2,18 @@
 ---@brief Lists all registered WSL distributions and their running state.
 
 local run_argv = require("containers.util.run_argv")
-local notify = require("containers.notify")
 
 local M = {}
 
 --- Parses WSL distro list output and returns structured distro info.
 --- `wsl --list --verbose` outputs UTF-16 LE on Windows; vim.system decodes it.
----@return WslDistro[]
+---@return WslDistro[]|nil distros
+---@return string|nil err
 function M.list_distros()
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "--list", "--verbose" })
 
 	if not ok then
-		notify.error("WSL list error: " .. output)
-		return {}
+		return nil, "WSL list error: " .. output
 	end
 
 	-- Strip carriage returns and leading/trailing whitespace introduced by UTF-16 decoding
@@ -40,7 +39,7 @@ function M.list_distros()
 		end
 	end
 
-	return distros
+	return distros, nil
 end
 
 return M

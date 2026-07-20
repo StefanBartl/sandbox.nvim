@@ -28,9 +28,9 @@ function M.list()
   local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.list_distros")
 
-  local ok, distros = pcall(usecase, wsl_engine)
-  if not ok or type(distros) ~= "table" then
-    notify.error("Failed to list WSL distros")
+  local distros, err = usecase(wsl_engine)
+  if not distros then
+    notify.error("Failed to list WSL distros: " .. (err or "unknown error"))
     return
   end
 
@@ -68,9 +68,9 @@ function M.start(name)
 
   local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.start_distro")
-  local ok, err = pcall(usecase, wsl_engine, name)
+  local ok, err = usecase(wsl_engine, name)
   if not ok then
-    notify.error("WSL start failed: " .. err)
+    notify.error("WSL start failed: " .. (err or name))
     return
   end
 
@@ -87,9 +87,9 @@ function M.stop(name)
 
   local wsl_engine = require("containers.adapters.wsl.engine")
   local usecase = require("containers.core.usecases.wsl.stop_distro")
-  local ok, err = pcall(usecase, wsl_engine, name)
+  local ok, err = usecase(wsl_engine, name)
   if not ok then
-    notify.error("WSL stop failed: " .. err)
+    notify.error("WSL stop failed: " .. (err or name))
     return
   end
 

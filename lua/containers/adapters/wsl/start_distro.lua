@@ -5,23 +5,22 @@
 --- distro brings it to Running state. A no-op `echo` is used for this purpose.
 
 local run_argv = require("containers.util.run_argv")
-local notify = require("containers.notify")
 
 local M = {}
 
 ---@param name string
----@return boolean
+---@return boolean ok
+---@return string|nil err
 function M.start_distro(name)
 	-- WSL distros start implicitly when a command is executed inside them.
 	-- Running `echo` is the canonical no-op start trigger.
 	local ok, output = run_argv.run_blocking_captured({ "wsl", "-d", name, "--", "echo" })
 
 	if not ok then
-		notify.error("WSL start error for '" .. name .. "': " .. output)
-		return false
+		return false, "WSL start error for '" .. name .. "': " .. output
 	end
 
-	return true
+	return true, nil
 end
 
 return M

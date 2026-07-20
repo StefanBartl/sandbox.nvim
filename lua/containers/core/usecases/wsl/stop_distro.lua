@@ -2,7 +2,8 @@
 
 ---@param engine WslEngine
 ---@param name string
----@return boolean
+---@return boolean ok
+---@return string|nil err
 return function(engine, name)
   return engine.stop_distro(name)
 end

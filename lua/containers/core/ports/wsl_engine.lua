@@ -6,12 +6,17 @@
 --- do not share the same semantics as OCI containers (no images, no logs, no inspect).
 
 return {
+  --- @return WslDistro[]|nil distros, string|nil err
   list_distros = function()
     error("list_distros not implemented")
   end,
+  --- @param name string
+  --- @return boolean ok, string|nil err
   start_distro = function(name)
     error(name .. ": start_distro not implemented")
   end,
+  --- @param name string
+  --- @return boolean ok, string|nil err
   stop_distro = function(name)
     error(name .. ": stop_distro not implemented")
   end,
