@@ -1,13 +1,15 @@
 # sandbox.nvim: Bindings Reference
 
-All functionality is exposed via three user commands, `:Container`,
-`:Image`, and (only when `wsl.exe` is reachable) `:Wsl` — built on
+All functionality is exposed via a single user command, `:Sandbox` (short
+alias: `:Sbx`), with three sub-namespaces — `container`, `image`, and (only
+when `wsl.exe` is reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
-`<Tab>` completion at every level: subcommand name, then container/image/
-distro names (resolved live from the active engine, cached briefly to avoid
-shelling out on every keystroke). There are no default keymaps or autocmds.
+`<Tab>` completion at every level: sub-namespace, subcommand name, then
+container/image/distro names (resolved live from the active engine, cached
+briefly to avoid shelling out on every keystroke). There are no default
+keymaps or autocmds.
 
-## `:Container <subcommand>`
+## `:Sandbox container <subcommand>` (alias: `:Sbx container ...`)
 
 | Subcommand | Args | Description |
 |---|---|---|
@@ -25,9 +27,9 @@ shelling out on every keystroke). There are no default keymaps or autocmds.
 `--buffer` (or its short alias `-b`) streams the CLI's raw output into a
 scrollable terminal buffer instead of collapsing it into a `vim.notify`
 summary — useful for verbose operations (start/stop/prune). Example:
-`:Container start web --buffer`, `:Container prune -b`.
+`:Sandbox container start web --buffer`, `:Sbx container prune -b`.
 
-## `:Image <subcommand>`
+## `:Sandbox image <subcommand>` (alias: `:Sbx image ...`)
 
 | Subcommand | Args | Description |
 |---|---|---|
@@ -36,10 +38,10 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | `remove` | `{id}` | Remove an image |
 | `prune` | `[--buffer\|-b]` | Remove all dangling images |
 
-## `:Wsl <subcommand>`
+## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 
 Only registered when `wsl.exe` is reachable in `PATH` (Windows with WSL
-installed; checked once at `require("containers.bindings.usrcmds").setup()`
+installed; checked once at `require("sandbox.bindings.usrcmds").setup()`
 time via `wsl_commands.available()`).
 
 | Subcommand | Args | Description |

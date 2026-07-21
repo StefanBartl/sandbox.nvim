@@ -19,7 +19,7 @@ Clearly describe what the new use case should do.
 
 Update the core interface `ContainerEngine` with a new method.
 
-**File:** `lua/containers/core/ports/container_engine.lua`
+**File:** `lua/sandbox/core/ports/container_engine.lua`
 
 ```lua
 restart_container = function(id)
@@ -35,7 +35,7 @@ end
 
 Add the logic for the method in the corresponding adapter module.
 
-**File:** `lua/containers/adapters/podman/containers/restart.lua`
+**File:** `lua/sandbox/adapters/podman/containers/restart.lua`
 
 ```lua
 return function(id)
@@ -52,7 +52,7 @@ Make sure it’s exported in the aggregator:
 **File:** `adapters/podman/container_engine.lua`
 
 ```lua
-restart_container = require("containers.adapters.podman.containers.restart"),
+restart_container = require("sandbox.adapters.podman.containers.restart"),
 ```
 
 ---
@@ -61,7 +61,7 @@ restart_container = require("containers.adapters.podman.containers.restart"),
 
 Encapsulate the action in a reusable function.
 
-**File:** `lua/containers/core/usecases/containers/restart_container.lua`
+**File:** `lua/sandbox/core/usecases/containers/restart_container.lua`
 
 ```lua
 --- Restart a container via the injected engine
@@ -77,19 +77,20 @@ end
 ## 5. Register a Neovim Command
 
 Commands are built via [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim)
-as subcommands of the existing `:Container`/`:Image`/`:Wsl` verbs — you do
-not register a new top-level command for a new use case, you add a route.
+as subcommands of the single `:Sandbox`/`:Sbx` verb, under its `container`/
+`image`/`wsl` sub-namespaces — you do not register a new top-level command
+for a new use case, you add a route.
 
 First, export a plain handler function from the relevant commands module.
 
-**File:** `lua/containers/bindings/usrcmds/container_commands.lua`
+**File:** `lua/sandbox/bindings/usrcmds/container_commands.lua`
 
 ```lua
 --- Restart a container
 ---@param id string
 function M.restart(id)
-  local engine = require("containers").get_engine()
-  local usecase = require("containers.core.usecases.containers.restart_container")
+  local engine = require("sandbox").get_engine()
+  local usecase = require("sandbox.core.usecases.containers.restart_container")
 
   local ok, result = pcall(usecase, engine, id)
   if not ok then
@@ -100,21 +101,22 @@ function M.restart(id)
 end
 ```
 
-Then add a route for it in the `:Container` verb's route table.
+Then add a route for it in `container_routes()`'s route table.
 
-**File:** `lua/containers/bindings/usrcmds/init.lua`
+**File:** `lua/sandbox/bindings/usrcmds/init.lua`
 
 ```lua
-{ path = { "restart" },
+{ path = { "container", "restart" },
   args = { { name = "id", type = "CONTAINER_ID" } },
   desc = "Restart a container",
   run = function(ctx) container_cmds.restart(ctx.args.id) end },
 ```
 
-The `CONTAINER_ID` arg type gives `:Container restart <Tab>` live
+The `CONTAINER_ID` arg type gives `:Sandbox container restart <Tab>` live
 completion against the active engine for free — no extra work needed. Now
-`:Container restart <id>` works, plus `<Tab>` completion and the entry in
-`composer.document()`'s auto-generated docs (if wired up).
+`:Sandbox container restart <id>` (or `:Sbx container restart <id>`) works,
+plus `<Tab>` completion and the entry in `composer.document()`'s
+auto-generated docs (if wired up).
 
 ---
 
@@ -122,22 +124,22 @@ completion against the active engine for free — no extra work needed. Now
 
 If output needs to be shown in a buffer, create a view module.
 
-**Example:** `lua/containers/ui/log_view.lua`
+**Example:** `lua/sandbox/ui/log_view.lua`
 
 ---
 
 ## 7. Plugin Declaration (lazy.nvim)
 
 New subcommands don't need a new entry in `cmd = {...}` — they live under
-the existing `:Container` verb.
+the existing `:Sandbox`/`:Sbx` verb.
 
 ```lua
 {
   "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
-  cmd = { "Container", "Image", "Wsl" },
+  cmd = { "Sandbox", "Sbx" },
   config = function()
-    require("containers").setup({
+    require("sandbox").setup({
       engine = "podman",
     })
   end,
@@ -182,7 +184,7 @@ the existing `:Container` verb.
 | `core/usecases/containers/*.lua`  | Use case logic        |
 | `adapters/podman/containers/*.lua`| Podman implementation |
 | `bindings/usrcmds/container_commands.lua` | Exported handler function |
-| `bindings/usrcmds/init.lua`       | Composer route (`:Container <subcommand>`) |
+| `bindings/usrcmds/init.lua`       | Composer route (`:Sandbox container <subcommand>`) |
 | `ui/*.lua`                        | Optional buffer view  |
 
 ---

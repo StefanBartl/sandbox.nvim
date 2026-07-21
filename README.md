@@ -7,7 +7,7 @@
 
 > 🔧 Beta stage – under active development. Changes possible.
 
-> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Container`/`:Image`/`:Wsl`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/containers/ui/` both depend on it directly. `containers.notify`/`containers.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it.
+> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it.
 
 Manage your containers (Podman, Docker, and more) directly from Neovim – with clean architecture, pluggable backends, and a TUI-native experience.
 
@@ -39,7 +39,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - 🧩 Easily extendable (Podman, Docker, nerdctl planned)
 - 🚀 Unified support for Docker and Podman
 - 🩺 Integrated Neovim healthcheck support (`:checkhealth sandbox`)
-- ⌨️ `:Container`/`:Image`/`:Wsl` subcommand trees with `<Tab>` completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s `usercmd.composer` — a required dependency)
+- ⌨️ `:Sandbox` (alias `:Sbx`) with `container`/`image`/`wsl` subcommand trees and `<Tab>` completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s `usercmd.composer` — a required dependency)
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
 ---
@@ -63,7 +63,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   dependencies = { "StefanBartl/lib.nvim" },
   event = "VimEnter",
   config = function()
-    require("containers").setup({
+    require("sandbox").setup({
       -- Optional: explicitly select engine
       -- If omitted, automatic detection will prefer Podman if installed, otherwise Docker
       engine = "podman", -- or "docker"
@@ -79,7 +79,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   dependencies = { "StefanBartl/lib.nvim" },
   lazy = false,
   config = function()
-    require("containers").setup({})
+    require("sandbox").setup({})
   end,
 }
 ```
@@ -91,13 +91,13 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   dependencies = { "StefanBartl/lib.nvim" },
   cmd = { "Container", "Image", "Wsl" },
   config = function()
-    require("containers").setup({})
+    require("sandbox").setup({})
   end,
 }
 ```
 
 ℹ️ Important:
-You must call `require("containers").setup({})` to initialize the plugin's configuration.
+You must call `require("sandbox").setup({})` to initialize the plugin's configuration.
 The engine option is optional.
 If omitted, **sandbox.nvim** will automatically:
     - Prefer **Podman** if installed
@@ -153,10 +153,10 @@ Clone the repository and either symlink or load it into your Neovim runtime path
 See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`](./docs/ADD_USECASE.md) for guidelines.
 
 ### File Layout
-- Engine adapters: `lua/containers/adapters/<engine>/`
-- Use cases: `lua/containers/core/usecases/`
-- User commands: `lua/containers/bindings/usrcmds/` (registered via `lib.nvim.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
-- UI views: `lua/containers/ui/`
+- Engine adapters: `lua/sandbox/adapters/<engine>/`
+- Use cases: `lua/sandbox/core/usecases/`
+- User commands: `lua/sandbox/bindings/usrcmds/` (registered via `lib.nvim.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
+- UI views: `lua/sandbox/ui/`
 
 Pull Requests and Issues are very welcome!
 

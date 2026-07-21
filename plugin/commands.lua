@@ -1,1 +1,1 @@
-require("containers.bindings.usrcmds").setup()
+require("sandbox.bindings.usrcmds").setup()
