@@ -41,7 +41,7 @@ local list_cache = {}
 ---@param to_name fun(item: table): string
 ---@return string[]
 local function cached_names(key, fetch, to_name)
-  local now = vim.loop.now()
+  local now = vim.uv.now()
   local entry = list_cache[key]
   if entry and (now - entry.at) < CACHE_TTL_MS then
     return entry.items
