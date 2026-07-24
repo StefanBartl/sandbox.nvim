@@ -1,28 +1,15 @@
 --[[
   Docker Adapter Aggregator
 
-  Combines container and image adapters into a full implementation of the ContainerEngine port.
+  Combines container and image adapters into a full implementation of the
+  ContainerEngine port. Merges the sub-aggregators wholesale (rather than
+  re-listing every field by hand) so a new container/image method only has
+  to be added to containers_engine.lua/images_engine.lua to be reachable
+  through sandbox.get_engine() -- a hand-copied field list silently drops
+  new methods the moment someone forgets to update it here too.
 ]]
 
 local containers = require("sandbox.adapters.docker.containers_engine")
-local images_engine = require("sandbox.adapters.docker.images_engine") -- <--- richtig images_engine.lua laden!
+local images = require("sandbox.adapters.docker.images_engine")
 
---- Docker operations exposed by the Docker adapter
-return {
-  -- Container operations
-  list_containers     = containers.list_containers,
-  get_logs            = containers.get_logs,
-  exec_in_container   = containers.exec_in_container,
-  start_container     = containers.start_container,
-  stop_container      = containers.stop_container,
-  kill_container      = containers.kill_container,
-  remove_container    = containers.remove_container,
-  prune_containers    = containers.prune_containers,
-  inspect_container   = containers.inspect_container,
-
-  -- Image operations
-  list_images         = images_engine.list_images,
-  pull_image          = images_engine.pull_image,
-  remove_image        = images_engine.remove_image,
-  prune_images        = images_engine.prune_images,
-}
+return vim.tbl_extend("force", {}, containers, images)
