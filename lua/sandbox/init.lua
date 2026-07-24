@@ -8,6 +8,11 @@ local engines = {
   docker = require("sandbox.adapters.docker.engine"),
 }
 
+local compose_engines = {
+  podman = require("sandbox.adapters.podman.compose_engine"),
+  docker = require("sandbox.adapters.docker.compose_engine"),
+}
+
 local M = {}
 
 --- Setup the plugin
@@ -20,6 +25,17 @@ end
 --- @return table|nil
 function M.get_engine()
   local engine = engines[config.options.engine]
+  if not engine then
+    notify.error("Invalid engine: " .. tostring(config.options.engine))
+    return nil
+  end
+  return engine
+end
+
+--- Get the active ComposeEngine implementation
+--- @return table|nil
+function M.get_compose_engine()
+  local engine = compose_engines[config.options.engine]
   if not engine then
     notify.error("Invalid engine: " .. tostring(config.options.engine))
     return nil

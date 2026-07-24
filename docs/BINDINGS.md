@@ -1,8 +1,8 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with five sub-namespaces — `container`, `image`, `volume`,
-`network`, and (only when `wsl.exe` is reachable) `wsl` — built on
+alias: `:Sbx`), with six sub-namespaces — `container`, `image`, `volume`,
+`network`, `compose`, and (only when `wsl.exe` is reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
@@ -73,6 +73,21 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | `connect` | `{network} {id}` | Connect a container to a network |
 | `disconnect` | `{network} {id}` | Disconnect a container from a network |
 | `prune` | — | Remove all unused networks |
+
+## `:Sandbox compose <subcommand>` (alias: `:Sbx compose ...`)
+
+Scoped to a `docker-compose.yml`/`compose.yml`/`podman-compose.yml`
+auto-detected in the cwd or an ancestor directory (via `vim.fs.find`,
+same lookup `docker compose`/`podman compose` themselves do). No
+id/name argument — there is exactly one project per detected file.
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `up` | — | Start the compose project, detached |
+| `down` | — | Stop and remove the compose project |
+| `restart` | — | Restart the compose project |
+| `ps` | — | List services in the compose project |
+| `logs` | — | Show logs for the compose project |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 

@@ -29,16 +29,6 @@ lifecycle actions:
 
 ## 4. Compose support
 
-- [ ] 💡 Detect `docker-compose.yml` / `compose.yml` / `podman-compose.yml`
-      in the cwd (or an ancestor) and expose `Sandbox compose
-      {up,down,ps,logs,restart}` scoped to that file.
-  - Needs its own port (`core/ports/compose_engine.lua`) since compose is a
-    meaningfully different surface than single-container/image commands —
-    not just another method bolted onto `ContainerEngine`.
-  - `docker compose` (v2 plugin) and `podman-compose` have diverging CLI
-    shapes; worth scoping to "detect what's on `PATH`" the same way
-    `engine_utils.get_engine()` already prefers Podman over Docker.
-
 ## 5. Interactive UI
 
 This is probably the highest-leverage area: today's views
