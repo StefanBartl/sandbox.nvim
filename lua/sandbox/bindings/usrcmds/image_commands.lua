@@ -10,6 +10,7 @@
 
 local notify = require("sandbox.notify")
 local friendly_error = require("sandbox.util.friendly_error")
+local confirm = require("sandbox.util.confirm")
 local M = {}
 
 --- List all available images
@@ -80,13 +81,15 @@ function M.remove(id)
     return
   end
 
-  local usecase = require("sandbox.core.usecases.images.remove_image")
-  usecase(engine, id, function(ok, err)
-    if ok then
-      notify.info("Image removed successfully: " .. id)
-    else
-      notify.error("Failed to remove image " .. id .. ": " .. friendly_error(err), { id = id, err = err })
-    end
+  confirm.destructive("Remove image " .. id .. "?", function()
+    local usecase = require("sandbox.core.usecases.images.remove_image")
+    usecase(engine, id, function(ok, err)
+      if ok then
+        notify.info("Image removed successfully: " .. id)
+      else
+        notify.error("Failed to remove image " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+      end
+    end)
   end)
 end
 
@@ -97,13 +100,15 @@ function M.prune()
     return
   end
 
-  local usecase = require("sandbox.core.usecases.images.prune_images")
-  usecase(engine, function(ok, err)
-    if ok then
-      notify.info("All dangling images pruned successfully!")
-    else
-      notify.error("Failed to prune images: " .. friendly_error(err), { err = err })
-    end
+  confirm.destructive("Prune all dangling images?", function()
+    local usecase = require("sandbox.core.usecases.images.prune_images")
+    usecase(engine, function(ok, err)
+      if ok then
+        notify.info("All dangling images pruned successfully!")
+      else
+        notify.error("Failed to prune images: " .. friendly_error(err), { err = err })
+      end
+    end)
   end)
 end
 

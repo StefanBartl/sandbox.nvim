@@ -14,6 +14,7 @@
 --- invoked moved.
 
 local notify = require("sandbox.notify")
+local confirm = require("sandbox.util.confirm")
 local M = {}
 
 local function open_term_buffer(name, cmd)
@@ -84,7 +85,9 @@ function M.kill(id)
     notify.warn("Usage: :Sandbox container kill <container-id> --buffer")
     return
   end
-  open_term_buffer("sandbox.nvim://term/kill/" .. id, { engine_name, "kill", id })
+  confirm.destructive("Kill container " .. id .. "?", function()
+    open_term_buffer("sandbox.nvim://term/kill/" .. id, { engine_name, "kill", id })
+  end)
 end
 
 --- Restart a container, streaming output into a terminal buffer
@@ -112,7 +115,9 @@ function M.remove(id)
     notify.warn("Usage: :Sandbox container remove <container-id> --buffer")
     return
   end
-  open_term_buffer("sandbox.nvim://term/remove/" .. id, { engine_name, "rm", id })
+  confirm.destructive("Remove container " .. id .. "?", function()
+    open_term_buffer("sandbox.nvim://term/remove/" .. id, { engine_name, "rm", id })
+  end)
 end
 
 --- Prune all stopped containers, streaming output into a terminal buffer
@@ -121,7 +126,9 @@ function M.prune()
   if not engine_name then
     return
   end
-  open_term_buffer("sandbox.nvim://term/prune", { engine_name, "container", "prune", "-f" })
+  confirm.destructive("Prune all stopped containers?", function()
+    open_term_buffer("sandbox.nvim://term/prune", { engine_name, "container", "prune", "-f" })
+  end)
 end
 
 --- Pull an image, streaming output into a terminal buffer
@@ -144,7 +151,9 @@ function M.image_prune()
   if not engine_name then
     return
   end
-  open_term_buffer("sandbox.nvim://term/image-prune", { engine_name, "image", "prune", "-f" })
+  confirm.destructive("Prune all dangling images?", function()
+    open_term_buffer("sandbox.nvim://term/image-prune", { engine_name, "image", "prune", "-f" })
+  end)
 end
 
 return M
