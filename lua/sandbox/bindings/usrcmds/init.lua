@@ -209,6 +209,14 @@ local function container_routes()
       desc = "Resume a paused container's processes",
       run = function(ctx) container_cmds.unpause(ctx.args.id) end },
 
+    { path = { "container", "rename" },
+      args = {
+        { name = "id", type = "CONTAINER_ID" },
+        { name = "new_name", type = "STRING" },
+      },
+      desc = "Rename a container",
+      run = function(ctx) container_cmds.rename(ctx.args.id, ctx.args.new_name) end },
+
     { path = { "container", "remove" },
       args = { { name = "id", type = "CONTAINER_ID" } },
       flags = BUFFER_FLAG,

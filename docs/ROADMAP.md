@@ -20,7 +20,6 @@ The `ContainerEngine` port (`core/ports/container_engine.lua`) currently
 covers list/logs/exec/start/stop/kill/remove/prune/inspect. Missing
 lifecycle actions:
 
-- [ ] 💡 `rename` — rename a container without recreating it.
 - [ ] 💡 `stats` — one-shot or live `docker/podman stats` view (CPU, memory,
       net I/O) rendered in a scratch buffer, refreshed on a timer.
 - [ ] 💡 `cp` — copy files/directories between host and container
