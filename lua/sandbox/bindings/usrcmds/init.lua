@@ -227,6 +227,14 @@ local function container_routes()
       desc = "List the processes running inside a container",
       run = function(ctx) container_cmds.top(ctx.args.id) end },
 
+    { path = { "container", "cp" },
+      args = {
+        { name = "src", type = "STRING" },
+        { name = "dest", type = "STRING" },
+      },
+      desc = "Copy a file/directory between the host and a container (either side may be <id>:<path>)",
+      run = function(ctx) container_cmds.cp(ctx.args.src, ctx.args.dest) end },
+
     { path = { "container", "remove" },
       args = { { name = "id", type = "CONTAINER_ID" } },
       flags = BUFFER_FLAG,

@@ -61,6 +61,12 @@ return {
   top_container = function(id)
     error(id .. ": top_container not implemented.")
   end,
+  --- @param src string
+  --- @param dest string
+  --- @return boolean ok, string|nil err
+  cp_container = function(src, dest)
+    error("cp_container not implemented. " .. src .. " -> " .. dest)
+  end,
   --- @param id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_container = function(id, _on_done)

@@ -313,6 +313,30 @@ function M.top(id)
   view(lines, "top/" .. id)
 end
 
+--- Copy a file or directory between the host and a container
+---@param src string either a host path or "<container-id>:<path>"
+---@param dest string either a host path or "<container-id>:<path>"
+function M.cp(src, dest)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not src or src == "" or not dest or dest == "" then
+    notify.warn("Usage: :Sandbox container cp <src> <dest> (one side may be <container-id>:<path>)")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.cp_container")
+  local ok, err = usecase(engine, src, dest)
+  if not ok then
+    notify.error("Failed to copy " .. src .. " -> " .. dest .. ": " .. friendly_error(err), { src = src, dest = dest, err = err })
+    return
+  end
+
+  notify.info("Copied: " .. src .. " -> " .. dest)
+end
+
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)

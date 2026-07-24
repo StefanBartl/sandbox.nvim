@@ -16,6 +16,7 @@ local pause_container = require("sandbox.adapters.podman.containers.pause_contai
 local rename_container = require("sandbox.adapters.podman.containers.rename_container")
 local stats_container = require("sandbox.adapters.podman.containers.stats_container")
 local top_container = require("sandbox.adapters.podman.containers.top_container")
+local cp_container = require("sandbox.adapters.podman.containers.cp_container")
 local remove_container = require("sandbox.adapters.podman.containers.remove_container")
 local inspect_container = require("sandbox.adapters.podman.containers.inspect_containers")
 local prune_containers = require("sandbox.adapters.podman.containers.prune_containers")
@@ -34,6 +35,7 @@ return {
   rename_container = rename_container.rename_container,
   stats_container = stats_container.stats_container,
   top_container = top_container.top_container,
+  cp_container = cp_container.cp_container,
   remove_container = remove_container.remove_container,
   inspect_container = inspect_container.inspect_container,
   prune_containers = prune_containers.prune_containers
