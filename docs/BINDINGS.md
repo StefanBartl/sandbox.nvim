@@ -44,6 +44,7 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | `list` | — | List available images |
 | `pull` | `{name} [--buffer\|-b]` | Pull an image |
 | `tag` | `{source} {target}` | Tag a local image with a new repository:tag |
+| `build` | `{tag} [path]` | Build an image from a Dockerfile/Containerfile (streams to a terminal buffer); `path` defaults to `.` |
 | `remove` | `{id}` | Remove an image |
 | `prune` | `[--buffer\|-b]` | Remove all dangling images |
 
