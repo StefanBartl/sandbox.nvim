@@ -37,6 +37,16 @@ return {
   end,
   --- @param id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
+  pause_container = function(id, _on_done)
+    error(id .. ": pause_container not implemented.")
+  end,
+  --- @param id string
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  unpause_container = function(id, _on_done)
+    error(id .. ": unpause_container not implemented.")
+  end,
+  --- @param id string
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_container = function(id, _on_done)
     error(id .. ": remove_container not implemented.")
   end,

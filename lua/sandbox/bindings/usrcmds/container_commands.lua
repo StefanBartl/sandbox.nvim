@@ -195,6 +195,52 @@ function M.restart(id)
   end)
 end
 
+--- Pause a running container's processes
+---@param id string
+function M.pause(id)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container pause <container-id>")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.pause_container")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Container paused: " .. id)
+    else
+      notify.error("Failed to pause container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+    end
+  end)
+end
+
+--- Resume a paused container's processes
+---@param id string
+function M.unpause(id)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container unpause <container-id>")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.unpause_container")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Container unpaused: " .. id)
+    else
+      notify.error("Failed to unpause container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+    end
+  end)
+end
+
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)
