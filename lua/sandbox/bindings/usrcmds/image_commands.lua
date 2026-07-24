@@ -164,6 +164,55 @@ function M.load(path)
   notify.info("Image loaded from: " .. path)
 end
 
+--- Show an image's layer history
+---@param image string
+function M.history(image)
+  if not image or image == "" then
+    notify.warn("Usage: :Sandbox image history <image>")
+    return
+  end
+
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.images.history_image")
+  local lines, err = usecase(engine, image)
+  if not lines then
+    notify.error("Failed to get history for " .. image .. ": " .. friendly_error(err), { image = image, err = err })
+    return
+  end
+
+  local view = require("sandbox.ui.log_view")
+  view(lines, "image-history/" .. image)
+end
+
+--- Inspect detailed information about an image
+---@param image string
+function M.inspect(image)
+  if not image or image == "" then
+    notify.warn("Usage: :Sandbox image inspect <image>")
+    return
+  end
+
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.images.inspect_image")
+  local view = require("sandbox.ui.inspect_view")
+
+  local ok, result = pcall(usecase, engine, image)
+  if not ok then
+    notify.error("Failed to inspect image " .. image .. ": " .. tostring(result), { image = image, err = result })
+    return
+  end
+
+  view(result, "image-" .. image)
+end
+
 --- Prune (remove) all dangling images
 function M.prune()
   local engine = require("sandbox").get_engine()

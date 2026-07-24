@@ -47,6 +47,8 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | `build` | `{tag} [path]` | Build an image from a Dockerfile/Containerfile (streams to a terminal buffer); `path` defaults to `.` |
 | `save` | `{image} {path}` | Save (export) an image to a tarball on disk |
 | `load` | `{path}` | Load (import) an image from a tarball on disk |
+| `history` | `{image}` | Show an image's layer history |
+| `inspect` | `{image}` | Inspect detailed information about an image |
 | `remove` | `{id}` | Remove an image |
 | `prune` | `[--buffer\|-b]` | Remove all dangling images |
 

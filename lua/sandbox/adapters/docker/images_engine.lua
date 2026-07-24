@@ -12,6 +12,8 @@ local prune_images = require("sandbox.adapters.docker.images.prune_images")
 local tag_image = require("sandbox.adapters.docker.images.tag_image")
 local save_image = require("sandbox.adapters.docker.images.save_image")
 local load_image = require("sandbox.adapters.docker.images.load_image")
+local history_image = require("sandbox.adapters.docker.images.history_image")
+local inspect_image = require("sandbox.adapters.docker.images.inspect_image")
 
 --- Image operations exposed by the Docker adapter
 return {
@@ -22,4 +24,6 @@ return {
   tag_image = tag_image.tag_image,
   save_image = save_image.save_image,
   load_image = load_image.load_image,
+  history_image = history_image.history_image,
+  inspect_image = inspect_image.inspect_image,
 }

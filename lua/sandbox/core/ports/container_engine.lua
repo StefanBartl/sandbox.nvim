@@ -121,4 +121,14 @@ return {
   load_image = function(path)
     error(path .. ": load_image not implemented.")
   end,
+  --- @param image string
+  --- @return string[]|nil lines, string|nil err
+  history_image = function(image)
+    error(image .. ": history_image not implemented.")
+  end,
+  --- @param image string
+  --- @return table|string[]
+  inspect_image = function(image)
+    error(image .. ": inspect_image not implemented.")
+  end,
 }

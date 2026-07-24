@@ -306,6 +306,16 @@ local function image_routes()
       desc = "Load (import) an image from a tarball on disk",
       run = function(ctx) image_cmds.load(ctx.args.path) end },
 
+    { path = { "image", "history" },
+      args = { { name = "image", type = "IMAGE_ID" } },
+      desc = "Show an image's layer history",
+      run = function(ctx) image_cmds.history(ctx.args.image) end },
+
+    { path = { "image", "inspect" },
+      args = { { name = "image", type = "IMAGE_ID" } },
+      desc = "Inspect detailed information about an image",
+      run = function(ctx) image_cmds.inspect(ctx.args.image) end },
+
     { path = { "image", "remove" },
       args = { { name = "id", type = "IMAGE_ID" } },
       desc = "Remove a local image",
