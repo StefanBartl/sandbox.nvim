@@ -285,6 +285,14 @@ local function image_routes()
       desc = "Tag a local image with a new repository:tag",
       run = function(ctx) image_cmds.tag(ctx.args.source, ctx.args.target) end },
 
+    { path = { "image", "build" },
+      args = {
+        { name = "tag", type = "STRING" },
+        { name = "path", type = "STRING", optional = true },
+      },
+      desc = "Build an image from a Dockerfile/Containerfile (streams to a terminal buffer)",
+      run = function(ctx) container_buffer_cmds.build(ctx.args.tag, ctx.args.path) end },
+
     { path = { "image", "remove" },
       args = { { name = "id", type = "IMAGE_ID" } },
       desc = "Remove a local image",

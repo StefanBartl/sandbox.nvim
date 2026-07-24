@@ -23,9 +23,6 @@ lifecycle actions:
 
 ## 2. Images
 
-- [ ] 💡 `build` — build from a `Dockerfile`/`Containerfile` in the cwd or a
-      picked path, streamed into a `--buffer` terminal like `pull` already
-      supports.
 - [ ] 💡 `save` / `load` — export an image to a tarball and import it back;
       useful for air-gapped or WSL↔host transfers.
 - [ ] 💡 `history` — show an image's layer history.

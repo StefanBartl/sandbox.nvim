@@ -145,6 +145,22 @@ function M.pull(name)
   open_term_buffer("sandbox.nvim://term/pull/" .. name, { engine_name, "pull", name })
 end
 
+--- Build an image from a Dockerfile/Containerfile, streaming output into a terminal buffer
+---@param tag string
+---@param path? string build context, defaults to "." (cwd)
+function M.build(tag, path)
+  local engine_name = require_engine()
+  if not engine_name then
+    return
+  end
+  if not tag or tag == "" then
+    notify.warn("Usage: :Sandbox image build <tag> [path]")
+    return
+  end
+  path = (path and path ~= "") and path or "."
+  open_term_buffer("sandbox.nvim://term/build/" .. tag, { engine_name, "build", "-t", tag, path })
+end
+
 --- Prune dangling images, streaming output into a terminal buffer
 function M.image_prune()
   local engine_name = require_engine()
