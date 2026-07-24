@@ -28,6 +28,7 @@ local container_buffer_cmds = require("sandbox.bindings.usrcmds.container_comman
 local image_cmds = require("sandbox.bindings.usrcmds.image_commands")
 local volume_cmds = require("sandbox.bindings.usrcmds.volume_commands")
 local network_cmds = require("sandbox.bindings.usrcmds.network_commands")
+local compose_cmds = require("sandbox.bindings.usrcmds.compose_commands")
 local wsl_cmds = require("sandbox.bindings.usrcmds.wsl_commands")
 
 local M = {}
@@ -424,6 +425,31 @@ local function network_routes()
 end
 
 ---@return table[]
+local function compose_routes()
+  return {
+    { path = { "compose", "up" },
+      desc = "Start the compose project detected in cwd (detached)",
+      run = function(_ctx) compose_cmds.up() end },
+
+    { path = { "compose", "down" },
+      desc = "Stop and remove the compose project detected in cwd",
+      run = function(_ctx) compose_cmds.down() end },
+
+    { path = { "compose", "restart" },
+      desc = "Restart the compose project detected in cwd",
+      run = function(_ctx) compose_cmds.restart() end },
+
+    { path = { "compose", "ps" },
+      desc = "List services in the compose project detected in cwd",
+      run = function(_ctx) compose_cmds.ps() end },
+
+    { path = { "compose", "logs" },
+      desc = "Show logs for the compose project detected in cwd",
+      run = function(_ctx) compose_cmds.logs() end },
+  }
+end
+
+---@return table[]
 local function wsl_routes()
   return {
     { path = { "wsl", "list" }, desc = "List all registered WSL distributions", run = wsl_cmds.list },
@@ -455,6 +481,7 @@ function M.setup()
   vim.list_extend(routes, image_routes())
   vim.list_extend(routes, volume_routes())
   vim.list_extend(routes, network_routes())
+  vim.list_extend(routes, compose_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in
@@ -464,7 +491,7 @@ function M.setup()
   end
 
   local spec = {
-    desc = "sandbox.nvim: container, image, volume, network, and WSL distro operations (Docker/Podman)",
+    desc = "sandbox.nvim: container, image, volume, network, compose, and WSL distro operations (Docker/Podman)",
     routes = routes,
   }
 
