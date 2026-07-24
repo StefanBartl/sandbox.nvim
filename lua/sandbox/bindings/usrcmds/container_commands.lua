@@ -172,6 +172,29 @@ function M.kill(id)
   end)
 end
 
+--- Restart a container
+---@param id string
+function M.restart(id)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container restart <container-id>")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.restart_container")
+  usecase(engine, id, function(ok, err)
+    if ok then
+      notify.info("Container restarted successfully: " .. id)
+    else
+      notify.error("Failed to restart container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+    end
+  end)
+end
+
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)

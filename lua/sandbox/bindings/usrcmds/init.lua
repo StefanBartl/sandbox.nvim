@@ -190,6 +190,15 @@ local function container_routes()
         else container_cmds.kill(ctx.args.id) end
       end },
 
+    { path = { "container", "restart" },
+      args = { { name = "id", type = "CONTAINER_ID" } },
+      flags = BUFFER_FLAG,
+      desc = "Restart a container (--buffer: stream to a terminal buffer)",
+      run = function(ctx)
+        if ctx.flags.buffer then container_buffer_cmds.restart(ctx.args.id)
+        else container_cmds.restart(ctx.args.id) end
+      end },
+
     { path = { "container", "remove" },
       args = { { name = "id", type = "CONTAINER_ID" } },
       flags = BUFFER_FLAG,

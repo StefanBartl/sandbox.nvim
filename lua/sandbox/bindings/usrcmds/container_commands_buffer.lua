@@ -87,6 +87,20 @@ function M.kill(id)
   open_term_buffer("sandbox.nvim://term/kill/" .. id, { engine_name, "kill", id })
 end
 
+--- Restart a container, streaming output into a terminal buffer
+---@param id string
+function M.restart(id)
+  local engine_name = require_engine()
+  if not engine_name then
+    return
+  end
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container restart <container-id> --buffer")
+    return
+  end
+  open_term_buffer("sandbox.nvim://term/restart/" .. id, { engine_name, "restart", id })
+end
+
 --- Remove a container, streaming output into a terminal buffer
 ---@param id string
 function M.remove(id)

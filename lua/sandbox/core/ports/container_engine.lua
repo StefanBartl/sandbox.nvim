@@ -32,6 +32,11 @@ return {
   end,
   --- @param id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
+  restart_container = function(id, _on_done)
+    error(id .. ": restart_container not implemented.")
+  end,
+  --- @param id string
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_container = function(id, _on_done)
     error(id .. ": remove_container not implemented.")
   end,
