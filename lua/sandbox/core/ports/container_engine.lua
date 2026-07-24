@@ -110,4 +110,15 @@ return {
   tag_image = function(source, target)
     error("tag_image not implemented. " .. source .. " -> " .. target)
   end,
+  --- @param image string
+  --- @param path string
+  --- @return boolean ok, string|nil err
+  save_image = function(image, path)
+    error("save_image not implemented. " .. image .. " -> " .. path)
+  end,
+  --- @param path string
+  --- @return boolean ok, string|nil err
+  load_image = function(path)
+    error(path .. ": load_image not implemented.")
+  end,
 }

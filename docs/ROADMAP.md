@@ -23,8 +23,6 @@ lifecycle actions:
 
 ## 2. Images
 
-- [ ] 💡 `save` / `load` — export an image to a tarball and import it back;
-      useful for air-gapped or WSL↔host transfers.
 - [ ] 💡 `history` — show an image's layer history.
 - [ ] 💡 `inspect` — mirror `container inspect` for images (currently
       containers have it, images don't).

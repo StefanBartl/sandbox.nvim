@@ -293,6 +293,19 @@ local function image_routes()
       desc = "Build an image from a Dockerfile/Containerfile (streams to a terminal buffer)",
       run = function(ctx) container_buffer_cmds.build(ctx.args.tag, ctx.args.path) end },
 
+    { path = { "image", "save" },
+      args = {
+        { name = "image", type = "IMAGE_ID" },
+        { name = "path", type = "STRING" },
+      },
+      desc = "Save (export) an image to a tarball on disk",
+      run = function(ctx) image_cmds.save(ctx.args.image, ctx.args.path) end },
+
+    { path = { "image", "load" },
+      args = { { name = "path", type = "STRING" } },
+      desc = "Load (import) an image from a tarball on disk",
+      run = function(ctx) image_cmds.load(ctx.args.path) end },
+
     { path = { "image", "remove" },
       args = { { name = "id", type = "IMAGE_ID" } },
       desc = "Remove a local image",
