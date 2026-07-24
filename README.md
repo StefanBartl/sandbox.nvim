@@ -21,6 +21,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 - [Supported Engines](#supported-engines)
 - [Development & Contribution](#development--contribution)
   - [File Layout](#file-layout)
+- [Roadmap](#roadmap)
 - [Disclaimer](#disclaimer)
 - [Feedback](#feedback)
 
@@ -159,6 +160,15 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 - UI views: `lua/sandbox/ui/`
 
 Pull Requests and Issues are very welcome!
+
+---
+
+## Roadmap
+
+Looking for ways to contribute, or curious what's planned? See
+[`docs/ROADMAP.md`](./docs/ROADMAP.md) for proposed features — more
+container/image actions, volume & network support, compose integration, an
+interactive TUI-style list view, and more.
 
 ---
 
