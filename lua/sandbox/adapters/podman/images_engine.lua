@@ -10,6 +10,8 @@ local pull_image = require("sandbox.adapters.podman.images.pull_image")
 local remove_image = require("sandbox.adapters.podman.images.remove_image")
 local prune_images = require("sandbox.adapters.podman.images.prune_images")
 local tag_image = require("sandbox.adapters.podman.images.tag_image")
+local save_image = require("sandbox.adapters.podman.images.save_image")
+local load_image = require("sandbox.adapters.podman.images.load_image")
 
 --- Image operations exposed by the Podman adapter
 return {
@@ -18,4 +20,6 @@ return {
   remove_image = remove_image.remove_image,
   prune_images = prune_images.prune_images,
   tag_image = tag_image.tag_image,
+  save_image = save_image.save_image,
+  load_image = load_image.load_image,
 }

@@ -117,6 +117,53 @@ function M.tag(source, target)
   notify.info("Tagged: " .. source .. " -> " .. target)
 end
 
+--- Save (export) an image to a tarball on disk
+---@param image string
+---@param path string
+function M.save(image, path)
+  if not image or image == "" or not path or path == "" then
+    notify.warn("Usage: :Sandbox image save <image> <path>")
+    return
+  end
+
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.images.save_image")
+  local ok, err = usecase(engine, image, path)
+  if not ok then
+    notify.error("Failed to save image " .. image .. ": " .. friendly_error(err), { image = image, path = path, err = err })
+    return
+  end
+
+  notify.info("Image saved: " .. image .. " -> " .. path)
+end
+
+--- Load (import) an image from a tarball on disk
+---@param path string
+function M.load(path)
+  if not path or path == "" then
+    notify.warn("Usage: :Sandbox image load <path>")
+    return
+  end
+
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.images.load_image")
+  local ok, err = usecase(engine, path)
+  if not ok then
+    notify.error("Failed to load image from " .. path .. ": " .. friendly_error(err), { path = path, err = err })
+    return
+  end
+
+  notify.info("Image loaded from: " .. path)
+end
+
 --- Prune (remove) all dangling images
 function M.prune()
   local engine = require("sandbox").get_engine()
