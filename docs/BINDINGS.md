@@ -27,6 +27,7 @@ keymaps or autocmds.
 | `stats` | `{id}` | One-shot CPU/memory/network/block-IO snapshot |
 | `top` | `{id}` | List processes running inside a container |
 | `cp` | `{src} {dest}` | Copy a file/dir between host and container (either side may be `<id>:<path>`) |
+| `run` | — | Interactively create+start a new container (prompts for image, name, ports, volumes, env) |
 | `remove` | `{id} [--buffer\|-b]` | Remove a stopped container |
 | `prune` | `[--buffer\|-b]` | Remove all stopped containers |
 | `inspect` | `{id}` | Inspect container details |

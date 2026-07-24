@@ -337,6 +337,57 @@ function M.cp(src, dest)
   notify.info("Copied: " .. src .. " -> " .. dest)
 end
 
+--- Interactively create and start a new container: prompts for image, name,
+--- port mappings, volume mounts and env vars, then runs it detached.
+function M.run()
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  ---@param s string
+  ---@return string[]|nil
+  local function split_csv(s)
+    if not s or s == "" then
+      return nil
+    end
+    return vim.split(s, ",", { trimempty = true })
+  end
+
+  vim.ui.input({ prompt = "Image (e.g. alpine:latest): " }, function(image)
+    if not image or image == "" then
+      notify.warn("Aborted: no image given")
+      return
+    end
+
+    vim.ui.input({ prompt = "Container name (optional): " }, function(name)
+      vim.ui.input({ prompt = "Port mappings, comma-separated host:container (optional): " }, function(ports)
+        vim.ui.input({ prompt = "Volume mounts, comma-separated host:container (optional): " }, function(volumes)
+          vim.ui.input({ prompt = "Env vars, comma-separated KEY=VALUE (optional): " }, function(env)
+            ---@type Sandbox.RunOpts
+            local opts = {
+              image = image,
+              name = name ~= "" and name or nil,
+              ports = split_csv(ports),
+              volumes = split_csv(volumes),
+              env = split_csv(env),
+            }
+
+            local usecase = require("sandbox.core.usecases.containers.run_container")
+            usecase(engine, opts, function(ok, result)
+              if ok then
+                notify.info("Container started: " .. (result or opts.name or opts.image))
+              else
+                notify.error("Failed to run container: " .. friendly_error(result), { opts = opts, err = result })
+              end
+            end)
+          end)
+        end)
+      end)
+    end)
+  end)
+end
+
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)

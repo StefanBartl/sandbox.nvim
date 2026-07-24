@@ -20,10 +20,6 @@ The `ContainerEngine` port (`core/ports/container_engine.lua`) currently
 covers list/logs/exec/start/stop/kill/remove/prune/inspect. Missing
 lifecycle actions:
 
-- [ ] 💡 `run` — create-and-start wizard: prompt for image, name, port
-      mappings, volume mounts, env vars, then run. Bridges the gap between
-      "I have an image" and "I have a running container" without leaving
-      Neovim.
 - [ ] 💡 Confirmation prompts for destructive actions (`remove`, `prune`,
       `kill`) — currently these fire immediately once the user command is
       typed. A `vim.ui.select`/`vim.ui.input` confirm step (skippable via
