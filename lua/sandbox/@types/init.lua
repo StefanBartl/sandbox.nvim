@@ -5,6 +5,7 @@
 
 ---@class Sandbox.Config.Options
 ---@field engine Sandbox.Engine|nil
+---@field confirm_destructive boolean|nil ask before remove/prune/kill (default true)
 
 ---@class Sandbox.RunOpts
 ---@field image string

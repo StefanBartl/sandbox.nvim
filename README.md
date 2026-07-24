@@ -68,6 +68,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
       -- Optional: explicitly select engine
       -- If omitted, automatic detection will prefer Podman if installed, otherwise Docker
       engine = "podman", -- or "docker"
+      -- Ask for confirmation before remove/prune/kill (default: true)
+      confirm_destructive = true,
     })
   end,
 }

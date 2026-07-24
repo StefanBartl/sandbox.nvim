@@ -4,4 +4,5 @@
 ---@type Sandbox.Config.Options
 return {
   engine = nil, -- no default here, to allow dynamic detection
+  confirm_destructive = true, -- ask before remove/prune/kill; set false to skip the prompt
 }

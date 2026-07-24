@@ -10,6 +10,7 @@
 
 local notify = require("sandbox.notify")
 local friendly_error = require("sandbox.util.friendly_error")
+local confirm = require("sandbox.util.confirm")
 local M = {}
 
 --- List all containers (running and stopped)
@@ -162,13 +163,15 @@ function M.kill(id)
     return
   end
 
-  local usecase = require("sandbox.core.usecases.containers.kill_container")
-  usecase(engine, id, function(ok, err)
-    if ok then
-      notify.info("Container killed successfully: " .. id)
-    else
-      notify.error("Failed to kill container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
-    end
+  confirm.destructive("Kill container " .. id .. "?", function()
+    local usecase = require("sandbox.core.usecases.containers.kill_container")
+    usecase(engine, id, function(ok, err)
+      if ok then
+        notify.info("Container killed successfully: " .. id)
+      else
+        notify.error("Failed to kill container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+      end
+    end)
   end)
 end
 
@@ -401,16 +404,18 @@ function M.remove(id)
     return
   end
 
-  local usecase = require("sandbox.core.usecases.containers.remove_container")
-  usecase(engine, id, function(ok, err)
-    if ok then
-      notify.info("Container removed successfully: " .. id)
-    else
-      notify.error(
-        "Failed to remove container " .. id .. ": " .. friendly_error(err) .. "\nIs it stopped?",
-        { id = id, err = err }
-      )
-    end
+  confirm.destructive("Remove container " .. id .. "?", function()
+    local usecase = require("sandbox.core.usecases.containers.remove_container")
+    usecase(engine, id, function(ok, err)
+      if ok then
+        notify.info("Container removed successfully: " .. id)
+      else
+        notify.error(
+          "Failed to remove container " .. id .. ": " .. friendly_error(err) .. "\nIs it stopped?",
+          { id = id, err = err }
+        )
+      end
+    end)
   end)
 end
 
@@ -421,13 +426,15 @@ function M.prune()
     return
   end
 
-  local usecase = require("sandbox.core.usecases.containers.prune_containers")
-  usecase(engine, function(ok, err)
-    if ok then
-      notify.info("All stopped containers pruned successfully!")
-    else
-      notify.error("Failed to prune containers: " .. friendly_error(err), { err = err })
-    end
+  confirm.destructive("Prune all stopped containers?", function()
+    local usecase = require("sandbox.core.usecases.containers.prune_containers")
+    usecase(engine, function(ok, err)
+      if ok then
+        notify.info("All stopped containers pruned successfully!")
+      else
+        notify.error("Failed to prune containers: " .. friendly_error(err), { err = err })
+      end
+    end)
   end)
 end
 

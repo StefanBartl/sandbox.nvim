@@ -20,10 +20,6 @@ The `ContainerEngine` port (`core/ports/container_engine.lua`) currently
 covers list/logs/exec/start/stop/kill/remove/prune/inspect. Missing
 lifecycle actions:
 
-- [ ] 💡 Confirmation prompts for destructive actions (`remove`, `prune`,
-      `kill`) — currently these fire immediately once the user command is
-      typed. A `vim.ui.select`/`vim.ui.input` confirm step (skippable via
-      config, see [§6](#6-configuration)) would prevent fat-finger data loss.
 
 ## 2. Images
 
@@ -104,8 +100,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 `config/DEFAULTS.lua` currently exposes exactly one option (`engine`).
 Candidates for `setup({})`:
 
-- [ ] 💡 `confirm_destructive` (bool, default `true`) — gate for the
-      confirmation prompts in [§1](#1-container-lifecycle).
 - [ ] 💡 `default_shell` — shell used by `container exec` when none is
       given (currently presumably hardcoded per adapter).
 - [ ] 💡 `refresh_interval` — for the auto-refreshing list views above.
