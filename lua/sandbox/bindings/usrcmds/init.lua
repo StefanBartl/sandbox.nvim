@@ -235,6 +235,10 @@ local function container_routes()
       desc = "Copy a file/directory between the host and a container (either side may be <id>:<path>)",
       run = function(ctx) container_cmds.cp(ctx.args.src, ctx.args.dest) end },
 
+    { path = { "container", "run" },
+      desc = "Interactively create and start a new container (prompts for image, name, ports, volumes, env)",
+      run = function(_ctx) container_cmds.run() end },
+
     { path = { "container", "remove" },
       args = { { name = "id", type = "CONTAINER_ID" } },
       flags = BUFFER_FLAG,

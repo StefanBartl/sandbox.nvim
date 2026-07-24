@@ -67,6 +67,11 @@ return {
   cp_container = function(src, dest)
     error("cp_container not implemented. " .. src .. " -> " .. dest)
   end,
+  --- @param opts table
+  --- @param _on_done? fun(ok: boolean, result: string|nil)
+  run_container = function(opts, _on_done)
+    error("run_container not implemented. opts: " .. vim.inspect(opts))
+  end,
   --- @param id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_container = function(id, _on_done)
