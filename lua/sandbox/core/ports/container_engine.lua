@@ -156,4 +156,41 @@ return {
   inspect_image = function(image)
     error(image .. ": inspect_image not implemented.")
   end,
+
+-- Network interfaces
+  --- @return table[]|nil networks, string|nil err
+  list_networks = function()
+    error("list_networks not implemented")
+  end,
+  --- @param name string
+  --- @return boolean ok, string|nil err
+  create_network = function(name)
+    error(name .. ": create_network not implemented.")
+  end,
+  --- @param name string
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  remove_network = function(name, _on_done)
+    error(name .. ": remove_network not implemented.")
+  end,
+  --- @param name string
+  --- @return table|string[]
+  inspect_network = function(name)
+    error(name .. ": inspect_network not implemented.")
+  end,
+  --- @param network string
+  --- @param container_id string
+  --- @return boolean ok, string|nil err
+  connect_network = function(network, container_id)
+    error("connect_network not implemented. " .. network .. " <- " .. container_id)
+  end,
+  --- @param network string
+  --- @param container_id string
+  --- @return boolean ok, string|nil err
+  disconnect_network = function(network, container_id)
+    error("disconnect_network not implemented. " .. network .. " <- " .. container_id)
+  end,
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  prune_networks = function(_on_done)
+    error("prune_networks not implemented")
+  end,
 }
