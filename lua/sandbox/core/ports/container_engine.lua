@@ -110,6 +110,31 @@ return {
   tag_image = function(source, target)
     error("tag_image not implemented. " .. source .. " -> " .. target)
   end,
+
+-- Volume interfaces
+  --- @return table[]|nil volumes, string|nil err
+  list_volumes = function()
+    error("list_volumes not implemented")
+  end,
+  --- @param name string
+  --- @return boolean ok, string|nil err
+  create_volume = function(name)
+    error(name .. ": create_volume not implemented.")
+  end,
+  --- @param name string
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  remove_volume = function(name, _on_done)
+    error(name .. ": remove_volume not implemented.")
+  end,
+  --- @param name string
+  --- @return table|string[]
+  inspect_volume = function(name)
+    error(name .. ": inspect_volume not implemented.")
+  end,
+  --- @param _on_done? fun(ok: boolean, err: string|nil)
+  prune_volumes = function(_on_done)
+    error("prune_volumes not implemented")
+  end,
   --- @param image string
   --- @param path string
   --- @return boolean ok, string|nil err

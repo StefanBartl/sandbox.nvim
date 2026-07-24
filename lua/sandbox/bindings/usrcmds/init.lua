@@ -26,6 +26,7 @@ local composer = require("lib.nvim.usercmd.composer")
 local container_cmds = require("sandbox.bindings.usrcmds.container_commands")
 local container_buffer_cmds = require("sandbox.bindings.usrcmds.container_commands_buffer")
 local image_cmds = require("sandbox.bindings.usrcmds.image_commands")
+local volume_cmds = require("sandbox.bindings.usrcmds.volume_commands")
 local wsl_cmds = require("sandbox.bindings.usrcmds.wsl_commands")
 
 local M = {}
@@ -108,6 +109,17 @@ composer.register_type("IMAGE_ID", {
       local core = require("sandbox")
       return require("sandbox.core.usecases.images.list_images")(core.get_engine())
     end, function(img) return img.repository .. ":" .. img.tag end)
+    return prefix(names, arg_lead)
+  end,
+})
+
+composer.register_type("VOLUME_NAME", {
+  validate = function(raw) return true, raw, nil end,
+  complete = function(arg_lead)
+    local names = cached_names("volumes", function()
+      local core = require("sandbox")
+      return require("sandbox.core.usecases.volumes.list_volumes")(core.get_engine())
+    end, function(v) return v.name end)
     return prefix(names, arg_lead)
   end,
 })
@@ -332,6 +344,32 @@ local function image_routes()
 end
 
 ---@return table[]
+local function volume_routes()
+  return {
+    { path = { "volume", "list" }, desc = "List all local volumes", run = volume_cmds.list },
+
+    { path = { "volume", "create" },
+      args = { { name = "name", type = "STRING" } },
+      desc = "Create a new named volume",
+      run = function(ctx) volume_cmds.create(ctx.args.name) end },
+
+    { path = { "volume", "remove" },
+      args = { { name = "name", type = "VOLUME_NAME" } },
+      desc = "Remove a volume",
+      run = function(ctx) volume_cmds.remove(ctx.args.name) end },
+
+    { path = { "volume", "inspect" },
+      args = { { name = "name", type = "VOLUME_NAME" } },
+      desc = "Inspect detailed information about a volume",
+      run = function(ctx) volume_cmds.inspect(ctx.args.name) end },
+
+    { path = { "volume", "prune" },
+      desc = "Remove all unused volumes",
+      run = function(_ctx) volume_cmds.prune() end },
+  }
+end
+
+---@return table[]
 local function wsl_routes()
   return {
     { path = { "wsl", "list" }, desc = "List all registered WSL distributions", run = wsl_cmds.list },
@@ -361,6 +399,7 @@ function M.setup()
   local routes = {}
   vim.list_extend(routes, container_routes())
   vim.list_extend(routes, image_routes())
+  vim.list_extend(routes, volume_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in
@@ -370,7 +409,7 @@ function M.setup()
   end
 
   local spec = {
-    desc = "sandbox.nvim: container, image, and WSL distro operations (Docker/Podman)",
+    desc = "sandbox.nvim: container, image, volume, and WSL distro operations (Docker/Podman)",
     routes = routes,
   }
 
