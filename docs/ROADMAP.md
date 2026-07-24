@@ -20,9 +20,6 @@ The `ContainerEngine` port (`core/ports/container_engine.lua`) currently
 covers list/logs/exec/start/stop/kill/remove/prune/inspect. Missing
 lifecycle actions:
 
-- [ ] 💡 `cp` — copy files/directories between host and container
-      (`docker cp` / `podman cp`), usable from a file explorer (oil.nvim,
-      netrw) via a "send to container" action.
 - [ ] 💡 `run` — create-and-start wizard: prompt for image, name, port
       mappings, volume mounts, env vars, then run. Bridges the gap between
       "I have an image" and "I have a running container" without leaving

@@ -26,6 +26,7 @@ keymaps or autocmds.
 | `rename` | `{id} {new-name}` | Rename a container |
 | `stats` | `{id}` | One-shot CPU/memory/network/block-IO snapshot |
 | `top` | `{id}` | List processes running inside a container |
+| `cp` | `{src} {dest}` | Copy a file/dir between host and container (either side may be `<id>:<path>`) |
 | `remove` | `{id} [--buffer\|-b]` | Remove a stopped container |
 | `prune` | `[--buffer\|-b]` | Remove all stopped containers |
 | `inspect` | `{id}` | Inspect container details |
