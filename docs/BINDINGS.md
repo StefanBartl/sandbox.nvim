@@ -24,6 +24,8 @@ keymaps or autocmds.
 | `pause` | `{id}` | Pause a running container's processes |
 | `unpause` | `{id}` | Resume a paused container's processes |
 | `rename` | `{id} {new-name}` | Rename a container |
+| `stats` | `{id}` | One-shot CPU/memory/network/block-IO snapshot |
+| `top` | `{id}` | List processes running inside a container |
 | `remove` | `{id} [--buffer\|-b]` | Remove a stopped container |
 | `prune` | `[--buffer\|-b]` | Remove all stopped containers |
 | `inspect` | `{id}` | Inspect container details |

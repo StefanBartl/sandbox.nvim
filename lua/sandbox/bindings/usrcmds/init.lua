@@ -217,6 +217,16 @@ local function container_routes()
       desc = "Rename a container",
       run = function(ctx) container_cmds.rename(ctx.args.id, ctx.args.new_name) end },
 
+    { path = { "container", "stats" },
+      args = { { name = "id", type = "CONTAINER_ID" } },
+      desc = "Show a one-shot resource usage snapshot of a container",
+      run = function(ctx) container_cmds.stats(ctx.args.id) end },
+
+    { path = { "container", "top" },
+      args = { { name = "id", type = "CONTAINER_ID" } },
+      desc = "List the processes running inside a container",
+      run = function(ctx) container_cmds.top(ctx.args.id) end },
+
     { path = { "container", "remove" },
       args = { { name = "id", type = "CONTAINER_ID" } },
       flags = BUFFER_FLAG,

@@ -20,8 +20,6 @@ The `ContainerEngine` port (`core/ports/container_engine.lua`) currently
 covers list/logs/exec/start/stop/kill/remove/prune/inspect. Missing
 lifecycle actions:
 
-- [ ] 💡 `stats` — one-shot or live `docker/podman stats` view (CPU, memory,
-      net I/O) rendered in a scratch buffer, refreshed on a timer.
 - [ ] 💡 `cp` — copy files/directories between host and container
       (`docker cp` / `podman cp`), usable from a file explorer (oil.nvim,
       netrw) via a "send to container" action.
@@ -29,7 +27,6 @@ lifecycle actions:
       mappings, volume mounts, env vars, then run. Bridges the gap between
       "I have an image" and "I have a running container" without leaving
       Neovim.
-- [ ] 💡 `top` — list processes running inside a container.
 - [ ] 💡 Confirmation prompts for destructive actions (`remove`, `prune`,
       `kill`) — currently these fire immediately once the user command is
       typed. A `vim.ui.select`/`vim.ui.input` confirm step (skippable via
