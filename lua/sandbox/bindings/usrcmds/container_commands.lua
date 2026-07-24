@@ -265,6 +265,54 @@ function M.rename(id, new_name)
   notify.info("Container renamed: " .. id .. " -> " .. new_name)
 end
 
+--- Show a one-shot CPU/memory/network/block-IO snapshot of a container
+---@param id string
+function M.stats(id)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container stats <container-id>")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.stats_container")
+  local lines, err = usecase(engine, id)
+  if not lines then
+    notify.error("Failed to get stats for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+    return
+  end
+
+  local view = require("sandbox.ui.log_view")
+  view(lines, "stats/" .. id)
+end
+
+--- List the processes running inside a container
+---@param id string
+function M.top(id)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container top <container-id>")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.top_container")
+  local lines, err = usecase(engine, id)
+  if not lines then
+    notify.error("Failed to get processes for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+    return
+  end
+
+  local view = require("sandbox.ui.log_view")
+  view(lines, "top/" .. id)
+end
+
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)

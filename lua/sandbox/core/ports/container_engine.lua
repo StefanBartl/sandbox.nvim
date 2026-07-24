@@ -52,6 +52,16 @@ return {
     error(id .. ": rename_container not implemented.")
   end,
   --- @param id string
+  --- @return string[]|nil lines, string|nil err
+  stats_container = function(id)
+    error(id .. ": stats_container not implemented.")
+  end,
+  --- @param id string
+  --- @return string[]|nil lines, string|nil err
+  top_container = function(id)
+    error(id .. ": top_container not implemented.")
+  end,
+  --- @param id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_container = function(id, _on_done)
     error(id .. ": remove_container not implemented.")
