@@ -93,6 +93,30 @@ function M.remove(id)
   end)
 end
 
+--- Tag a local image with a new repository:tag
+---@param source string
+---@param target string
+function M.tag(source, target)
+  if not source or source == "" or not target or target == "" then
+    notify.warn("Usage: :Sandbox image tag <source> <target>")
+    return
+  end
+
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.images.tag_image")
+  local ok, err = usecase(engine, source, target)
+  if not ok then
+    notify.error("Failed to tag image " .. source .. ": " .. friendly_error(err), { source = source, target = target, err = err })
+    return
+  end
+
+  notify.info("Tagged: " .. source .. " -> " .. target)
+end
+
 --- Prune (remove) all dangling images
 function M.prune()
   local engine = require("sandbox").get_engine()

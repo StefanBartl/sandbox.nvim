@@ -277,6 +277,14 @@ local function image_routes()
         else image_cmds.pull(ctx.args.name) end
       end },
 
+    { path = { "image", "tag" },
+      args = {
+        { name = "source", type = "IMAGE_ID" },
+        { name = "target", type = "STRING" },
+      },
+      desc = "Tag a local image with a new repository:tag",
+      run = function(ctx) image_cmds.tag(ctx.args.source, ctx.args.target) end },
+
     { path = { "image", "remove" },
       args = { { name = "id", type = "IMAGE_ID" } },
       desc = "Remove a local image",
