@@ -12,6 +12,7 @@ local start = require("sandbox.adapters.docker.containers.start_container")
 local stop = require("sandbox.adapters.docker.containers.stop_container")
 local kill_container = require("sandbox.adapters.docker.containers.kill_container")
 local restart_container = require("sandbox.adapters.docker.containers.restart_container")
+local pause_container = require("sandbox.adapters.docker.containers.pause_container")
 local remove_container = require("sandbox.adapters.docker.containers.remove_container")
 local inspect_container = require("sandbox.adapters.docker.containers.inspect_container")
 local prune_containers = require("sandbox.adapters.docker.containers.prune_containers")
@@ -25,6 +26,8 @@ return {
   stop_container = stop.stop_container,
   kill_container = kill_container.kill_container,
   restart_container = restart_container.restart_container,
+  pause_container = pause_container.pause_container,
+  unpause_container = pause_container.unpause_container,
   remove_container = remove_container.remove_container,
   inspect_container = inspect_container.inspect_container,
   prune_containers = prune_containers.prune_containers,

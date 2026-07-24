@@ -21,6 +21,8 @@ keymaps or autocmds.
 | `stop` | `{id} [--buffer\|-b]` | Stop a container |
 | `kill` | `{id} [--buffer\|-b]` | Kill a container |
 | `restart` | `{id} [--buffer\|-b]` | Restart a container |
+| `pause` | `{id}` | Pause a running container's processes |
+| `unpause` | `{id}` | Resume a paused container's processes |
 | `remove` | `{id} [--buffer\|-b]` | Remove a stopped container |
 | `prune` | `[--buffer\|-b]` | Remove all stopped containers |
 | `inspect` | `{id}` | Inspect container details |

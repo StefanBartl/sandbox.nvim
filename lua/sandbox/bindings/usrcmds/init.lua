@@ -199,6 +199,16 @@ local function container_routes()
         else container_cmds.restart(ctx.args.id) end
       end },
 
+    { path = { "container", "pause" },
+      args = { { name = "id", type = "CONTAINER_ID" } },
+      desc = "Pause a running container's processes",
+      run = function(ctx) container_cmds.pause(ctx.args.id) end },
+
+    { path = { "container", "unpause" },
+      args = { { name = "id", type = "CONTAINER_ID" } },
+      desc = "Resume a paused container's processes",
+      run = function(ctx) container_cmds.unpause(ctx.args.id) end },
+
     { path = { "container", "remove" },
       args = { { name = "id", type = "CONTAINER_ID" } },
       flags = BUFFER_FLAG,
