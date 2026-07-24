@@ -46,6 +46,12 @@ return {
     error(id .. ": unpause_container not implemented.")
   end,
   --- @param id string
+  --- @param _new_name string
+  --- @return boolean ok, string|nil err
+  rename_container = function(id, _new_name)
+    error(id .. ": rename_container not implemented.")
+  end,
+  --- @param id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_container = function(id, _on_done)
     error(id .. ": remove_container not implemented.")

@@ -241,6 +241,30 @@ function M.unpause(id)
   end)
 end
 
+--- Rename a container
+---@param id string
+---@param new_name string
+function M.rename(id, new_name)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" or not new_name or new_name == "" then
+    notify.warn("Usage: :Sandbox container rename <container-id> <new-name>")
+    return
+  end
+
+  local usecase = require("sandbox.core.usecases.containers.rename_container")
+  local ok, err = usecase(engine, id, new_name)
+  if not ok then
+    notify.error("Failed to rename container " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+    return
+  end
+
+  notify.info("Container renamed: " .. id .. " -> " .. new_name)
+end
+
 --- Remove a container (must be stopped first)
 ---@param id string
 function M.remove(id)
