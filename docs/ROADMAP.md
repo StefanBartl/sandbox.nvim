@@ -23,9 +23,6 @@ lifecycle actions:
 
 ## 2. Images
 
-- [ ] 💡 `history` — show an image's layer history.
-- [ ] 💡 `inspect` — mirror `container inspect` for images (currently
-      containers have it, images don't).
 
 ## 3. Volumes & networks
 
