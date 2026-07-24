@@ -20,6 +20,7 @@ keymaps or autocmds.
 | `start` | `{id} [--buffer\|-b]` | Start a container |
 | `stop` | `{id} [--buffer\|-b]` | Stop a container |
 | `kill` | `{id} [--buffer\|-b]` | Kill a container |
+| `restart` | `{id} [--buffer\|-b]` | Restart a container |
 | `remove` | `{id} [--buffer\|-b]` | Remove a stopped container |
 | `prune` | `[--buffer\|-b]` | Remove all stopped containers |
 | `inspect` | `{id}` | Inspect container details |
