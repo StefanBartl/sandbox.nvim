@@ -1,11 +1,11 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with three sub-namespaces — `container`, `image`, and (only
-when `wsl.exe` is reachable) `wsl` — built on
+alias: `:Sbx`), with four sub-namespaces — `container`, `image`, `volume`,
+and (only when `wsl.exe` is reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
-container/image/distro names (resolved live from the active engine, cached
+container/image/volume/distro names (resolved live from the active engine, cached
 briefly to avoid shelling out on every keystroke). There are no default
 keymaps or autocmds.
 
@@ -51,6 +51,16 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | `inspect` | `{image}` | Inspect detailed information about an image |
 | `remove` | `{id}` | Remove an image |
 | `prune` | `[--buffer\|-b]` | Remove all dangling images |
+
+## `:Sandbox volume <subcommand>` (alias: `:Sbx volume ...`)
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `list` | — | List all local volumes |
+| `create` | `{name}` | Create a new named volume |
+| `remove` | `{name}` | Remove a volume |
+| `inspect` | `{name}` | Inspect detailed information about a volume |
+| `prune` | — | Remove all unused volumes |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 

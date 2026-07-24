@@ -26,15 +26,9 @@ lifecycle actions:
 
 ## 3. Volumes & networks
 
-Not modeled at all yet — no port methods, no adapters. Both would follow the
-same `core/ports/*_engine.lua` → `adapters/<engine>/*` → `core/usecases/*`
-pattern as containers/images:
-
-- [ ] 🧪 `Sandbox volume {list,create,remove,inspect,prune}`
-- [ ] 🧪 `Sandbox network {list,create,remove,inspect,connect,disconnect}`
-
-These are natural additions to the existing `container`/`image`/`wsl`
-sub-namespace pattern in `bindings/usrcmds/`.
+- [ ] 🧪 `Sandbox network {list,create,remove,inspect,connect,disconnect}` —
+      natural addition to the existing `container`/`image`/`volume`/`wsl`
+      sub-namespace pattern in `bindings/usrcmds/`.
 
 ## 4. Compose support
 
