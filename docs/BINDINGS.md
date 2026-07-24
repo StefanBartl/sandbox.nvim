@@ -1,8 +1,8 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with four sub-namespaces — `container`, `image`, `volume`,
-and (only when `wsl.exe` is reachable) `wsl` — built on
+alias: `:Sbx`), with five sub-namespaces — `container`, `image`, `volume`,
+`network`, and (only when `wsl.exe` is reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
@@ -61,6 +61,18 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | `remove` | `{name}` | Remove a volume |
 | `inspect` | `{name}` | Inspect detailed information about a volume |
 | `prune` | — | Remove all unused volumes |
+
+## `:Sandbox network <subcommand>` (alias: `:Sbx network ...`)
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `list` | — | List all local networks |
+| `create` | `{name}` | Create a new named network |
+| `remove` | `{name}` | Remove a network |
+| `inspect` | `{name}` | Inspect detailed information about a network |
+| `connect` | `{network} {id}` | Connect a container to a network |
+| `disconnect` | `{network} {id}` | Disconnect a container from a network |
+| `prune` | — | Remove all unused networks |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 

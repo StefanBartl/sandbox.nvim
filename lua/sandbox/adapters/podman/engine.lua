@@ -12,5 +12,6 @@
 local containers = require("sandbox.adapters.podman.containers_engine")
 local images = require("sandbox.adapters.podman.images_engine")
 local volumes = require("sandbox.adapters.podman.volumes_engine")
+local networks = require("sandbox.adapters.podman.networks_engine")
 
-return vim.tbl_extend("force", {}, containers, images, volumes)
+return vim.tbl_extend("force", {}, containers, images, volumes, networks)

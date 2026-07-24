@@ -27,6 +27,7 @@ local container_cmds = require("sandbox.bindings.usrcmds.container_commands")
 local container_buffer_cmds = require("sandbox.bindings.usrcmds.container_commands_buffer")
 local image_cmds = require("sandbox.bindings.usrcmds.image_commands")
 local volume_cmds = require("sandbox.bindings.usrcmds.volume_commands")
+local network_cmds = require("sandbox.bindings.usrcmds.network_commands")
 local wsl_cmds = require("sandbox.bindings.usrcmds.wsl_commands")
 
 local M = {}
@@ -120,6 +121,17 @@ composer.register_type("VOLUME_NAME", {
       local core = require("sandbox")
       return require("sandbox.core.usecases.volumes.list_volumes")(core.get_engine())
     end, function(v) return v.name end)
+    return prefix(names, arg_lead)
+  end,
+})
+
+composer.register_type("NETWORK_NAME", {
+  validate = function(raw) return true, raw, nil end,
+  complete = function(arg_lead)
+    local names = cached_names("networks", function()
+      local core = require("sandbox")
+      return require("sandbox.core.usecases.networks.list_networks")(core.get_engine())
+    end, function(n) return n.name end)
     return prefix(names, arg_lead)
   end,
 })
@@ -370,6 +382,48 @@ local function volume_routes()
 end
 
 ---@return table[]
+local function network_routes()
+  return {
+    { path = { "network", "list" }, desc = "List all local networks", run = network_cmds.list },
+
+    { path = { "network", "create" },
+      args = { { name = "name", type = "STRING" } },
+      desc = "Create a new named network",
+      run = function(ctx) network_cmds.create(ctx.args.name) end },
+
+    { path = { "network", "remove" },
+      args = { { name = "name", type = "NETWORK_NAME" } },
+      desc = "Remove a network",
+      run = function(ctx) network_cmds.remove(ctx.args.name) end },
+
+    { path = { "network", "inspect" },
+      args = { { name = "name", type = "NETWORK_NAME" } },
+      desc = "Inspect detailed information about a network",
+      run = function(ctx) network_cmds.inspect(ctx.args.name) end },
+
+    { path = { "network", "connect" },
+      args = {
+        { name = "network", type = "NETWORK_NAME" },
+        { name = "id", type = "CONTAINER_ID" },
+      },
+      desc = "Connect a container to a network",
+      run = function(ctx) network_cmds.connect(ctx.args.network, ctx.args.id) end },
+
+    { path = { "network", "disconnect" },
+      args = {
+        { name = "network", type = "NETWORK_NAME" },
+        { name = "id", type = "CONTAINER_ID" },
+      },
+      desc = "Disconnect a container from a network",
+      run = function(ctx) network_cmds.disconnect(ctx.args.network, ctx.args.id) end },
+
+    { path = { "network", "prune" },
+      desc = "Remove all unused networks",
+      run = function(_ctx) network_cmds.prune() end },
+  }
+end
+
+---@return table[]
 local function wsl_routes()
   return {
     { path = { "wsl", "list" }, desc = "List all registered WSL distributions", run = wsl_cmds.list },
@@ -400,6 +454,7 @@ function M.setup()
   vim.list_extend(routes, container_routes())
   vim.list_extend(routes, image_routes())
   vim.list_extend(routes, volume_routes())
+  vim.list_extend(routes, network_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in
@@ -409,7 +464,7 @@ function M.setup()
   end
 
   local spec = {
-    desc = "sandbox.nvim: container, image, volume, and WSL distro operations (Docker/Podman)",
+    desc = "sandbox.nvim: container, image, volume, network, and WSL distro operations (Docker/Podman)",
     routes = routes,
   }
 

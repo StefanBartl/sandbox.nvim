@@ -26,9 +26,6 @@ lifecycle actions:
 
 ## 3. Volumes & networks
 
-- [ ] 🧪 `Sandbox network {list,create,remove,inspect,connect,disconnect}` —
-      natural addition to the existing `container`/`image`/`volume`/`wsl`
-      sub-namespace pattern in `bindings/usrcmds/`.
 
 ## 4. Compose support
 
