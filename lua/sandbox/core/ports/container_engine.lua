@@ -104,4 +104,10 @@ return {
   prune_images = function(_on_done)
     error("prune_images not implemented")
   end,
+  --- @param source string
+  --- @param target string
+  --- @return boolean ok, string|nil err
+  tag_image = function(source, target)
+    error("tag_image not implemented. " .. source .. " -> " .. target)
+  end,
 }

@@ -23,7 +23,6 @@ lifecycle actions:
 
 ## 2. Images
 
-- [ ] 💡 `tag` — tag an existing image.
 - [ ] 💡 `build` — build from a `Dockerfile`/`Containerfile` in the cwd or a
       picked path, streamed into a `--buffer` terminal like `pull` already
       supports.

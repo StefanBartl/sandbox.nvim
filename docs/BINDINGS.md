@@ -43,6 +43,7 @@ summary — useful for verbose operations (start/stop/prune). Example:
 |---|---|---|
 | `list` | — | List available images |
 | `pull` | `{name} [--buffer\|-b]` | Pull an image |
+| `tag` | `{source} {target}` | Tag a local image with a new repository:tag |
 | `remove` | `{id}` | Remove an image |
 | `prune` | `[--buffer\|-b]` | Remove all dangling images |
 
