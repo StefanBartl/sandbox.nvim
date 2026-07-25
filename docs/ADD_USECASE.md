@@ -115,8 +115,9 @@ Then add a route for it in `container_routes()`'s route table.
 The `CONTAINER_ID` arg type gives `:Sandbox container restart <Tab>` live
 completion against the active engine for free — no extra work needed. Now
 `:Sandbox container restart <id>` (or `:Sbx container restart <id>`) works,
-plus `<Tab>` completion and the entry in `composer.document()`'s
-auto-generated docs (if wired up).
+plus `<Tab>` completion and, via `:Sandbox docs generate`, an entry in
+`docs/GENERATED_COMMANDS.md` — diff that against `docs/BINDINGS.md` (which
+you should also update by hand for the new route) to catch drift.
 
 ---
 

@@ -68,11 +68,6 @@ Currently `list` / `start` / `stop` / `exec` for registered distros
       without needing Docker/Podman actually installed in CI.
 - [ ] 🔜 CI (GitHub Actions) — lint (`luacheck` or `.luarc.json`-driven
       `lua-language-server` check) + the test suite above, on every PR.
-- [ ] 💡 `composer.document()` wiring — `ADD_USECASE.md` mentions
-      auto-generated docs "if wired up"; actually wiring this would let
-      `docs/BINDINGS.md` be generated/verified from the route table instead
-      of hand-maintained and prone to drift.
-
 ## 10. Stretch / exploratory
 
 - [ ] 🧪 Devcontainer support — detect `.devcontainer/devcontainer.json` and
