@@ -80,10 +80,6 @@ Currently `list` / `start` / `stop` / `exec` for registered distros
       Large scope; would likely start as its own port
       (`core/ports/devcontainer_engine.lua`) built on top of the compose
       and container ports rather than a container/image subcommand.
-- [ ] 🧪 Statusline component (lualine/heirline extension) showing engine +
-      running container count, for people who want ambient awareness
-      without opening a list view.
-
 ---
 
 ## Contributing an item
