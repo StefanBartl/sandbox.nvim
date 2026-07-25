@@ -51,9 +51,12 @@ by hand (tab-completion softens this, but it's still a context switch).
       supported-engines table; same shape as the existing Docker/Podman
       adapters (`adapters/nerdctl/...engine.lua` + `containers/` +
       `images/`).
-- [ ] 💡 **containerd** adapter — listed as "research phase"; likely needs
-      `nerdctl` or `ctr` as the actual CLI surface rather than talking to
-      the containerd socket directly.
+**containerd:** resolved, no separate item — see the "On containerd" note in
+the README's Supported Engines section. `nerdctl` *is* the docker-compatible
+CLI for containerd, so the nerdctl adapter above already covers it; `ctr`
+(containerd's bundled debug CLI) is explicitly unsuitable for this kind of
+scripting, and talking to the containerd socket directly would mean
+reimplementing what nerdctl already does.
 
 ## 8. WSL
 
