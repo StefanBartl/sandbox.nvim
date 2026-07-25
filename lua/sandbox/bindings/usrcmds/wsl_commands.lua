@@ -98,6 +98,51 @@ function M.stop(name)
   notify.info("WSL distro terminated: " .. name)
 end
 
+--- Set a distro as the WSL default (`wsl --set-default`)
+---@param name string
+function M.set_default(name)
+  if not name or name == "" then
+    notify.warn("Usage: :Sandbox wsl set-default <distro-name>")
+    return
+  end
+
+  local wsl_engine = require("sandbox.adapters.wsl.engine")
+  local usecase = require("sandbox.core.usecases.wsl.set_default_distro")
+  local ok, err = usecase(wsl_engine, name)
+  if not ok then
+    notify.error(
+      "Failed to set default WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err }
+    )
+    return
+  end
+
+  notify.info("Default WSL distro set to: " .. name)
+end
+
+--- Toggle a distro between WSL1/WSL2 (`wsl --set-version`)
+---@param name string
+---@param version string "1" or "2"
+function M.set_version(name, version)
+  if not name or name == "" or (version ~= "1" and version ~= "2") then
+    notify.warn("Usage: :Sandbox wsl set-version <distro-name> <1|2>")
+    return
+  end
+
+  local version_num = version == "1" and 1 or 2
+
+  local wsl_engine = require("sandbox.adapters.wsl.engine")
+  local usecase = require("sandbox.core.usecases.wsl.set_version_distro")
+  local ok, err = usecase(wsl_engine, name, version_num)
+  if not ok then
+    notify.error(
+      "Failed to set WSL version for " .. name .. ": " .. friendly_error(err), { name = name, err = err }
+    )
+    return
+  end
+
+  notify.info("WSL distro " .. name .. " set to version " .. version)
+end
+
 --- Open a shell or run a command inside a WSL distro
 ---@param name string
 ---@param command string[]|nil

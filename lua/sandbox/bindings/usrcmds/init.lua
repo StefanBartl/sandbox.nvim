@@ -477,6 +477,19 @@ local function wsl_routes()
       },
       desc = "Open a shell or run a command inside a WSL distro",
       run = function(ctx) wsl_cmds.exec(ctx.args.name, command_tail(ctx)) end },
+
+    { path = { "wsl", "set-default" },
+      args = { { name = "name", type = "DISTRO_NAME" } },
+      desc = "Set a distro as the WSL default",
+      run = function(ctx) wsl_cmds.set_default(ctx.args.name) end },
+
+    { path = { "wsl", "set-version" },
+      args = {
+        { name = "name", type = "DISTRO_NAME" },
+        { name = "version", type = "STRING", values = { "1", "2" } },
+      },
+      desc = "Toggle a distro between WSL1/WSL2",
+      run = function(ctx) wsl_cmds.set_version(ctx.args.name, ctx.args.version) end },
   }
 end
 

@@ -117,6 +117,8 @@ time via `wsl_commands.available()`).
 | `start` | `{name}` | Start a WSL distro |
 | `stop` | `{name}` | Stop (terminate) a WSL distro |
 | `exec` | `{name} [command...]` | Open a shell or run a command inside a WSL distro |
+| `set-default` | `{name}` | Set a distro as the WSL default |
+| `set-version` | `{name} {1\|2}` | Toggle a distro between WSL1/WSL2 |
 
 ## Keymaps
 

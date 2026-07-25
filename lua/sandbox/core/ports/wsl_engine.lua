@@ -23,4 +23,15 @@ return {
   exec_in_distro = function(name, command)
     error(name .. ": exec_in_distro not implemented. Command: " .. vim.inspect(command))
   end,
+  --- @param name string
+  --- @return boolean ok, string|nil err
+  set_default_distro = function(name)
+    error(name .. ": set_default_distro not implemented")
+  end,
+  --- @param name string
+  --- @param version integer 1 or 2
+  --- @return boolean ok, string|nil err
+  set_version_distro = function(name, version)
+    error(name .. ": set_version_distro not implemented. version: " .. tostring(version))
+  end,
 }
