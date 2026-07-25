@@ -120,10 +120,11 @@ isn't shown in any window.
 | `<CR>` / `i` | inspect | `n` | rename (prompts) |
 | `s` | start | `D` | remove |
 | `x` | stop | `l` | logs |
-| `X` | kill | `e` | exec (shell) |
-| `r` | restart | `t` | top |
-| `p` | pause | `T` | stats |
-| `P` | unpause | `R` | refresh list |
+| `X` | kill | `L` | logs (follow) |
+| `r` | restart | `e` | exec (shell) |
+| `p` | pause | `t` | top |
+| `P` | unpause | `T` | stats |
+| | | `R` | refresh list |
 
 The `[status]` prefix on each line is highlighted by state — green
 (`SandboxStatusRunning`)/red (`SandboxStatusStopped`)/yellow
