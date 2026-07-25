@@ -1,8 +1,9 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with six sub-namespaces — `container`, `image`, `volume`,
-`network`, `compose`, and (only when `wsl.exe` is reachable) `wsl` — built on
+alias: `:Sbx`), with seven sub-namespaces — `container`, `image`, `volume`,
+`network`, `compose`, `engine`, and (only when `wsl.exe` is reachable) `wsl`
+— built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
@@ -15,6 +16,7 @@ keymaps or autocmds.
 |---|---|---|
 | `list` | — | List all containers (running and stopped) |
 | `logs` | `{id}` | Show logs for a container |
+| `logs-follow` | `{id}` | Stream a container's logs live (`logs -f`); `q` in the buffer stops following |
 | `exec` | `{id} [shell]` | Open an interactive shell inside a container |
 | `exec-once` | `{id} [command...]` | Run a one-off command and show the output |
 | `start` | `{id} [--buffer\|-b]` | Start a container |
@@ -88,6 +90,20 @@ id/name argument — there is exactly one project per detected file.
 | `restart` | — | Restart the compose project |
 | `ps` | — | List services in the compose project |
 | `logs` | — | Show logs for the compose project |
+
+## `:Sandbox engine <subcommand>` (alias: `:Sbx engine ...`)
+
+Switch the active engine for the rest of this Neovim session instead of only
+at `setup({})` time — useful on a machine with both Docker and Podman
+installed. Precedence: session override (`engine set`) > per-project
+`.sandboxrc` (see the Configuration section of the README) > configured/
+detected default.
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `set` | `{docker\|podman}` | Switch the active engine for this session |
+| `get` | — | Show the currently active engine and why (session override/`.sandboxrc`/config) |
+| `reset` | — | Clear the session override, falling back to `.sandboxrc`/config |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 

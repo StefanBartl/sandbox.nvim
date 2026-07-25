@@ -21,11 +21,15 @@ function M.setup(opts)
   config.setup(opts)
 end
 
---- Resolve the active engine name, honoring a per-project `.sandboxrc`
---- override (see `util/project_config.lua`) before falling back to the
---- configured/detected default.
+--- Resolve the active engine name. Precedence: a runtime session override
+--- set via `:Sandbox engine set docker|podman` (`vim.g.sandbox_engine`) >
+--- a per-project `.sandboxrc` override (see `util/project_config.lua`) >
+--- the configured/detected default.
 --- @return Sandbox.Engine|nil
 function M.resolve_engine_name()
+  if vim.g.sandbox_engine then
+    return vim.g.sandbox_engine
+  end
   local project_engine = require("sandbox.util.project_config").read_engine_override()
   return project_engine or config.options.engine
 end
