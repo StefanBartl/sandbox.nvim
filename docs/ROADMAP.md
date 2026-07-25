@@ -45,10 +45,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 - [ ] 💡 Multi-select in list views (visual-line select → bulk stop/remove)
       for cleaning up several stopped containers at once without reaching
       for `prune`.
-- [ ] 💡 Live log follow (`logs -f` / `--follow`) streamed into the log
-      buffer instead of only one-shot snapshots, with a keymap to stop
-      following.
-
 ## 7. Engines & architecture
 
 - [ ] 🔜 **nerdctl** adapter — already listed as "planned" in the README's

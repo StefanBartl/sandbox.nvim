@@ -61,6 +61,24 @@ function M.logs(id)
   view(logs, id)
 end
 
+--- Stream a container's logs live (`logs -f`) instead of a one-shot
+--- snapshot; press `q` in the buffer to stop following.
+---@param id string
+function M.logs_follow(id)
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  if not id or id == "" then
+    notify.warn("Usage: :Sandbox container logs-follow <container-id>")
+    return
+  end
+
+  local view = require("sandbox.ui.log_follow_view")
+  view(engine, id)
+end
+
 --- Open a shell session inside a running container
 ---@param id string
 ---@param shell? string

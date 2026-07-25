@@ -12,6 +12,14 @@ return {
   get_logs = function(id)
     error(id .. ": get_logs not implemented.")
   end,
+  --- Stream a container's logs (`logs -f`) until stopped or the process exits.
+  --- @param id string
+  --- @param on_line fun(line: string)
+  --- @param on_exit? fun(code: integer|nil)
+  --- @return table handle with a `:stop()` method
+  follow_logs = function(id, _on_line, _on_exit)
+    error(id .. ": follow_logs not implemented.")
+  end,
   exec_in_container = function(id, command)
     error(id .. ": exec_in_container not implemented. Command:  " .. vim.inspect(command))
   end,

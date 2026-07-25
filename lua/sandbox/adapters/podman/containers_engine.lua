@@ -7,6 +7,7 @@
 
 local list_containers = require("sandbox.adapters.podman.containers.list_containers")
 local get_logs = require("sandbox.adapters.podman.containers.get_logs")
+local follow_logs = require("sandbox.adapters.podman.containers.follow_logs")
 local exec_in_container = require("sandbox.adapters.podman.containers.exec_in_container")
 local start = require("sandbox.adapters.podman.containers.start_container")
 local stop = require("sandbox.adapters.podman.containers.stop_container")
@@ -26,6 +27,7 @@ local prune_containers = require("sandbox.adapters.podman.containers.prune_conta
 return {
   list_containers = list_containers.list_containers,
   get_logs = get_logs.get_logs,
+  follow_logs = follow_logs.follow_logs,
   exec_in_container = exec_in_container.exec_in_container,
   start_container = start.start_container,
   stop_container = stop.stop_container,

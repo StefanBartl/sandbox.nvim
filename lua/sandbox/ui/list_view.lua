@@ -61,6 +61,7 @@ return function(containers)
       end },
     { lhs = "D", desc = "remove", fn = function(c) container_cmds.remove(ref(c)) end },
     { lhs = "l", desc = "logs", fn = function(c) container_cmds.logs(ref(c)) end },
+    { lhs = "L", desc = "logs (follow)", fn = function(c) container_cmds.logs_follow(ref(c)) end },
     { lhs = "e", desc = "exec", fn = function(c) container_cmds.exec(ref(c)) end },
     { lhs = "t", desc = "top", fn = function(c) container_cmds.top(ref(c)) end },
     { lhs = "T", desc = "stats", fn = function(c) container_cmds.stats(ref(c)) end },

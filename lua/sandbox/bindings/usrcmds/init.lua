@@ -172,6 +172,11 @@ local function container_routes()
       desc = "Show logs of a container",
       run = function(ctx) container_cmds.logs(ctx.args.id) end },
 
+    { path = { "container", "logs-follow" },
+      args = { { name = "id", type = "CONTAINER_ID" } },
+      desc = "Stream a container's logs live (press q in the buffer to stop)",
+      run = function(ctx) container_cmds.logs_follow(ctx.args.id) end },
+
     { path = { "container", "exec" },
       args = {
         { name = "id", type = "CONTAINER_ID" },
