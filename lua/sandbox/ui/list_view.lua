@@ -68,5 +68,20 @@ return function(containers)
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() container_cmds.list() end },
   }, containers, 0)
 
+  list_actions.set_visual_bulk_actions(bufnr, {
+    { lhs = "s", desc = "start selection", fn = function(items)
+        for _, c in ipairs(items) do container_cmds.start(ref(c)) end
+      end },
+    { lhs = "x", desc = "stop selection", fn = function(items)
+        for _, c in ipairs(items) do container_cmds.stop(ref(c)) end
+      end },
+    { lhs = "X", desc = "kill selection", fn = function(items)
+        list_actions.bulk_confirm_then("Kill", "container", items, ref, container_cmds.kill)
+      end },
+    { lhs = "D", desc = "remove selection", fn = function(items)
+        list_actions.bulk_confirm_then("Remove", "container", items, ref, container_cmds.remove)
+      end },
+  }, containers, 0)
+
   list_actions.setup_autorefresh(bufnr, container_cmds.list)
 end

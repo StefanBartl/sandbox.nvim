@@ -34,5 +34,11 @@ return function(volumes)
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() volume_cmds.list() end },
   }, volumes, 2)
 
+  list_actions.set_visual_bulk_actions(bufnr, {
+    { lhs = "D", desc = "remove selection", fn = function(selected)
+        list_actions.bulk_confirm_then("Remove", "volume", selected, function(v) return v.name end, volume_cmds.remove)
+      end },
+  }, volumes, 2)
+
   list_actions.setup_autorefresh(bufnr, volume_cmds.list)
 end

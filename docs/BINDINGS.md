@@ -161,6 +161,12 @@ buffer for a live reminder; `q` closes it. Set `refresh_interval` (ms) in
 timer instead of only on `R`/manual re-open; it's paused while the buffer
 isn't shown in any window.
 
+**Multi-select**: select several lines with `V`/`j`/`j`/... (or any Visual
+mode), then press the same key you'd use on a single line to apply it to
+every selected item — `s`/`x`/`X`/`D` (start/stop/kill/remove) in the
+container list, `D` (remove) elsewhere. Destructive bulk actions confirm
+once for the whole batch instead of once per item.
+
 ### Container list (`sandbox.nvim://container-list`)
 
 | Key | Action | Key | Action |

@@ -31,16 +31,9 @@ lifecycle actions:
 
 ## 5. Interactive UI
 
-This is probably the highest-leverage area: today's views
-(`ui/list_view.lua`, `ui/image_list_view_*.lua`, `ui/log_view.lua`,
-`ui/inspect_view.lua`) are **read-only** scratch buffers — per
-`docs/BINDINGS.md`, there are no default keymaps at all, so acting on
-something you see in a list means re-typing `:Sandbox container stop <id>`
-by hand (tab-completion softens this, but it's still a context switch).
-
-- [ ] 💡 Multi-select in list views (visual-line select → bulk stop/remove)
-      for cleaning up several stopped containers at once without reaching
-      for `prune`.
+`ui/list_view.lua`, `ui/image_list_view_*.lua`, `ui/log_view.lua`, and
+`ui/inspect_view.lua` now carry buffer-local keymaps (single-item and
+Visual-mode multi-select) — see `docs/BINDINGS.md`'s Keymaps section.
 
 ## 7. Engines & architecture
 
