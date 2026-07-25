@@ -22,6 +22,7 @@ function M.run_container(opts, on_done)
     vim.list_extend(cmd, { "-e", e })
   end
   cmd[#cmd + 1] = opts.image
+  vim.list_extend(cmd, opts.command or {})
 
   local stdout_lines = {}
   local stderr_lines = {}

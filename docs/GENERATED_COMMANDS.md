@@ -32,6 +32,8 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sandbox container stop {id:CONTAINER_ID} [--buffer|-b]` | Stop a running container (--buffer: stream to a terminal buffer) |
 | `:Sandbox container top {id:CONTAINER_ID}` | List the processes running inside a container |
 | `:Sandbox container unpause {id:CONTAINER_ID}` | Resume a paused container's processes |
+| `:Sandbox devcontainer attach` | Open a shell in the running devcontainer for the project in cwd |
+| `:Sandbox devcontainer build` | Build/pull a .devcontainer/devcontainer.json's image and start a container from it |
 | `:Sandbox docs generate` | Regenerate docs/GENERATED_COMMANDS.md from the live route table, so docs/BINDINGS.md (hand-maintained) can be diffed against it to catch drift |
 | `:Sandbox engine get` | Show the currently active engine and why |
 | `:Sandbox engine reset` | Clear the session engine override, falling back to .sandboxrc/config |
@@ -101,6 +103,8 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sbx container stop {id:CONTAINER_ID} [--buffer|-b]` | Stop a running container (--buffer: stream to a terminal buffer) |
 | `:Sbx container top {id:CONTAINER_ID}` | List the processes running inside a container |
 | `:Sbx container unpause {id:CONTAINER_ID}` | Resume a paused container's processes |
+| `:Sbx devcontainer attach` | Open a shell in the running devcontainer for the project in cwd |
+| `:Sbx devcontainer build` | Build/pull a .devcontainer/devcontainer.json's image and start a container from it |
 | `:Sbx docs generate` | Regenerate docs/GENERATED_COMMANDS.md from the live route table, so docs/BINDINGS.md (hand-maintained) can be diffed against it to catch drift |
 | `:Sbx engine get` | Show the currently active engine and why |
 | `:Sbx engine reset` | Clear the session engine override, falling back to .sandboxrc/config |

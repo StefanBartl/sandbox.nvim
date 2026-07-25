@@ -43,8 +43,13 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   (never argv)
 - ✅ WSL distro management: list, start/stop/exec, set-default, set-version,
   export/import, shutdown-all
+- 🧪 Devcontainer support (`:Sandbox devcontainer build`/`attach`): detects
+  `.devcontainer/devcontainer.json`, builds/pulls its image, and runs it
+  with the workspace mounted — single-container and `dockerComposeFile`
+  shapes only, no features/lifecycle-commands/remoteUser yet
 - 🖱️ Buffer-local keymaps in every list view (start/stop/inspect/logs/... on
-  the entry under the cursor) plus an optional
+  the entry under the cursor, plus Visual-mode multi-select for bulk
+  actions) and an optional
   [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) picker
   extension (`:Telescope sandbox containers|images|wsl`) as an alternative
   front-end — telescope is not a dependency, only loaded if you opt in

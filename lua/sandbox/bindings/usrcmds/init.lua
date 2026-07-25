@@ -32,6 +32,7 @@ local compose_cmds = require("sandbox.bindings.usrcmds.compose_commands")
 local wsl_cmds = require("sandbox.bindings.usrcmds.wsl_commands")
 local engine_cmds = require("sandbox.bindings.usrcmds.engine_commands")
 local registry_cmds = require("sandbox.bindings.usrcmds.registry_commands")
+local devcontainer_cmds = require("sandbox.bindings.usrcmds.devcontainer_commands")
 
 local M = {}
 
@@ -559,6 +560,19 @@ local function docs_routes()
 end
 
 ---@return table[]
+local function devcontainer_routes()
+  return {
+    { path = { "devcontainer", "build" },
+      desc = "Build/pull a .devcontainer/devcontainer.json's image and start a container from it",
+      run = function(_ctx) devcontainer_cmds.build() end },
+
+    { path = { "devcontainer", "attach" },
+      desc = "Open a shell in the running devcontainer for the project in cwd",
+      run = function(_ctx) devcontainer_cmds.attach() end },
+  }
+end
+
+---@return table[]
 local function registry_routes()
   return {
     { path = { "registry", "login" },
@@ -584,6 +598,7 @@ function M.setup()
   vim.list_extend(routes, engine_routes())
   vim.list_extend(routes, registry_routes())
   vim.list_extend(routes, docs_routes())
+  vim.list_extend(routes, devcontainer_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in

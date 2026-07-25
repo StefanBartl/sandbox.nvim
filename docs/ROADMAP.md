@@ -14,50 +14,10 @@ Legend: 🔜 planned next · 💡 idea, not started · 🧪 needs design/discuss
 
 ---
 
-## 1. Container lifecycle
+Nothing queued right now — every item that was on this list has shipped. See
+[`GENERATED_COMMANDS.md`](./GENERATED_COMMANDS.md) for the full live command
+surface, or open a PR/issue with the next idea.
 
-The `ContainerEngine` port (`core/ports/container_engine.lua`) currently
-covers list/logs/exec/start/stop/kill/remove/prune/inspect. Missing
-lifecycle actions:
-
-
-## 2. Images
-
-
-## 3. Volumes & networks
-
-
-## 4. Compose support
-
-## 5. Interactive UI
-
-`ui/list_view.lua`, `ui/image_list_view_*.lua`, `ui/log_view.lua`, and
-`ui/inspect_view.lua` now carry buffer-local keymaps (single-item and
-Visual-mode multi-select) — see `docs/BINDINGS.md`'s Keymaps section.
-
-## 7. Engines & architecture
-
-**containerd:** resolved, no separate item — see the "On containerd" note in
-the README's Supported Engines section. `nerdctl` *is* the docker-compatible
-CLI for containerd, so the nerdctl adapter above already covers it; `ctr`
-(containerd's bundled debug CLI) is explicitly unsuitable for this kind of
-scripting, and talking to the containerd socket directly would mean
-reimplementing what nerdctl already does.
-
-## 8. WSL
-
-Currently `list` / `start` / `stop` / `exec` for registered distros
-(`core/usecases/wsl/`, `adapters/wsl/`):
-
-## 9. Developer experience & testing
-
-## 10. Stretch / exploratory
-
-- [ ] 🧪 Devcontainer support — detect `.devcontainer/devcontainer.json` and
-      offer to build/attach, similar to VS Code's Dev Containers extension.
-      Large scope; would likely start as its own port
-      (`core/ports/devcontainer_engine.lua`) built on top of the compose
-      and container ports rather than a container/image subcommand.
 ---
 
 ## Contributing an item
