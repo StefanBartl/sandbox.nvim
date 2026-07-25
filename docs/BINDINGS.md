@@ -157,6 +157,13 @@ any of the four groups (e.g. `:hi SandboxStatusRunning ...`) to customize.
 | `D` | remove |
 | `R` | refresh list |
 
+### Inspect view (`sandbox.nvim://inspect/<id>`)
+
+Opened by any `inspect` action above. Renders the engine's metadata as a
+folded, indented `vim.inspect`-style Lua table (`foldmethod=indent`,
+starting at `foldlevel=1`) instead of a flat dump — use `za`/`zo`/`zc` to
+toggle sections. `q` closes the buffer.
+
 ## Autocmds
 
 None defined.

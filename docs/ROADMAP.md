@@ -45,9 +45,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 - [ ] 💡 Multi-select in list views (visual-line select → bulk stop/remove)
       for cleaning up several stopped containers at once without reaching
       for `prune`.
-- [ ] 💡 Pretty-printed `inspect` view — currently likely raw JSON; a
-      folded/indented Lua-table-style render (or `jq`-style highlighting)
-      would make it scannable.
 - [ ] 💡 Live log follow (`logs -f` / `--follow`) streamed into the log
       buffer instead of only one-shot snapshots, with a keymap to stop
       following.
