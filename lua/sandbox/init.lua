@@ -21,12 +21,22 @@ function M.setup(opts)
   config.setup(opts)
 end
 
+--- Resolve the active engine name, honoring a per-project `.sandboxrc`
+--- override (see `util/project_config.lua`) before falling back to the
+--- configured/detected default.
+--- @return Sandbox.Engine|nil
+function M.resolve_engine_name()
+  local project_engine = require("sandbox.util.project_config").read_engine_override()
+  return project_engine or config.options.engine
+end
+
 --- Get the active engine implementation
 --- @return table|nil
 function M.get_engine()
-  local engine = engines[config.options.engine]
+  local name = M.resolve_engine_name()
+  local engine = engines[name]
   if not engine then
-    notify.error("Invalid engine: " .. tostring(config.options.engine))
+    notify.error("Invalid engine: " .. tostring(name))
     return nil
   end
   return engine
@@ -35,9 +45,10 @@ end
 --- Get the active ComposeEngine implementation
 --- @return table|nil
 function M.get_compose_engine()
-  local engine = compose_engines[config.options.engine]
+  local name = M.resolve_engine_name()
+  local engine = compose_engines[name]
   if not engine then
-    notify.error("Invalid engine: " .. tostring(config.options.engine))
+    notify.error("Invalid engine: " .. tostring(name))
     return nil
   end
   return engine

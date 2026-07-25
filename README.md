@@ -70,10 +70,23 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
       engine = "podman", -- or "docker"
       -- Ask for confirmation before remove/prune/kill (default: true)
       confirm_destructive = true,
+      -- Shell used by `container exec` when none is given (default: "sh")
+      default_shell = "sh",
+      -- ms between list-view auto-refreshes; nil/0 disables (default: nil)
+      refresh_interval = nil,
+      -- Window placement for list views: "above"|"below"|"left"|"right" (default: "left")
+      list_split = "left",
+      -- Width/height of list view splits; nil uses Neovim's default
+      list_size = nil,
     })
   end,
 }
 ```
+
+*Per-project engine override:* drop a `.sandboxrc` file with an `engine=docker`
+or `engine=podman` line in a repo's root to pin that repo to a specific engine
+regardless of the global/detected default — useful when a machine has both
+installed and one project specifically needs the other.
 
 *Load at startup (eager):*
 ```lua

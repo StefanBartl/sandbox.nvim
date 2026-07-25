@@ -21,8 +21,10 @@ return function(containers)
     ))
   end
 
+  local list_opts = require("sandbox.config").options
   local bufnr = require("lib.nvim.window").open_named_scratch(
-    "sandbox.nvim://container-list", lines, { filetype = "log", split = "left" }
+    "sandbox.nvim://container-list", lines,
+    { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
   )
 
   local container_cmds = require("sandbox.bindings.usrcmds.container_commands")

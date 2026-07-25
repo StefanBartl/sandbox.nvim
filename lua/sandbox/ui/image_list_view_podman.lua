@@ -26,8 +26,10 @@ return function(images)
     table.insert(lines, string.format("%-26s %-11s %-15s %s", repo, tag, id, size))
   end
 
+  local list_opts = require("sandbox.config").options
   local bufnr = require("lib.nvim.window").open_named_scratch(
-    "sandbox.nvim://images", lines, { filetype = "markdown", split = "left" }
+    "sandbox.nvim://images", lines,
+    { filetype = "markdown", split = list_opts.list_split, size = list_opts.list_size }
   )
 
   local image_cmds = require("sandbox.bindings.usrcmds.image_commands")

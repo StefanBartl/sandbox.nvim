@@ -73,7 +73,7 @@ function M.exec(id, shell)
     return
   end
 
-  shell = shell or "sh"
+  shell = shell or require("sandbox.config").options.default_shell or "sh"
 
   local ok, err = pcall(usecase, engine, id, { shell })
   if not ok then

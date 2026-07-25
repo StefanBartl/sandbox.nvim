@@ -21,8 +21,10 @@ return function(networks)
     )
   end
 
+  local list_opts = require("sandbox.config").options
   local bufnr = require("lib.nvim.window").open_named_scratch(
-    "sandbox.nvim://network-list", lines, { filetype = "log", split = "left" }
+    "sandbox.nvim://network-list", lines,
+    { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
   )
 
   local network_cmds = require("sandbox.bindings.usrcmds.network_commands")
