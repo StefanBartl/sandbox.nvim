@@ -1,9 +1,9 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with seven sub-namespaces — `container`, `image`, `volume`,
-`network`, `compose`, `engine`, and (only when `wsl.exe` is reachable) `wsl`
-— built on
+alias: `:Sbx`), with eight sub-namespaces — `container`, `image`, `volume`,
+`network`, `compose`, `engine`, `registry`, and (only when `wsl.exe` is
+reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
@@ -105,6 +105,21 @@ detected default.
 | `set` | `{docker\|podman}` | Switch the active engine for this session |
 | `get` | — | Show the currently active engine and why (session override/`.sandboxrc`/config) |
 | `reset` | — | Clear the session override, falling back to `.sandboxrc`/config |
+
+## `:Sandbox registry <subcommand>` (alias: `:Sbx registry ...`)
+
+Authentication needed before `push`/`pull` against a private registry.
+`login` prompts for username (`vim.ui.input`) and password
+(`vim.fn.inputsecret`, masked); the password is piped to the engine via
+stdin (`--password-stdin`), never passed as an argv element, so it's never
+visible in the process list or shell history. Podman (unlike Docker)
+requires an explicit `registry` argument — it has no implicit Docker Hub
+default.
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `login` | `[registry]` | Log in to a registry (prompts for username/password) |
+| `logout` | `[registry]` | Log out of a registry |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 

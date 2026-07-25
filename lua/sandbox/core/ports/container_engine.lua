@@ -210,4 +210,19 @@ return {
   prune_networks = function(_on_done)
     error("prune_networks not implemented")
   end,
+
+-- Registry interfaces
+  --- Authenticate against a registry (password piped via stdin, never argv).
+  --- @param username string
+  --- @param password string
+  --- @param registry? string defaults to Docker Hub when omitted
+  --- @return boolean ok, string|nil err
+  login_registry = function(username, _password, registry)
+    error("login_registry not implemented. username: " .. username .. " registry: " .. tostring(registry))
+  end,
+  --- @param registry? string defaults to Docker Hub when omitted
+  --- @return boolean ok, string|nil err
+  logout_registry = function(registry)
+    error("logout_registry not implemented. registry: " .. tostring(registry))
+  end,
 }
