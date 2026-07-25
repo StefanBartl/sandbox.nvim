@@ -71,6 +71,32 @@ function M.pull(image)
   end)
 end
 
+--- Push a specific image to a remote registry. Runs asynchronously so it
+--- doesn't block the UI thread. Requires prior registry authentication
+--- (`docker login`/`podman login` on the shell, or :Sandbox registry login).
+---@param image string
+function M.push(image)
+  if not image or image == "" then
+    notify.warn("Usage: :Sandbox image push <image>")
+    return
+  end
+
+  local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
+
+  notify.info("Pushing image " .. image .. "...")
+  local usecase = require("sandbox.core.usecases.images.push_image")
+  usecase(engine, image, function(ok, err)
+    if not ok then
+      notify.error("Failed to push image " .. image .. ": " .. friendly_error(err), { image = image, err = err })
+      return
+    end
+    notify.info("Image pushed successfully: " .. image)
+  end)
+end
+
 --- Remove a specific image by ID
 ---@param id string
 function M.remove(id)

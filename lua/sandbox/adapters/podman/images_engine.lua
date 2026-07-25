@@ -7,6 +7,7 @@
 
 local list_images = require("sandbox.adapters.podman.images.list_images")
 local pull_image = require("sandbox.adapters.podman.images.pull_image")
+local push_image = require("sandbox.adapters.podman.images.push_image")
 local remove_image = require("sandbox.adapters.podman.images.remove_image")
 local prune_images = require("sandbox.adapters.podman.images.prune_images")
 local tag_image = require("sandbox.adapters.podman.images.tag_image")
@@ -19,6 +20,7 @@ local inspect_image = require("sandbox.adapters.podman.images.inspect_image")
 return {
   list_images = list_images.list_images,
   pull_image = pull_image.pull_image,
+  push_image = push_image.push_image,
   remove_image = remove_image.remove_image,
   prune_images = prune_images.prune_images,
   tag_image = tag_image.tag_image,
