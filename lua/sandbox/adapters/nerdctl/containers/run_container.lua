@@ -4,7 +4,8 @@ local M = {}
 
 --- Create and start a new container, detached
 --- @param opts Sandbox.RunOpts
---- @param on_done? fun(ok: boolean, result: string|nil) result is the new container id on success, raw error output otherwise
+--- @param on_done? fun(ok: boolean, result: string|nil) result is the new
+---   container id on success, raw error output otherwise
 function M.run_container(opts, on_done)
   local cmd = { "nerdctl", "run", "-d" }
 

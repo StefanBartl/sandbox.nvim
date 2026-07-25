@@ -351,7 +351,9 @@ function M.cp(src, dest)
   local usecase = require("sandbox.core.usecases.containers.cp_container")
   local ok, err = usecase(engine, src, dest)
   if not ok then
-    notify.error("Failed to copy " .. src .. " -> " .. dest .. ": " .. friendly_error(err), { src = src, dest = dest, err = err })
+    notify.error(
+      "Failed to copy " .. src .. " -> " .. dest .. ": " .. friendly_error(err), { src = src, dest = dest, err = err }
+    )
     return
   end
 
