@@ -13,5 +13,6 @@ local containers = require("sandbox.adapters.docker.containers_engine")
 local images = require("sandbox.adapters.docker.images_engine")
 local volumes = require("sandbox.adapters.docker.volumes_engine")
 local networks = require("sandbox.adapters.docker.networks_engine")
+local registry = require("sandbox.adapters.docker.registry_engine")
 
-return vim.tbl_extend("force", {}, containers, images, volumes, networks)
+return vim.tbl_extend("force", {}, containers, images, volumes, networks, registry)

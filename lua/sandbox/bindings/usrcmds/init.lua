@@ -31,6 +31,7 @@ local network_cmds = require("sandbox.bindings.usrcmds.network_commands")
 local compose_cmds = require("sandbox.bindings.usrcmds.compose_commands")
 local wsl_cmds = require("sandbox.bindings.usrcmds.wsl_commands")
 local engine_cmds = require("sandbox.bindings.usrcmds.engine_commands")
+local registry_cmds = require("sandbox.bindings.usrcmds.registry_commands")
 
 local M = {}
 
@@ -537,6 +538,21 @@ local function engine_routes()
   }
 end
 
+---@return table[]
+local function registry_routes()
+  return {
+    { path = { "registry", "login" },
+      args = { { name = "registry", type = "STRING", optional = true } },
+      desc = "Log in to a registry (prompts for username/password)",
+      run = function(ctx) registry_cmds.login(ctx.args.registry) end },
+
+    { path = { "registry", "logout" },
+      args = { { name = "registry", type = "STRING", optional = true } },
+      desc = "Log out of a registry",
+      run = function(ctx) registry_cmds.logout(ctx.args.registry) end },
+  }
+end
+
 ---Register :Sandbox and its short alias :Sbx (same spec, two command names)
 function M.setup()
   local routes = {}
@@ -546,6 +562,7 @@ function M.setup()
   vim.list_extend(routes, network_routes())
   vim.list_extend(routes, compose_routes())
   vim.list_extend(routes, engine_routes())
+  vim.list_extend(routes, registry_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in
