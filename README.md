@@ -149,6 +149,25 @@ See [`/docs/BINDINGS.md`](./docs/BINDINGS.md) for the full list of user commands
 
 ---
 
+## Statusline
+
+`require("sandbox.statusline").status()` returns an ambient
+`"engine (running/total)"` summary (e.g. `"docker (2/5)"`), cached for 3s so a
+statusline redrawing many times a second doesn't shell out on every call. It
+degrades to `""` on any failure (daemon down, no engine configured) rather
+than erroring. Plain string return with no hard dependency on any statusline
+plugin — wire it into lualine:
+
+```lua
+require("lualine").setup({
+  sections = { lualine_x = { require("sandbox.statusline").lualine_component } },
+})
+```
+
+or the native statusline: `set statusline+=%{v:lua.require('sandbox.statusline').status()}`.
+
+---
+
 ## Supported Engines
 
 | Engine | Status | Notes |
