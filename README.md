@@ -8,7 +8,7 @@
 
 > 🔧 Beta stage – under active development. Changes possible.
 
-> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it.
+> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it. [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) is an *optional* dependency — only needed for the picker extension (`:Telescope sandbox ...`), everything else works without it.
 
 Manage your containers (Podman, Docker, and more) directly from Neovim – with clean architecture, pluggable backends, and a TUI-native experience.
 
@@ -30,18 +30,33 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 ## Features
 
-- ✅ List running and stopped containers
-- ✅ View logs of any container in a buffer
-- ✅ Execute shell or one-off commands inside a container
-- ✅ Start, stop, kill, inspect, and remove containers
-- ✅ Remove all stopped containers (prune)
-- ✅ List, pull, remove and prune container images
-- ⚡ Automatic engine detection (prefers Podman only if installed, falls back to Docker)
+- ✅ Full container lifecycle: list, start/stop/kill/restart, pause/unpause,
+  rename, remove/prune, inspect, `cp`, an interactive `run` wizard, one-shot
+  `stats`/`top`, and log viewing — including live-following logs (`logs -f`)
+- ✅ Images: list, pull/push (async, non-blocking), tag, build, save/load,
+  history, inspect, remove/prune
+- ✅ Volumes and networks: list, create, remove/prune, inspect (plus
+  connect/disconnect for networks)
+- ✅ Compose: `up`/`down`/`restart`/`ps`/`logs` for the `docker-compose.yml`/
+  `compose.yml`/`podman-compose.yml` detected in cwd or an ancestor
+- ✅ Registry auth: `login`/`logout`, with the password piped via stdin
+  (never argv)
+- ✅ WSL distro management: list, start/stop/exec, set-default, set-version,
+  export/import, shutdown-all
+- 🖱️ Buffer-local keymaps in every list view (start/stop/inspect/logs/... on
+  the entry under the cursor) plus an optional
+  [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) picker
+  extension (`:Telescope sandbox containers|images|wsl`) as an alternative
+  front-end — telescope is not a dependency, only loaded if you opt in
+- ⚡ Automatic engine detection (Podman → Docker → nerdctl), a per-project
+  `.sandboxrc` override, and runtime switching (`:Sandbox engine set`)
 - 🧠 Hexagonal architecture (engine-agnostic, clean ports & adapters)
-- 🧩 Easily extendable (Podman, Docker, nerdctl planned)
-- 🚀 Unified support for Docker and Podman
+- 🚀 Unified support for Docker, Podman, and nerdctl (which also covers containerd)
 - 🩺 Integrated Neovim healthcheck support (`:checkhealth sandbox`)
-- ⌨️ `:Sandbox` (alias `:Sbx`) with `container`/`image`/`wsl` subcommand trees and `<Tab>` completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s `usercmd.composer` — a required dependency)
+- ⌨️ `:Sandbox` (alias `:Sbx`) with `container`/`image`/`volume`/`network`/
+  `compose`/`engine`/`registry`/`docs`/`wsl` subcommand trees and `<Tab>`
+  completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s
+  `usercmd.composer` — a required dependency)
 - 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
 
 ---
@@ -166,6 +181,23 @@ require("lualine").setup({
 ```
 
 or the native statusline: `set statusline+=%{v:lua.require('sandbox.statusline').status()}`.
+
+---
+
+## Telescope extension
+
+An alternative, fuzzy-search front-end to the list-view buffer-local keymaps
+— optional, only loaded if you opt in:
+
+```lua
+require("telescope").load_extension("sandbox")
+```
+
+```vim
+:Telescope sandbox containers   " <CR> inspect, <C-s> start, <C-x> stop, <C-r> restart, <C-l> logs, <C-d> remove
+:Telescope sandbox images       " <CR> inspect, <C-h> history, <C-d> remove
+:Telescope sandbox wsl          " <CR> exec, <C-s> start, <C-x> stop, <C-d> set default
+```
 
 ---
 

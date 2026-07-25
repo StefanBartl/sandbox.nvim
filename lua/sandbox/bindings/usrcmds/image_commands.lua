@@ -15,8 +15,8 @@ local M = {}
 
 --- List all available images
 function M.list()
-  local config = require("sandbox.config")
-  local engine = require("sandbox").get_engine()
+  local sandbox = require("sandbox")
+  local engine = sandbox.get_engine()
   if not engine then
     return
   end
@@ -32,14 +32,17 @@ function M.list()
     notify.warn("Some images could not be parsed: " .. friendly_error(err), { err = err })
   end
 
+  -- Match the same engine get_engine() actually resolved to (session
+  -- override/.sandboxrc/config), not just the static config value.
+  local resolved = sandbox.resolve_engine_name()
   local view
-  if config.options.engine == "docker" or config.options.engine == "nerdctl" then
+  if resolved == "docker" or resolved == "nerdctl" then
     -- nerdctl's list_images output is docker-compatible JSON, same view works for both.
     view = require("sandbox.ui.image_list_view_docker")
-  elseif config.options.engine == "podman" then
+  elseif resolved == "podman" then
     view = require("sandbox.ui.image_list_view_podman")
   else
-    notify.error("Unknown engine: " .. tostring(config.options.engine))
+    notify.error("Unknown engine: " .. tostring(resolved))
     return
   end
 

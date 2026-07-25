@@ -38,10 +38,6 @@ This is probably the highest-leverage area: today's views
 something you see in a list means re-typing `:Sandbox container stop <id>`
 by hand (tab-completion softens this, but it's still a context switch).
 
-- [ ] 💡 `telescope.nvim` extension: fuzzy-pick a container/image/WSL distro
-      and act on it, as an alternative front-end to the tab-completion
-      flow. Would live as its own optional module so `telescope.nvim`
-      doesn't become a hard dependency.
 - [ ] 💡 Multi-select in list views (visual-line select → bulk stop/remove)
       for cleaning up several stopped containers at once without reaching
       for `prune`.
