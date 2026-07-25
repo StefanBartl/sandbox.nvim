@@ -17,3 +17,4 @@
 ---@field ports? string[] "host:container" mappings
 ---@field volumes? string[] "host:container" mount specs
 ---@field env? string[] "KEY=VALUE" entries
+---@field command? string[] overrides the image's default CMD/entrypoint args

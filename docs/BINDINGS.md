@@ -1,9 +1,9 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with nine sub-namespaces — `container`, `image`, `volume`,
-`network`, `compose`, `engine`, `registry`, `docs`, and (only when `wsl.exe`
-is reachable) `wsl` — built on
+alias: `:Sbx`), with ten sub-namespaces — `container`, `image`, `volume`,
+`network`, `compose`, `engine`, `registry`, `docs`, `devcontainer`, and
+(only when `wsl.exe` is reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
@@ -131,6 +131,29 @@ default.
 | Subcommand | Args | Description |
 |---|---|---|
 | `generate` | — | Regenerate `docs/GENERATED_COMMANDS.md` from the live route table, for diffing against this (hand-maintained) file |
+
+## `:Sandbox devcontainer <subcommand>` (alias: `:Sbx devcontainer ...`)
+
+Detects `.devcontainer/devcontainer.json` or `.devcontainer.json` in cwd or
+an ancestor directory (JSONC: `//`/`/* */` comments and trailing commas are
+stripped before parsing) and offers to build/attach, similar to VS Code's
+Dev Containers extension. `build` pulls `image` or builds `build.dockerfile`
+(or delegates to `:Sandbox compose up` for `dockerComposeFile` projects),
+then runs it with the workspace bind-mounted at `workspaceFolder`,
+`forwardPorts` mapped, `containerEnv` passed through, and `sleep infinity`
+as the command so the container stays up for `attach` — matching VS Code's
+own devcontainer CLI, which does the same override for images with no
+long-running default CMD. The container gets a predictable name
+(`sandbox-devcontainer-<workspace-dir-basename>`) so `attach` can find it.
+
+**Scope**: single-container (`image`/`build.dockerfile`) and
+`dockerComposeFile` shapes only. No devcontainer "features", lifecycle
+commands (`postCreateCommand`, ...), or `remoteUser` support yet.
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `build` | — | Build/pull the devcontainer's image and start a container from it |
+| `attach` | — | Open a shell in the running devcontainer for the project in cwd |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 
