@@ -20,8 +20,10 @@ function M.get_engine()
     return "podman"
   elseif M.is_executable("docker") then
     return "docker"
+  elseif M.is_executable("nerdctl") then
+    return "nerdctl"
   else
-    notify.error("No supported container engine (podman/docker) found in PATH.")
+    notify.error("No supported container engine (podman/docker/nerdctl) found in PATH.")
     return "docker" -- fallback to docker to avoid crash, user will see error
   end
 end

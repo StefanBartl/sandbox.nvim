@@ -45,12 +45,9 @@ by hand (tab-completion softens this, but it's still a context switch).
 - [ ] 💡 Multi-select in list views (visual-line select → bulk stop/remove)
       for cleaning up several stopped containers at once without reaching
       for `prune`.
+
 ## 7. Engines & architecture
 
-- [ ] 🔜 **nerdctl** adapter — already listed as "planned" in the README's
-      supported-engines table; same shape as the existing Docker/Podman
-      adapters (`adapters/nerdctl/...engine.lua` + `containers/` +
-      `images/`).
 **containerd:** resolved, no separate item — see the "On containerd" note in
 the README's Supported Engines section. `nerdctl` *is* the docker-compatible
 CLI for containerd, so the nerdctl adapter above already covers it; `ctr`

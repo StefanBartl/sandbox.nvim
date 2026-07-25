@@ -19,7 +19,7 @@ function M.check()
 	end
 
 	-- Validate engine value
-	if engine ~= "podman" and engine ~= "docker" then
+	if engine ~= "podman" and engine ~= "docker" and engine ~= "nerdctl" then
 		health.error("Invalid container engine configured: " .. tostring(engine))
 		return
 	else

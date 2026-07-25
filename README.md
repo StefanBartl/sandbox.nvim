@@ -67,7 +67,7 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
     require("sandbox").setup({
       -- Optional: explicitly select engine
       -- If omitted, automatic detection will prefer Podman if installed, otherwise Docker
-      engine = "podman", -- or "docker"
+      engine = "podman", -- or "docker" / "nerdctl"
       -- Ask for confirmation before remove/prune/kill (default: true)
       confirm_destructive = true,
       -- Shell used by `container exec` when none is given (default: "sh")
@@ -174,18 +174,21 @@ or the native statusline: `set statusline+=%{v:lua.require('sandbox.statusline')
 |--------|--------|-------|
 | **Podman** | ✅ Supported and stable | |
 | **Docker** | ✅ Supported and stable | |
-| **nerdctl** | 🔜 Planned | Also covers **containerd** — see below |
+| **nerdctl** | ✅ Supported and stable | Also covers **containerd** — see below |
 
 Each engine is implemented through clean ports & adapters, fully pluggable.
+Pick one at `setup({ engine = "docker" })`/`"podman"`/`"nerdctl"`, override it
+per-project via `.sandboxrc`, or switch mid-session with
+`:Sandbox engine set docker|podman|nerdctl`.
 
-**On containerd:** there's no separate containerd adapter planned. containerd
+**On containerd:** there's no separate containerd adapter. containerd
 is a low-level daemon with no stable, docker-compatible CLI of its own —
 `ctr`, its bundled debug tool, is explicitly documented upstream as
 unsuitable for scripting/production use and has a command surface that
 doesn't map onto this plugin's docker/podman-shaped ports. `nerdctl` exists
 specifically to be *the* docker-compatible CLI for containerd (same JSON
-`--format`, compose support, etc.), so once the nerdctl adapter lands it
-already covers containerd — a separate adapter would just be nerdctl again
+`--format`, compose support, etc.), so the nerdctl adapter above already
+covers containerd — a separate adapter would just be nerdctl again
 pointed at the same daemon.
 
 ---

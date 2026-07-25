@@ -33,7 +33,8 @@ function M.list()
   end
 
   local view
-  if config.options.engine == "docker" then
+  if config.options.engine == "docker" or config.options.engine == "nerdctl" then
+    -- nerdctl's list_images output is docker-compatible JSON, same view works for both.
     view = require("sandbox.ui.image_list_view_docker")
   elseif config.options.engine == "podman" then
     view = require("sandbox.ui.image_list_view_podman")

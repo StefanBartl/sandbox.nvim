@@ -524,7 +524,7 @@ end
 local function engine_routes()
   return {
     { path = { "engine", "set" },
-      args = { { name = "name", type = "STRING", values = { "docker", "podman" } } },
+      args = { { name = "name", type = "STRING", values = { "docker", "podman", "nerdctl" } } },
       desc = "Switch the active engine for this session",
       run = function(ctx) engine_cmds.set(ctx.args.name) end },
 

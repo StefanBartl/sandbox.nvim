@@ -102,7 +102,7 @@ detected default.
 
 | Subcommand | Args | Description |
 |---|---|---|
-| `set` | `{docker\|podman}` | Switch the active engine for this session |
+| `set` | `{docker\|podman\|nerdctl}` | Switch the active engine for this session |
 | `get` | — | Show the currently active engine and why (session override/`.sandboxrc`/config) |
 | `reset` | — | Clear the session override, falling back to `.sandboxrc`/config |
 

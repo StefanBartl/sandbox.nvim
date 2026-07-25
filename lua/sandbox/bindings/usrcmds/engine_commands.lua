@@ -1,6 +1,6 @@
 ---@module 'sandbox.bindings.usrcmds.engine_commands'
 ---@brief Runtime engine switching -- flip the active engine for the rest of
---- this Neovim session (`:Sandbox engine set docker|podman`) instead of only
+--- this Neovim session (`:Sandbox engine set docker|podman|nerdctl`) instead of only
 --- at `setup({})` time, useful on a machine with both installed. Takes
 --- precedence over the per-project `.sandboxrc` override and the
 --- configured/detected default (see `sandbox.resolve_engine_name`).
@@ -8,13 +8,13 @@
 local notify = require("sandbox.notify")
 local M = {}
 
-local VALID_ENGINES = { docker = true, podman = true }
+local VALID_ENGINES = { docker = true, podman = true, nerdctl = true }
 
 --- Switch the active engine for the rest of this session.
 ---@param name string
 function M.set(name)
   if not VALID_ENGINES[name] then
-    notify.warn("Usage: :Sandbox engine set docker|podman")
+    notify.warn("Usage: :Sandbox engine set docker|podman|nerdctl")
     return
   end
   vim.g.sandbox_engine = name

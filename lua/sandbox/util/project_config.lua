@@ -5,7 +5,7 @@
 
 local M = {}
 
---- Read an `engine=docker|podman` override from `.sandboxrc` in the cwd.
+--- Read an `engine=docker|podman|nerdctl` override from `.sandboxrc` in the cwd.
 --- @return Sandbox.Engine|nil
 function M.read_engine_override()
   local path = vim.fn.getcwd() .. "/.sandboxrc"
@@ -15,7 +15,7 @@ function M.read_engine_override()
 
   for _, line in ipairs(vim.fn.readfile(path)) do
     local key, value = line:match("^%s*([%w_]+)%s*=%s*(%S+)%s*$")
-    if key == "engine" and (value == "docker" or value == "podman") then
+    if key == "engine" and (value == "docker" or value == "podman" or value == "nerdctl") then
       return value
     end
   end
