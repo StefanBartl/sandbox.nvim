@@ -61,21 +61,6 @@ by hand (tab-completion softens this, but it's still a context switch).
       buffer instead of only one-shot snapshots, with a keymap to stop
       following.
 
-## 6. Configuration
-
-`config/DEFAULTS.lua` currently exposes exactly one option (`engine`).
-Candidates for `setup({})`:
-
-- [ ] 💡 `default_shell` — shell used by `container exec` when none is
-      given (currently presumably hardcoded per adapter).
-- [ ] 💡 `refresh_interval` — for the auto-refreshing list views above.
-- [ ] 💡 `list_split` / window placement options — `list_view.lua` hardcodes
-      `split = "left"`; making direction/size configurable is a small,
-      contained change.
-- [ ] 💡 Per-project engine override (e.g. a `.sandboxrc`/`vim.g` project
-      var) for repos that specifically need Docker or Podman regardless of
-      the global default.
-
 ## 7. Engines & architecture
 
 - [ ] 🔜 **nerdctl** adapter — already listed as "planned" in the README's
