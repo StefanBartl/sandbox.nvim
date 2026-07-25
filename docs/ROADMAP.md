@@ -60,8 +60,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 Currently `list` / `start` / `stop` / `exec` for registered distros
 (`core/usecases/wsl/`, `adapters/wsl/`):
 
-- [ ] 💡 `set-default` — set a distro as the WSL default (`wsl --set-default`).
-- [ ] 💡 `set-version` — toggle WSL1/WSL2 per distro.
 - [ ] 💡 `export` / `import` — distro backup/restore, mirroring the image
       `save`/`load` idea in [§2](#2-images).
 - [ ] 💡 Shutdown-all (`wsl --shutdown`) as a distinct command from
