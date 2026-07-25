@@ -6,11 +6,13 @@ local notify = require("sandbox.notify")
 local engines = {
   podman = require("sandbox.adapters.podman.engine"),
   docker = require("sandbox.adapters.docker.engine"),
+  nerdctl = require("sandbox.adapters.nerdctl.engine"),
 }
 
 local compose_engines = {
   podman = require("sandbox.adapters.podman.compose_engine"),
   docker = require("sandbox.adapters.docker.compose_engine"),
+  nerdctl = require("sandbox.adapters.nerdctl.compose_engine"),
 }
 
 local M = {}
