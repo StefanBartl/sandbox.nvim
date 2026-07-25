@@ -38,10 +38,6 @@ This is probably the highest-leverage area: today's views
 something you see in a list means re-typing `:Sandbox container stop <id>`
 by hand (tab-completion softens this, but it's still a context switch).
 
-- [ ] 💡 Auto-refreshing list views (timer or `:Sandbox container list`
-      re-run on a configurable interval, or on `BufEnter`/focus) so the
-      buffer doesn't go stale the moment you start/stop something from
-      elsewhere.
 - [ ] 💡 Status icons / highlight groups per container state (running,
       stopped, paused, exited-with-error) instead of the current plain
       `[status] name (id)` text line — easy win with `nvim-web-devicons`

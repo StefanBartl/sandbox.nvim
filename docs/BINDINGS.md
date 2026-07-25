@@ -108,7 +108,10 @@ No global keymaps — nothing to map via which-key. The read-only list-view
 scratch buffers (`:Sandbox container/image/volume/network list`) do carry
 **buffer-local** keymaps so you can act on the entry under the cursor
 instead of re-typing a command with its id/name. Press `?` inside any list
-buffer for a live reminder; `q` closes it.
+buffer for a live reminder; `q` closes it. Set `refresh_interval` (ms) in
+`setup({})` to have a visible list buffer re-run its `list` command on a
+timer instead of only on `R`/manual re-open; it's paused while the buffer
+isn't shown in any window.
 
 ### Container list (`sandbox.nvim://container-list`)
 

@@ -52,4 +52,44 @@ function M.set_keymaps(bufnr, keys, items, header_offset)
   end, { buffer = bufnr, desc = "sandbox: show keymaps", nowait = true, silent = true })
 end
 
+--- Periodically re-run `refresh_fn` (e.g. `container_commands.list`) while
+--- `bufnr` is visible in a window, governed by `config.options.refresh_interval`
+--- (ms; nil/0 disables). Safe to call on every render since `open_named_scratch`
+--- reuses the same bufnr — a buffer-local flag stops a second timer being armed.
+---@param bufnr integer
+---@param refresh_fn function
+function M.setup_autorefresh(bufnr, refresh_fn)
+  local interval = require("sandbox.config").options.refresh_interval
+  if not interval or interval <= 0 then
+    return
+  end
+  if vim.b[bufnr].sandbox_autorefresh_active then
+    return
+  end
+  vim.b[bufnr].sandbox_autorefresh_active = true
+
+  local timer = vim.uv.new_timer()
+  timer:start(interval, interval, vim.schedule_wrap(function()
+    if not vim.api.nvim_buf_is_valid(bufnr) or vim.fn.bufwinid(bufnr) == -1 then
+      if not timer:is_closing() then
+        timer:stop()
+        timer:close()
+      end
+      return
+    end
+    refresh_fn()
+  end))
+
+  vim.api.nvim_create_autocmd("BufWipeout", {
+    buffer = bufnr,
+    once = true,
+    callback = function()
+      if not timer:is_closing() then
+        timer:stop()
+        timer:close()
+      end
+    end,
+  })
+end
+
 return M

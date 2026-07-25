@@ -54,4 +54,6 @@ return function(containers)
     { lhs = "T", desc = "stats", fn = function(c) container_cmds.stats(ref(c)) end },
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() container_cmds.list() end },
   }, containers, 0)
+
+  list_actions.setup_autorefresh(bufnr, container_cmds.list)
 end
