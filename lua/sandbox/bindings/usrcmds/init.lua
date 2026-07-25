@@ -538,6 +538,26 @@ local function engine_routes()
   }
 end
 
+local GENERATED_DOCS_PATH = "docs/GENERATED_COMMANDS.md"
+
+---@return table[]
+local function docs_routes()
+  return {
+    { path = { "docs", "generate" },
+      desc = "Regenerate " .. GENERATED_DOCS_PATH .. " from the live route table, so "
+        .. "docs/BINDINGS.md (hand-maintained) can be diffed against it to catch drift",
+      run = function(_ctx)
+        local notify = require("sandbox.notify")
+        local ok, err = composer.document(GENERATED_DOCS_PATH)
+        if not ok then
+          notify.error("Failed to generate docs: " .. tostring(err))
+          return
+        end
+        notify.info("Generated " .. GENERATED_DOCS_PATH)
+      end },
+  }
+end
+
 ---@return table[]
 local function registry_routes()
   return {
@@ -563,6 +583,7 @@ function M.setup()
   vim.list_extend(routes, compose_routes())
   vim.list_extend(routes, engine_routes())
   vim.list_extend(routes, registry_routes())
+  vim.list_extend(routes, docs_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in

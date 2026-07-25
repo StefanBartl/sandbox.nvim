@@ -205,6 +205,17 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 - User commands: `lua/sandbox/bindings/usrcmds/` (registered via `lib.nvim.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
 - UI views: `lua/sandbox/ui/`
 
+### Checking docs for drift
+
+[`docs/BINDINGS.md`](./docs/BINDINGS.md) is hand-maintained (it carries prose,
+keymap tables, and config notes a route table can't express), so it can drift
+from the actual command set as routes are added or renamed. Run
+`:Sandbox docs generate` to regenerate
+[`docs/GENERATED_COMMANDS.md`](./docs/GENERATED_COMMANDS.md) — a mechanical,
+always-accurate dump of every registered route (via
+`lib.nvim.usercmd.composer`'s `document()`) — and diff it against
+`docs/BINDINGS.md` when adding/changing a command.
+
 Pull Requests and Issues are very welcome!
 
 ---

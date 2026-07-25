@@ -1,14 +1,19 @@
 # sandbox.nvim: Bindings Reference
 
 All functionality is exposed via a single user command, `:Sandbox` (short
-alias: `:Sbx`), with eight sub-namespaces — `container`, `image`, `volume`,
-`network`, `compose`, `engine`, `registry`, and (only when `wsl.exe` is
-reachable) `wsl` — built on
+alias: `:Sbx`), with nine sub-namespaces — `container`, `image`, `volume`,
+`network`, `compose`, `engine`, `registry`, `docs`, and (only when `wsl.exe`
+is reachable) `wsl` — built on
 [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
-briefly to avoid shelling out on every keystroke). There are no default
-keymaps or autocmds.
+briefly to avoid shelling out on every keystroke). No global keymaps or
+autocmds — but see the [Keymaps](#keymaps) section below for the buffer-local
+keymaps carried by the list-view scratch buffers.
+
+This file is hand-maintained; run `:Sandbox docs generate` to regenerate
+[`GENERATED_COMMANDS.md`](./GENERATED_COMMANDS.md), a mechanical dump of the
+live route table, and diff it against this file to catch drift.
 
 ## `:Sandbox container <subcommand>` (alias: `:Sbx container ...`)
 
@@ -120,6 +125,12 @@ default.
 |---|---|---|
 | `login` | `[registry]` | Log in to a registry (prompts for username/password) |
 | `logout` | `[registry]` | Log out of a registry |
+
+## `:Sandbox docs <subcommand>` (alias: `:Sbx docs ...`)
+
+| Subcommand | Args | Description |
+|---|---|---|
+| `generate` | — | Regenerate `docs/GENERATED_COMMANDS.md` from the live route table, for diffing against this (hand-maintained) file |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 
