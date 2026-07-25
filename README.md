@@ -205,6 +205,13 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 - User commands: `lua/sandbox/bindings/usrcmds/` (registered via `lib.nvim.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
 - UI views: `lua/sandbox/ui/`
 
+### Tests
+
+`tests/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+busted-style suite; adapters are tested against a faked `run_argv` instead of
+a real docker/podman/nerdctl/wsl binary. See [`tests/README.md`](./tests/README.md)
+for how to run it locally.
+
 ### Checking docs for drift
 
 [`docs/BINDINGS.md`](./docs/BINDINGS.md) is hand-maintained (it carries prose,
