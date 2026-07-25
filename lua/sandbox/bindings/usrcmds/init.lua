@@ -507,6 +507,10 @@ local function wsl_routes()
       },
       desc = "Import a distro from a tarball",
       run = function(ctx) wsl_cmds.import(ctx.args.name, ctx.args.install_path, ctx.args.tar_path) end },
+
+    { path = { "wsl", "shutdown-all" },
+      desc = "Shut down the WSL2 VM and all running distros",
+      run = function(_ctx) wsl_cmds.shutdown_all() end },
   }
 end
 

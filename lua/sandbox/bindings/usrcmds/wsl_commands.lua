@@ -17,6 +17,7 @@
 local engine_utils = require("sandbox.engine_utils")
 local notify = require("sandbox.notify")
 local friendly_error = require("sandbox.util.friendly_error")
+local confirm = require("sandbox.util.confirm")
 
 local M = {}
 
@@ -203,6 +204,22 @@ function M.import(name, install_path, tar_path)
   end
 
   notify.info("WSL distro imported: " .. name)
+end
+
+--- Shut down the WSL2 VM and all running distros (`wsl --shutdown`),
+--- distinct from stopping a single named distro.
+function M.shutdown_all()
+  confirm.destructive("Shut down WSL and all running distros?", function()
+    local wsl_engine = require("sandbox.adapters.wsl.engine")
+    local usecase = require("sandbox.core.usecases.wsl.shutdown_all")
+    local ok, err = usecase(wsl_engine)
+    if not ok then
+      notify.error("Failed to shut down WSL: " .. friendly_error(err), { err = err })
+      return
+    end
+
+    notify.info("WSL shut down")
+  end)
 end
 
 return M
