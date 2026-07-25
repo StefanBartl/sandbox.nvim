@@ -125,6 +125,12 @@ isn't shown in any window.
 | `p` | pause | `T` | stats |
 | `P` | unpause | `R` | refresh list |
 
+The `[status]` prefix on each line is highlighted by state — green
+(`SandboxStatusRunning`)/red (`SandboxStatusStopped`)/yellow
+(`SandboxStatusPaused`)/comment-colored (`SandboxStatusOther`), linked to
+`Diagnostic{Ok,Error,Warn}`/`Comment` so it follows your colorscheme. Override
+any of the four groups (e.g. `:hi SandboxStatusRunning ...`) to customize.
+
 ### Image list (`sandbox.nvim://image-list` / `sandbox.nvim://images`)
 
 | Key | Action |
