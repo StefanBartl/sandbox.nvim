@@ -60,9 +60,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 Currently `list` / `start` / `stop` / `exec` for registered distros
 (`core/usecases/wsl/`, `adapters/wsl/`):
 
-- [ ] 💡 Shutdown-all (`wsl --shutdown`) as a distinct command from
-      stopping a single named distro.
-
 ## 9. Developer experience & testing
 
 - [ ] 🔜 Automated tests — no test suite currently exists. `plenary.nvim`'s

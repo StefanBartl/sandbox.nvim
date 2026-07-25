@@ -48,4 +48,8 @@ return {
     error(name .. ": import_distro not implemented. install_path: " .. tostring(install_path)
       .. " tar_path: " .. tostring(tar_path))
   end,
+  --- @return boolean ok, string|nil err
+  shutdown_all = function()
+    error("shutdown_all not implemented")
+  end,
 }

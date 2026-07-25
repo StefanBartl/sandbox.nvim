@@ -121,6 +121,7 @@ time via `wsl_commands.available()`).
 | `set-version` | `{name} {1\|2}` | Toggle a distro between WSL1/WSL2 |
 | `export` | `{name} {path}` | Export a distro to a tarball on disk |
 | `import` | `{name} {install-path} {tar-path}` | Import a distro from a tarball |
+| `shutdown-all` | — | Shut down the WSL2 VM and all running distros (confirms first) |
 
 ## Keymaps
 
