@@ -172,12 +172,21 @@ or the native statusline: `set statusline+=%{v:lua.require('sandbox.statusline')
 
 | Engine | Status | Notes |
 |--------|--------|-------|
-| **Podman** | ✅ Supported and stable |
-| **Docker** | ✅ Supported and stable |
-| **nerdctl** | 🔜 Planned |
-| **containerd** | 🔜 Research phase |
+| **Podman** | ✅ Supported and stable | |
+| **Docker** | ✅ Supported and stable | |
+| **nerdctl** | 🔜 Planned | Also covers **containerd** — see below |
 
 Each engine is implemented through clean ports & adapters, fully pluggable.
+
+**On containerd:** there's no separate containerd adapter planned. containerd
+is a low-level daemon with no stable, docker-compatible CLI of its own —
+`ctr`, its bundled debug tool, is explicitly documented upstream as
+unsuitable for scripting/production use and has a command surface that
+doesn't map onto this plugin's docker/podman-shaped ports. `nerdctl` exists
+specifically to be *the* docker-compatible CLI for containerd (same JSON
+`--format`, compose support, etc.), so once the nerdctl adapter lands it
+already covers containerd — a separate adapter would just be nerdctl again
+pointed at the same daemon.
 
 ---
 
