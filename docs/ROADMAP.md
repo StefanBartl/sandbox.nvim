@@ -54,9 +54,7 @@ by hand (tab-completion softens this, but it's still a context switch).
 - [ ] 💡 **containerd** adapter — listed as "research phase"; likely needs
       `nerdctl` or `ctr` as the actual CLI surface rather than talking to
       the containerd socket directly.
-- [ ] 💡 Runtime engine switching — `:Sandbox engine set docker|podman` to
-      flip the active engine mid-session instead of only at `setup()` time
-      (useful when a machine has both installed).
+
 ## 8. WSL
 
 Currently `list` / `start` / `stop` / `exec` for registered distros

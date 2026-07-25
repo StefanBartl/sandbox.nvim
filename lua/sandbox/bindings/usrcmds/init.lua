@@ -30,6 +30,7 @@ local volume_cmds = require("sandbox.bindings.usrcmds.volume_commands")
 local network_cmds = require("sandbox.bindings.usrcmds.network_commands")
 local compose_cmds = require("sandbox.bindings.usrcmds.compose_commands")
 local wsl_cmds = require("sandbox.bindings.usrcmds.wsl_commands")
+local engine_cmds = require("sandbox.bindings.usrcmds.engine_commands")
 
 local M = {}
 
@@ -479,6 +480,24 @@ local function wsl_routes()
   }
 end
 
+---@return table[]
+local function engine_routes()
+  return {
+    { path = { "engine", "set" },
+      args = { { name = "name", type = "STRING", values = { "docker", "podman" } } },
+      desc = "Switch the active engine for this session",
+      run = function(ctx) engine_cmds.set(ctx.args.name) end },
+
+    { path = { "engine", "get" },
+      desc = "Show the currently active engine and why",
+      run = function(_ctx) engine_cmds.get() end },
+
+    { path = { "engine", "reset" },
+      desc = "Clear the session engine override, falling back to .sandboxrc/config",
+      run = function(_ctx) engine_cmds.reset() end },
+  }
+end
+
 ---Register :Sandbox and its short alias :Sbx (same spec, two command names)
 function M.setup()
   local routes = {}
@@ -487,6 +506,7 @@ function M.setup()
   vim.list_extend(routes, volume_routes())
   vim.list_extend(routes, network_routes())
   vim.list_extend(routes, compose_routes())
+  vim.list_extend(routes, engine_routes())
 
   -- WSL commands operate independently of the container engine and only
   -- make sense where wsl.exe is reachable -- matches the original guard in
