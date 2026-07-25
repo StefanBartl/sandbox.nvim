@@ -1,7 +1,8 @@
 # sandbox.nvim
+![CI](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml/badge.svg)
 ![status](https://img.shields.io/badge/status-beta-orange.svg)
 ![Lazy.nvim compatible](https://img.shields.io/badge/lazy.nvim-supported-success)
-![Neovim](https://img.shields.io/badge/Neovim-0.9+-success.svg)
+![Neovim](https://img.shields.io/badge/Neovim-0.10+-success.svg)
 ![Lua](https://img.shields.io/badge/language-Lua-yellow.svg)
 ![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
 
@@ -210,7 +211,8 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 `tests/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 busted-style suite; adapters are tested against a faked `run_argv` instead of
 a real docker/podman/nerdctl/wsl binary. See [`tests/README.md`](./tests/README.md)
-for how to run it locally.
+for how to run it locally. [GitHub Actions](./.github/workflows/ci.yml) runs
+`luacheck` and the full test suite on every push/PR to `main`.
 
 ### Checking docs for drift
 

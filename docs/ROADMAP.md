@@ -62,8 +62,6 @@ Currently `list` / `start` / `stop` / `exec` for registered distros
 
 ## 9. Developer experience & testing
 
-- [ ] 🔜 CI (GitHub Actions) — lint (`luacheck` or `.luarc.json`-driven
-      `lua-language-server` check) + the test suite above, on every PR.
 ## 10. Stretch / exploratory
 
 - [ ] 🧪 Devcontainer support — detect `.devcontainer/devcontainer.json` and
