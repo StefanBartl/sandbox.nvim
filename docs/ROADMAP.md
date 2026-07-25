@@ -62,10 +62,6 @@ Currently `list` / `start` / `stop` / `exec` for registered distros
 
 ## 9. Developer experience & testing
 
-- [ ] 🔜 Automated tests — no test suite currently exists. `plenary.nvim`'s
-      busted-style harness is the de facto standard for Neovim plugins and
-      would let adapters be tested against a faked `run_blocking_captured`
-      without needing Docker/Podman actually installed in CI.
 - [ ] 🔜 CI (GitHub Actions) — lint (`luacheck` or `.luarc.json`-driven
       `lua-language-server` check) + the test suite above, on every PR.
 ## 10. Stretch / exploratory
