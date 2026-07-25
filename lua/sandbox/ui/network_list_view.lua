@@ -1,6 +1,8 @@
---- Display a list of networks in a vertical split buffer
+--- Display a list of networks in a vertical split buffer, with buffer-local
+--- keymaps to act on the network under the cursor (see `?` inside the buffer).
 --- @param networks table[]: List of standardized network objects (id, name, driver, scope)
 local notify = require("sandbox.notify")
+local list_actions = require("sandbox.ui.list_actions")
 return function(networks)
   if type(networks) ~= "table" then
     notify.error("Invalid network list: not a table")
@@ -19,7 +21,18 @@ return function(networks)
     )
   end
 
-  require("lib.nvim.window").open_named_scratch(
+  local bufnr = require("lib.nvim.window").open_named_scratch(
     "sandbox.nvim://network-list", lines, { filetype = "log", split = "left" }
   )
+
+  local network_cmds = require("sandbox.bindings.usrcmds.network_commands")
+  ---@param n table
+  local function ref(n) return n.name or n.id end
+
+  list_actions.set_keymaps(bufnr, {
+    { lhs = "<CR>", desc = "inspect", fn = function(n) network_cmds.inspect(ref(n)) end },
+    { lhs = "i", desc = "inspect", fn = function(n) network_cmds.inspect(ref(n)) end },
+    { lhs = "D", desc = "remove", fn = function(n) network_cmds.remove(ref(n)) end },
+    { lhs = "R", desc = "refresh list", no_item = true, fn = function() network_cmds.list() end },
+  }, networks, 2)
 end

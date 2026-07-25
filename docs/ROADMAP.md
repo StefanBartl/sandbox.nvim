@@ -38,12 +38,6 @@ This is probably the highest-leverage area: today's views
 something you see in a list means re-typing `:Sandbox container stop <id>`
 by hand (tab-completion softens this, but it's still a context switch).
 
-- [ ] 🔜 Buffer-local keymaps in the list views: put the cursor on a
-      container/image line and hit a key to start/stop/restart/logs/exec/
-      remove/inspect it. This alone would make the list buffers feel like a
-      TUI (think `lazygit` / `k9s`) instead of a report you read and then
-      act on elsewhere. Doesn't need a new dependency — just keymaps scoped
-      to the scratch buffer, resolving the id from the current line.
 - [ ] 💡 Auto-refreshing list views (timer or `:Sandbox container list`
       re-run on a configurable interval, or on `BufEnter`/focus) so the
       buffer doesn't go stale the moment you start/stop something from
