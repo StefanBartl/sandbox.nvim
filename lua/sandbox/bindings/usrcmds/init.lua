@@ -308,6 +308,11 @@ local function image_routes()
         else image_cmds.pull(ctx.args.name) end
       end },
 
+    { path = { "image", "push" },
+      args = { { name = "name", type = "STRING" } },
+      desc = "Push an image to a remote registry",
+      run = function(ctx) image_cmds.push(ctx.args.name) end },
+
     { path = { "image", "tag" },
       args = {
         { name = "source", type = "IMAGE_ID" },

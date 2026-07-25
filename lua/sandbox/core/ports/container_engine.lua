@@ -105,6 +105,13 @@ return {
   pull_image = function(image_name, _on_done)
     error(image_name .. ": pull_image not implemented")
   end,
+  --- Push an image to a remote registry without blocking the UI thread.
+  --- @param image_name string
+  --- @param on_done fun(ok: boolean, err: string|nil)
+  --- @return table handle with a `:stop()` method
+  push_image = function(image_name, _on_done)
+    error(image_name .. ": push_image not implemented")
+  end,
   --- @param image_id string
   --- @param _on_done? fun(ok: boolean, err: string|nil)
   remove_image = function(image_id, _on_done)

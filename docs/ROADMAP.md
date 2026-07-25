@@ -82,8 +82,6 @@ Currently `list` / `start` / `stop` / `exec` for registered distros
       and container ports rather than a container/image subcommand.
 - [ ] 🧪 Registry auth (`login`/`logout`) for private registries, needed
       before `pull`/`push` against anything non-public becomes useful.
-- [ ] 🧪 `push` — the natural counterpart to `pull`, absent from the image
-      port today.
 - [ ] 🧪 Statusline component (lualine/heirline extension) showing engine +
       running container count, for people who want ambient awareness
       without opening a list view.
