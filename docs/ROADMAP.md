@@ -38,11 +38,6 @@ This is probably the highest-leverage area: today's views
 something you see in a list means re-typing `:Sandbox container stop <id>`
 by hand (tab-completion softens this, but it's still a context switch).
 
-- [ ] 💡 Status icons / highlight groups per container state (running,
-      stopped, paused, exited-with-error) instead of the current plain
-      `[status] name (id)` text line — easy win with `nvim-web-devicons`
-      as an optional soft dependency, matching the `lib.nvim` "required but
-      gracefully degrading" pattern already used for `notify`/`run_argv`.
 - [ ] 💡 `telescope.nvim` extension: fuzzy-pick a container/image/WSL distro
       and act on it, as an alternative front-end to the tab-completion
       flow. Would live as its own optional module so `telescope.nvim`
