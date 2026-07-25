@@ -57,14 +57,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 - [ ] 💡 Runtime engine switching — `:Sandbox engine set docker|podman` to
       flip the active engine mid-session instead of only at `setup()` time
       (useful when a machine has both installed).
-- [ ] 💡 Async command execution — `util/run_argv.lua` currently only
-      exposes `run_blocking_captured` (via `lib.nvim.cross.run_argv`, or a
-      blocking `vim.fn.system` fallback). Long-running ops (`pull`, `prune`,
-      `build` once it exists) block the UI thread; a
-      `vim.system`/`vim.uv.spawn`-backed async path with a callback would
-      let `--buffer` streams update live instead of appearing once the
-      process exits.
-
 ## 8. WSL
 
 Currently `list` / `start` / `stop` / `exec` for registered distros

@@ -98,9 +98,11 @@ return {
   list_images = function()
     error("list_images not implemented")
   end,
+  --- Pull an image without blocking the UI thread.
   --- @param image_name string
-  --- @return boolean ok, string|nil err
-  pull_image = function(image_name)
+  --- @param on_done fun(ok: boolean, err: string|nil)
+  --- @return table handle with a `:stop()` method
+  pull_image = function(image_name, _on_done)
     error(image_name .. ": pull_image not implemented")
   end,
   --- @param image_id string

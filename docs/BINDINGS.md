@@ -42,7 +42,7 @@ summary — useful for verbose operations (start/stop/prune). Example:
 | Subcommand | Args | Description |
 |---|---|---|
 | `list` | — | List available images |
-| `pull` | `{name} [--buffer\|-b]` | Pull an image |
+| `pull` | `{name} [--buffer\|-b]` | Pull an image; runs async (doesn't block the UI) either way — `--buffer` additionally streams progress into a terminal buffer instead of a single completion notify |
 | `tag` | `{source} {target}` | Tag a local image with a new repository:tag |
 | `build` | `{tag} [path]` | Build an image from a Dockerfile/Containerfile (streams to a terminal buffer); `path` defaults to `.` |
 | `save` | `{image} {path}` | Save (export) an image to a tarball on disk |
