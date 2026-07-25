@@ -119,6 +119,8 @@ time via `wsl_commands.available()`).
 | `exec` | `{name} [command...]` | Open a shell or run a command inside a WSL distro |
 | `set-default` | `{name}` | Set a distro as the WSL default |
 | `set-version` | `{name} {1\|2}` | Toggle a distro between WSL1/WSL2 |
+| `export` | `{name} {path}` | Export a distro to a tarball on disk |
+| `import` | `{name} {install-path} {tar-path}` | Import a distro from a tarball |
 
 ## Keymaps
 

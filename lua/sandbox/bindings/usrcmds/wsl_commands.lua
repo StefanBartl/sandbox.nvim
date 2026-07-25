@@ -164,4 +164,45 @@ function M.exec(name, command)
   end
 end
 
+--- Export a distro to a tarball on disk (`wsl --export`)
+---@param name string
+---@param path string destination .tar file path
+function M.export(name, path)
+  if not name or name == "" or not path or path == "" then
+    notify.warn("Usage: :Sandbox wsl export <distro-name> <path>")
+    return
+  end
+
+  local wsl_engine = require("sandbox.adapters.wsl.engine")
+  local usecase = require("sandbox.core.usecases.wsl.export_distro")
+  local ok, err = usecase(wsl_engine, name, path)
+  if not ok then
+    notify.error("Failed to export WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err })
+    return
+  end
+
+  notify.info("WSL distro " .. name .. " exported to " .. path)
+end
+
+--- Import a distro from a tarball (`wsl --import`)
+---@param name string new distro name
+---@param install_path string directory the distro's VHD will be installed into
+---@param tar_path string source .tar file path
+function M.import(name, install_path, tar_path)
+  if not name or name == "" or not install_path or install_path == "" or not tar_path or tar_path == "" then
+    notify.warn("Usage: :Sandbox wsl import <distro-name> <install-path> <tar-path>")
+    return
+  end
+
+  local wsl_engine = require("sandbox.adapters.wsl.engine")
+  local usecase = require("sandbox.core.usecases.wsl.import_distro")
+  local ok, err = usecase(wsl_engine, name, install_path, tar_path)
+  if not ok then
+    notify.error("Failed to import WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err })
+    return
+  end
+
+  notify.info("WSL distro imported: " .. name)
+end
+
 return M

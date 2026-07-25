@@ -7,6 +7,8 @@ local stop_distro        = require("sandbox.adapters.wsl.stop_distro")
 local exec_in_distro     = require("sandbox.adapters.wsl.exec_in_distro")
 local set_default_distro = require("sandbox.adapters.wsl.set_default_distro")
 local set_version_distro = require("sandbox.adapters.wsl.set_version_distro")
+local export_distro      = require("sandbox.adapters.wsl.export_distro")
+local import_distro      = require("sandbox.adapters.wsl.import_distro")
 
 return {
   list_distros       = list_distros.list_distros,
@@ -15,4 +17,6 @@ return {
   exec_in_distro     = exec_in_distro.exec_in_distro,
   set_default_distro = set_default_distro.set_default_distro,
   set_version_distro = set_version_distro.set_version_distro,
+  export_distro      = export_distro.export_distro,
+  import_distro      = import_distro.import_distro,
 }

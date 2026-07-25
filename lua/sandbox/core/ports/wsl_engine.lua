@@ -34,4 +34,18 @@ return {
   set_version_distro = function(name, version)
     error(name .. ": set_version_distro not implemented. version: " .. tostring(version))
   end,
+  --- @param name string
+  --- @param path string destination .tar file path
+  --- @return boolean ok, string|nil err
+  export_distro = function(name, path)
+    error(name .. ": export_distro not implemented. path: " .. tostring(path))
+  end,
+  --- @param name string new distro name
+  --- @param install_path string directory the distro's VHD will be installed into
+  --- @param tar_path string source .tar file path
+  --- @return boolean ok, string|nil err
+  import_distro = function(name, install_path, tar_path)
+    error(name .. ": import_distro not implemented. install_path: " .. tostring(install_path)
+      .. " tar_path: " .. tostring(tar_path))
+  end,
 }

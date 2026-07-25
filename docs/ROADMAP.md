@@ -60,8 +60,6 @@ by hand (tab-completion softens this, but it's still a context switch).
 Currently `list` / `start` / `stop` / `exec` for registered distros
 (`core/usecases/wsl/`, `adapters/wsl/`):
 
-- [ ] 💡 `export` / `import` — distro backup/restore, mirroring the image
-      `save`/`load` idea in [§2](#2-images).
 - [ ] 💡 Shutdown-all (`wsl --shutdown`) as a distinct command from
       stopping a single named distro.
 

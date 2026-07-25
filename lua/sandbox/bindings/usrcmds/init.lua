@@ -490,6 +490,23 @@ local function wsl_routes()
       },
       desc = "Toggle a distro between WSL1/WSL2",
       run = function(ctx) wsl_cmds.set_version(ctx.args.name, ctx.args.version) end },
+
+    { path = { "wsl", "export" },
+      args = {
+        { name = "name", type = "DISTRO_NAME" },
+        { name = "path", type = "STRING" },
+      },
+      desc = "Export a distro to a tarball on disk",
+      run = function(ctx) wsl_cmds.export(ctx.args.name, ctx.args.path) end },
+
+    { path = { "wsl", "import" },
+      args = {
+        { name = "name", type = "STRING" },
+        { name = "install_path", type = "STRING" },
+        { name = "tar_path", type = "STRING" },
+      },
+      desc = "Import a distro from a tarball",
+      run = function(ctx) wsl_cmds.import(ctx.args.name, ctx.args.install_path, ctx.args.tar_path) end },
   }
 end
 
