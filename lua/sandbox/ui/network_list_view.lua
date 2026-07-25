@@ -38,5 +38,11 @@ return function(networks)
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() network_cmds.list() end },
   }, networks, 2)
 
+  list_actions.set_visual_bulk_actions(bufnr, {
+    { lhs = "D", desc = "remove selection", fn = function(selected)
+        list_actions.bulk_confirm_then("Remove", "network", selected, ref, network_cmds.remove)
+      end },
+  }, networks, 2)
+
   list_actions.setup_autorefresh(bufnr, network_cmds.list)
 end

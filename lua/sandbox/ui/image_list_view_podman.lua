@@ -57,5 +57,11 @@ return function(images)
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() image_cmds.list() end },
   }, images, 2)
 
+  list_actions.set_visual_bulk_actions(bufnr, {
+    { lhs = "D", desc = "remove selection", fn = function(selected)
+        list_actions.bulk_confirm_then("Remove", "image", selected, ref, image_cmds.remove)
+      end },
+  }, images, 2)
+
   list_actions.setup_autorefresh(bufnr, image_cmds.list)
 end

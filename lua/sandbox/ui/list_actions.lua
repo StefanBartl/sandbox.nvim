@@ -52,6 +52,83 @@ function M.set_keymaps(bufnr, keys, items, header_offset)
   end, { buffer = bufnr, desc = "sandbox: show keymaps", nowait = true, silent = true })
 end
 
+--- Items covered by the CURRENT visual selection. Must be called from
+--- inside a Visual-mode keymap callback, while still in Visual mode: the
+--- `'<`/`'>` marks are only updated once Visual mode is actually exited
+--- (e.g. via `<Esc>`), so a Lua-function mapping bound in mode "x" -- which
+--- runs its callback *before* that happens (`mode()` still reports
+--- "v"/"V"/"" at that point) -- must instead read the live selection via
+--- `getpos("v")` (where Visual mode started) and `getpos(".")` (the cursor).
+---@param items table[]
+---@param header_offset integer|nil
+---@return table[]
+function M.items_in_visual_selection(items, header_offset)
+  local start_line = vim.fn.getpos("v")[2]
+  local end_line = vim.fn.getpos(".")[2]
+  if start_line > end_line then
+    start_line, end_line = end_line, start_line
+  end
+
+  local selected = {}
+  for lnum = start_line, end_line do
+    local item = items[lnum - (header_offset or 0)]
+    if item then
+      selected[#selected + 1] = item
+    end
+  end
+  return selected
+end
+
+--- Bind bulk actions triggered from a Visual-mode selection (multi-select),
+--- e.g. select several stopped containers with `V`/`j`/`j`/... then hit `D`
+--- to remove them all instead of reaching for `prune`. `fn` receives every
+--- item spanned by the selection.
+---@param bufnr integer
+---@param keys { lhs: string, desc: string, fn: fun(items: table[]) }[]
+---@param items table[]
+---@param header_offset integer|nil
+function M.set_visual_bulk_actions(bufnr, keys, items, header_offset)
+  for _, k in ipairs(keys) do
+    vim.keymap.set("x", k.lhs, function()
+      local selected = M.items_in_visual_selection(items, header_offset)
+      -- Return to Normal mode; the mapping replaces the builtin visual
+      -- action (delete/etc.) so nothing else exits Visual mode for us.
+      vim.cmd("normal! \27")
+      if #selected == 0 then
+        require("sandbox.notify").warn("No items in selection")
+        return
+      end
+      k.fn(selected)
+    end, { buffer = bufnr, desc = "sandbox: " .. k.desc .. " (selection)", nowait = true, silent = true })
+  end
+end
+
+--- Confirm once for a whole batch (instead of once per item), then call
+--- `fn(id)` for every item with `config.options.confirm_destructive`
+--- temporarily suppressed -- so a per-item command function that already
+--- confirms internally (container_cmds.remove, image_cmds.remove, ...)
+--- doesn't re-prompt for each item in the selection.
+---@param label string e.g. "Remove"
+---@param noun string e.g. "container"
+---@param items table[]
+---@param ref fun(item: table): string
+---@param fn fun(id: string)
+function M.bulk_confirm_then(label, noun, items, ref, fn)
+  local confirm = require("sandbox.util.confirm")
+  confirm.destructive(
+    string.format("%s %d %s%s?", label, #items, noun, #items > 1 and "s" or ""),
+    function()
+      local config = require("sandbox.config")
+      local prev = config.options.confirm_destructive
+      config.options.confirm_destructive = false
+      for _, item in ipairs(items) do
+        fn(ref(item))
+      end
+      config.options.confirm_destructive = prev
+    end
+  )
+end
+
 --- Periodically re-run `refresh_fn` (e.g. `container_commands.list`) while
 --- `bufnr` is visible in a window, governed by `config.options.refresh_interval`
 --- (ms; nil/0 disables). Safe to call on every render since `open_named_scratch`
