@@ -45,7 +45,9 @@ function M.list()
   view(images)
 end
 
---- Pull a specific image by name
+--- Pull a specific image by name. Runs asynchronously so it doesn't block
+--- the UI thread; use --buffer (container_commands_buffer.pull) instead if
+--- you want to watch the pull progress live.
 ---@param image string
 function M.pull(image)
   if not image or image == "" then
@@ -58,14 +60,15 @@ function M.pull(image)
     return
   end
 
+  notify.info("Pulling image " .. image .. "...")
   local usecase = require("sandbox.core.usecases.images.pull_image")
-  local ok, err = usecase(engine, image)
-  if not ok then
-    notify.error("Failed to pull image " .. image .. ": " .. friendly_error(err), { image = image, err = err })
-    return
-  end
-
-  notify.info("Image pulled successfully: " .. image)
+  usecase(engine, image, function(ok, err)
+    if not ok then
+      notify.error("Failed to pull image " .. image .. ": " .. friendly_error(err), { image = image, err = err })
+      return
+    end
+    notify.info("Image pulled successfully: " .. image)
+  end)
 end
 
 --- Remove a specific image by ID
