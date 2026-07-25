@@ -104,7 +104,49 @@ time via `wsl_commands.available()`).
 
 ## Keymaps
 
-None defined — nothing to map via which-key.
+No global keymaps — nothing to map via which-key. The read-only list-view
+scratch buffers (`:Sandbox container/image/volume/network list`) do carry
+**buffer-local** keymaps so you can act on the entry under the cursor
+instead of re-typing a command with its id/name. Press `?` inside any list
+buffer for a live reminder; `q` closes it.
+
+### Container list (`sandbox.nvim://container-list`)
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `<CR>` / `i` | inspect | `n` | rename (prompts) |
+| `s` | start | `D` | remove |
+| `x` | stop | `l` | logs |
+| `X` | kill | `e` | exec (shell) |
+| `r` | restart | `t` | top |
+| `p` | pause | `T` | stats |
+| `P` | unpause | `R` | refresh list |
+
+### Image list (`sandbox.nvim://image-list` / `sandbox.nvim://images`)
+
+| Key | Action |
+|---|---|
+| `<CR>` / `i` | inspect |
+| `h` | history |
+| `t` | tag (prompts for target) |
+| `D` | remove |
+| `R` | refresh list |
+
+### Volume list (`sandbox.nvim://volume-list`)
+
+| Key | Action |
+|---|---|
+| `<CR>` / `i` | inspect |
+| `D` | remove |
+| `R` | refresh list |
+
+### Network list (`sandbox.nvim://network-list`)
+
+| Key | Action |
+|---|---|
+| `<CR>` / `i` | inspect |
+| `D` | remove |
+| `R` | refresh list |
 
 ## Autocmds
 
