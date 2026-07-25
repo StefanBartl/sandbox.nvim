@@ -33,4 +33,6 @@ return function(volumes)
     { lhs = "D", desc = "remove", fn = function(v) volume_cmds.remove(v.name) end },
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() volume_cmds.list() end },
   }, volumes, 2)
+
+  list_actions.setup_autorefresh(bufnr, volume_cmds.list)
 end

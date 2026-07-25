@@ -49,4 +49,6 @@ return function(images)
     { lhs = "D", desc = "remove", fn = function(img) image_cmds.remove(ref(img)) end },
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() image_cmds.list() end },
   }, images, 0)
+
+  list_actions.setup_autorefresh(bufnr, image_cmds.list)
 end

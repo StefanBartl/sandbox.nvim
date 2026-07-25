@@ -37,4 +37,6 @@ return function(networks)
     { lhs = "D", desc = "remove", fn = function(n) network_cmds.remove(ref(n)) end },
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() network_cmds.list() end },
   }, networks, 2)
+
+  list_actions.setup_autorefresh(bufnr, network_cmds.list)
 end
