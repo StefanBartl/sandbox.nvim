@@ -1,0 +1,464 @@
+*sandbox.txt*    Manage containers (Podman/Docker/nerdctl) from Neovim
+
+==============================================================================
+Table of Contents                                          *sandbox-contents*
+
+  Introduction ······················· |sandbox-introduction|
+  Requirements ························ |sandbox-requirements|
+  Setup ······························· |sandbox-setup|
+  Configuration ······················· |sandbox-configuration|
+  Commands ···························· |sandbox-commands|
+    :Sandbox container ················ |sandbox-commands-container|
+    :Sandbox image ····················· |sandbox-commands-image|
+    :Sandbox volume ···················· |sandbox-commands-volume|
+    :Sandbox network ··················· |sandbox-commands-network|
+    :Sandbox compose ··················· |sandbox-commands-compose|
+    :Sandbox engine ····················· |sandbox-commands-engine|
+    :Sandbox registry ··················· |sandbox-commands-registry|
+    :Sandbox docs ······················· |sandbox-commands-docs|
+    :Sandbox devcontainer ··············· |sandbox-commands-devcontainer|
+    :Sandbox wsl ························ |sandbox-commands-wsl|
+  Keymaps ····························· |sandbox-keymaps|
+  Statusline ··························· |sandbox-statusline|
+  Health ······························· |sandbox-health|
+  About ································ |sandbox-about|
+
+==============================================================================
+Introduction                                             *sandbox-introduction*
+                                                          *sandbox* *sandbox.nvim*
+
+sandbox.nvim manages Podman, Docker, and nerdctl containers directly from
+Neovim: containers, images, volumes, networks, compose projects, registry
+auth, devcontainers, and (on Windows) WSL distros, all through a single
+`:Sandbox` command tree with <Tab> completion.
+
+Architecture is hexagonal (ports & adapters): a `ContainerEngine`/
+`ComposeEngine`/`WslEngine` port defines each capability, and a Docker,
+Podman, or nerdctl adapter implements it by shelling out to the matching
+CLI. Adding a new engine or a new operation means adding an adapter/port
+method, not touching the command layer. See
+https://github.com/StefanBartl/sandbox.nvim/blob/main/docs/ADD_USECASE.md
+if you want to contribute one.
+
+==============================================================================
+Requirements                                             *sandbox-requirements*
+
+- Neovim 0.10+
+- lib.nvim (https://github.com/StefanBartl/lib.nvim) — REQUIRED. The
+  `:Sandbox`/`:Sbx` command tree is built on `lib.nvim.usercmd.composer`,
+  and the buffer/window views under `lua/sandbox/ui/` depend on
+  `lib.nvim.window` directly. The plugin does not run without it.
+- At least one of: podman, docker, or nerdctl on `$PATH`.
+- (Optional) telescope.nvim — only needed for the `:Telescope sandbox`
+  picker extension, see |sandbox-commands-devcontainer| sibling section
+  below on keymaps. Everything else works without it.
+- (Optional, Windows only) `wsl.exe` on `$PATH` — enables the `wsl`
+  sub-namespace; it is simply absent everywhere else.
+
+==============================================================================
+Setup                                                           *sandbox-setup*
+
+You must call `require("sandbox").setup({})` — even with an empty table —
+to initialize the plugin's configuration; nothing self-registers otherwise.
+
+lazy.nvim, loaded after the UI is ready (recommended): >lua
+    {
+      "StefanBartl/sandbox.nvim",
+      dependencies = { "StefanBartl/lib.nvim" },
+      event = "VimEnter",
+      config = function()
+        require("sandbox").setup({
+          engine = "podman", -- or "docker" / "nerdctl"; omit for auto-detect
+        })
+      end,
+    }
+<
+If `engine` is omitted, sandbox.nvim auto-detects in this order: Podman,
+then Docker, then nerdctl (whichever is first found on `$PATH`).
+
+==============================================================================
+Configuration                                           *sandbox-configuration*
+
+All fields of the table passed to `setup({})` are optional.
+
+                                                    *sandbox-config-engine*
+engine ~
+    Type: `"podman"|"docker"|"nerdctl"|nil`  Default: `nil` (auto-detect)
+    Explicitly pin the engine instead of relying on auto-detection.
+    Overridden by a session-level |:Sandbox-engine-set| and by a
+    per-project `.sandboxrc` file (a bare `engine=docker`/`engine=podman`/
+    `engine=nerdctl` line in the project root) — see
+    |sandbox-commands-engine| for the full precedence order.
+
+                                          *sandbox-config-confirm_destructive*
+confirm_destructive ~
+    Type: `boolean`  Default: `true`
+    Ask for confirmation (via `vim.ui.select`/lib.nvim's confirm kit)
+    before `remove`, `prune`, or `kill`. Set to `false` to skip the
+    prompt and act immediately.
+
+                                               *sandbox-config-default_shell*
+default_shell ~
+    Type: `string`  Default: `"sh"`
+    Shell used by `:Sandbox container exec` when no shell is given
+    explicitly.
+
+                                            *sandbox-config-refresh_interval*
+refresh_interval ~
+    Type: `integer|nil`  Default: `nil`
+    Milliseconds between automatic re-runs of a visible list view's
+    `list` command. `nil`/`0` disables auto-refresh (the default);
+    refreshing is paused while the buffer isn't shown in any window.
+
+                                                  *sandbox-config-list_split*
+list_split ~
+    Type: `"above"|"below"|"left"|"right"`  Default: `"left"`
+    Window placement for the container/image/volume/network list views.
+
+                                                   *sandbox-config-list_size*
+list_size ~
+    Type: `integer|nil`  Default: `nil`
+    Width (for left/right splits) or height (for above/below splits) of
+    list view windows. `nil` uses Neovim's own default sizing.
+
+Per-project engine override: drop a `.sandboxrc` file with a single
+`engine=docker` (or `podman`/`nerdctl`) line in a repository's root to pin
+that repository to a specific engine regardless of the global default —
+useful on a machine where different projects need different engines.
+
+==============================================================================
+Commands                                                     *sandbox-commands*
+
+Every capability hangs off one user command, `:Sandbox`, with a short alias
+`:Sbx` (identical behavior, same routes). Sub-namespaces below are typed as
+`:Sandbox <namespace> <subcommand> [args...] [flags]`; both the namespace
+and subcommand name complete on <Tab>, as do container/image/volume/
+network/distro identifiers where a command takes one — resolved live
+against the active engine, cached briefly so repeated <Tab> presses don't
+shell out on every keystroke.
+
+Where a subcommand's Args column shows `[--buffer|-b]`, appending `--buffer`
+(or `-b`) streams the CLI's raw stdout/stderr into a scrollable terminal
+buffer instead of collapsing it into a single `vim.notify` summary — useful
+for verbose operations like `start`, `stop`, `prune`, or `build`. Example:
+`:Sandbox container start web --buffer`.
+
+Run `:Sandbox docs generate` at any time to regenerate
+`docs/GENERATED_COMMANDS.md`, a mechanical dump of the live route table
+generated straight from the composer — useful for confirming this help
+file (and `docs/BINDINGS.md`) haven't drifted from what's actually
+registered.
+
+------------------------------------------------------------------------------
+:Sandbox container                                 *sandbox-commands-container*
+
+    list                                    List all containers (running and
+                                             stopped).
+    logs {id}                                Show logs for a container.
+    logs-follow {id}                         Stream a container's logs live
+                                             (`logs -f`); press `q` in the
+                                             buffer to stop following.
+    exec {id} [shell]                        Open an interactive shell
+                                             inside a container.
+    exec-once {id} [command...]              Run a one-off command and show
+                                             its output (non-interactive).
+    start {id} [--buffer|-b]                 Start a container.
+    stop {id} [--buffer|-b]                  Stop a container.
+    kill {id} [--buffer|-b]                  Force kill a container.
+    restart {id} [--buffer|-b]                Restart a container.
+    pause {id}                               Pause a running container's
+                                             processes.
+    unpause {id}                             Resume a paused container's
+                                             processes.
+    rename {id} {new-name}                   Rename a container.
+    stats {id}                               One-shot CPU/memory/network/
+                                             block-IO usage snapshot.
+    top {id}                                 List processes running inside
+                                             a container.
+    cp {src} {dest}                          Copy a file/directory between
+                                             host and container; either
+                                             side may be `<id>:<path>`.
+    run                                       Interactively create and start
+                                             a new container — prompts for
+                                             image, name, port mappings,
+                                             volume mounts, and env vars.
+    remove {id} [--buffer|-b]                Remove a stopped container
+                                             (confirms first, see
+                                             |sandbox-config-confirm_destructive|).
+    prune [--buffer|-b]                      Remove all stopped containers
+                                             (confirms first).
+    inspect {id}                             Inspect a container's full
+                                             metadata (folded, indented).
+
+------------------------------------------------------------------------------
+:Sandbox image                                         *sandbox-commands-image*
+
+    list                                    List all local images.
+    pull {name} [--buffer|-b]                Pull an image. Runs
+                                             asynchronously either way
+                                             (doesn't block the UI);
+                                             `--buffer` additionally streams
+                                             progress into a terminal
+                                             buffer instead of a single
+                                             completion notify.
+    push {name}                              Push an image to a remote
+                                             registry (async); requires
+                                             prior |sandbox-commands-registry|
+                                             auth.
+    tag {source} {target}                    Tag a local image with a new
+                                             repository:tag.
+    build {tag} [path]                       Build an image from a
+                                             Dockerfile/Containerfile
+                                             (streams to a terminal
+                                             buffer); `path` defaults to
+                                             `.`.
+    save {image} {path}                      Save (export) an image to a
+                                             tarball on disk.
+    load {path}                              Load (import) an image from a
+                                             tarball on disk.
+    history {image}                          Show an image's layer
+                                             history.
+    inspect {image}                          Inspect an image's full
+                                             metadata.
+    remove {id}                              Remove a local image
+                                             (confirms first).
+    prune [--buffer|-b]                      Remove all dangling images
+                                             (confirms first).
+
+------------------------------------------------------------------------------
+:Sandbox volume                                       *sandbox-commands-volume*
+
+    list                                    List all local volumes.
+    create {name}                            Create a new named volume.
+    remove {name}                            Remove a volume (confirms
+                                             first).
+    inspect {name}                           Inspect a volume's full
+                                             metadata.
+    prune                                    Remove all unused volumes
+                                             (confirms first).
+
+------------------------------------------------------------------------------
+:Sandbox network                                     *sandbox-commands-network*
+
+    list                                    List all local networks.
+    create {name}                            Create a new named network.
+    remove {name}                            Remove a network (confirms
+                                             first).
+    inspect {name}                           Inspect a network's full
+                                             metadata.
+    connect {network} {id}                   Connect a container to a
+                                             network.
+    disconnect {network} {id}                Disconnect a container from a
+                                             network.
+    prune                                    Remove all unused networks
+                                             (confirms first).
+
+------------------------------------------------------------------------------
+:Sandbox compose                                     *sandbox-commands-compose*
+
+Scoped to a `docker-compose.yml`/`compose.yml`/`podman-compose.yml`
+auto-detected in the cwd or an ancestor directory (`vim.fs.find`, the same
+lookup `docker compose`/`podman compose` themselves do). No id/name
+argument on any subcommand — there is exactly one project per detected
+file, re-resolved on every call.
+
+    up                                       Start the compose project,
+                                             detached.
+    down                                     Stop and remove the compose
+                                             project.
+    restart                                  Restart the compose project.
+    ps                                       List services in the compose
+                                             project.
+    logs                                     Show logs for the compose
+                                             project.
+
+------------------------------------------------------------------------------
+:Sandbox engine                                       *sandbox-commands-engine*
+                                                          *:Sandbox-engine-set*
+
+Switch the active engine for the rest of the Neovim session instead of
+only at `setup({})` time — useful on a machine with more than one engine
+installed. Precedence, highest first: session override (`engine set`) >
+per-project `.sandboxrc` > configured/auto-detected default.
+
+    set {docker|podman|nerdctl}              Switch the active engine for
+                                             this session.
+    get                                      Show the currently active
+                                             engine and which mechanism
+                                             chose it.
+    reset                                    Clear the session override,
+                                             falling back to
+                                             `.sandboxrc`/config.
+
+------------------------------------------------------------------------------
+:Sandbox registry                                   *sandbox-commands-registry*
+
+Authenticate before `push`/`pull` against a private registry. `login`
+prompts for a username (`vim.ui.input`) and password (`vim.fn.inputsecret`,
+masked); the password is piped to the engine over stdin
+(`--password-stdin`), never passed as an argv element, so it never appears
+in the process list or shell history. Podman (unlike Docker) requires an
+explicit `registry` argument since it has no implicit Docker Hub default.
+
+    login [registry]                         Log in to a registry (prompts
+                                             for username/password).
+    logout [registry]                        Log out of a registry.
+
+------------------------------------------------------------------------------
+:Sandbox docs                                           *sandbox-commands-docs*
+
+    generate                                 Regenerate
+                                             `docs/GENERATED_COMMANDS.md`
+                                             from the live route table, for
+                                             diffing against the
+                                             hand-maintained
+                                             `docs/BINDINGS.md`.
+
+------------------------------------------------------------------------------
+:Sandbox devcontainer                           *sandbox-commands-devcontainer*
+
+Detects `.devcontainer/devcontainer.json` or `.devcontainer.json` in the
+cwd or an ancestor directory (JSONC: `//` and `/* */` comments and
+trailing commas are stripped before parsing) and offers to build/attach,
+similar to VS Code's Dev Containers extension. `build` pulls `image` or
+builds `build.dockerfile` (or delegates to |sandbox-commands-compose|'s
+`up` for a `dockerComposeFile` project), then runs it with the workspace
+bind-mounted at `workspaceFolder`, `forwardPorts` mapped, `containerEnv`
+passed through, and `sleep infinity` as the command so it stays up for
+`attach` — the same override VS Code's own devcontainer CLI applies to
+images with no long-running default CMD. The container is named
+`sandbox-devcontainer-<workspace-dir-basename>` so `attach` can find it
+again.
+
+Scope: single-container (`image`/`build.dockerfile`) and
+`dockerComposeFile` shapes only. No devcontainer "features", lifecycle
+commands (`postCreateCommand`, ...), or `remoteUser` support yet.
+
+    build                                    Build/pull the devcontainer's
+                                             image and start a container
+                                             from it.
+    attach                                   Open a shell in the running
+                                             devcontainer for the project
+                                             in cwd.
+
+------------------------------------------------------------------------------
+:Sandbox wsl                                             *sandbox-commands-wsl*
+
+Only registered when `wsl.exe` is reachable on `$PATH` (Windows with WSL
+installed) — checked once when the plugin's commands are set up, so on
+Linux/macOS the `wsl` sub-namespace simply doesn't exist rather than
+existing and always failing.
+
+    list                                    List all registered WSL
+                                             distributions.
+    start {name}                             Start a WSL distro.
+    stop {name}                              Stop (terminate) a WSL
+                                             distro.
+    exec {name} [command...]                 Open a shell or run a command
+                                             inside a WSL distro.
+    set-default {name}                       Set a distro as the WSL
+                                             default.
+    set-version {name} {1|2}                 Toggle a distro between
+                                             WSL1/WSL2.
+    export {name} {path}                     Export a distro to a tarball
+                                             on disk.
+    import {name} {install-path} {tar-path}  Import a distro from a
+                                             tarball.
+    shutdown-all                             Shut down the WSL2 VM and all
+                                             running distros (confirms
+                                             first).
+
+==============================================================================
+Keymaps                                                       *sandbox-keymaps*
+
+No global keymaps are defined — nothing to map via which-key. The
+read-only list-view scratch buffers opened by `:Sandbox {container,image,
+volume,network} list` carry **buffer-local** keymaps instead, so you can
+act on the entry under the cursor without retyping its id/name into a new
+`:Sandbox` command. Press `?` inside any list buffer for a live reminder
+of its keymaps; `q` closes it.
+
+Container list (`sandbox.nvim://container-list`): ~
+    <CR> / i    inspect            n    rename (prompts)
+    s           start              D    remove (confirm)
+    x           stop               l    logs
+    X           kill               L    logs (follow)
+    r           restart            e    exec (shell)
+    p           pause              t    top
+    P           unpause            T    stats
+    R           refresh list
+
+The `[status]` prefix on each line is highlighted by container state:
+green (`SandboxStatusRunning`), red (`SandboxStatusStopped`), yellow
+(`SandboxStatusPaused`), comment-colored (`SandboxStatusOther`) — each
+linked to a `Diagnostic{Ok,Error,Warn}`/`Comment` highlight group so it
+follows your colorscheme. Override any of the four directly, e.g. >vim
+    :hi SandboxStatusRunning guifg=#00ff00
+<
+Image list (`sandbox.nvim://image-list` / `sandbox.nvim://images`): ~
+    <CR> / i    inspect
+    h           history
+    t           tag (prompts for target)
+    D           remove (confirm)
+    R           refresh list
+
+Volume list (`sandbox.nvim://volume-list`) and Network list
+(`sandbox.nvim://network-list`) both carry: ~
+    <CR> / i    inspect
+    D           remove (confirm)
+    R           refresh list
+
+Multi-select: select several lines in any Visual mode (`V`, `v`, `j`/`k`
+to extend, ...), then press the same key you'd use on a single line to
+apply it to every selected entry — `s`/`x`/`X`/`D` (start/stop/kill/
+remove) in the container list, `D` (remove) elsewhere. A destructive bulk
+action confirms once for the whole batch, not once per item.
+
+Inspect view (`sandbox.nvim://inspect/<id>`), opened by any `inspect`
+action above: renders the engine's metadata as a folded, indented
+`vim.inspect`-style Lua table (`foldmethod=indent`, `foldlevel=1`) rather
+than a flat dump — `za`/`zo`/`zc` toggle sections, `q` closes the buffer.
+
+Set |sandbox-config-refresh_interval| in `setup({})` to have a visible
+list buffer re-run its `list` command on a timer instead of relying only
+on `R`/manually reopening it; refreshing pauses while the buffer isn't
+shown in any window.
+
+==============================================================================
+Statusline                                                 *sandbox-statusline*
+                                                    *sandbox.statusline.status()*
+
+`require("sandbox.statusline").status()` returns an ambient
+`"engine (running/total)"` summary string (e.g. `"docker (2/5)"`), cached
+for 3 seconds so a statusline redrawing several times a second doesn't
+shell out on every call. It degrades to `""` on any failure (daemon down,
+no engine configured) instead of erroring — plain string return with no
+hard dependency on any statusline plugin.
+
+lualine: >lua
+    require("lualine").setup({
+      sections = {
+        lualine_x = { require("sandbox.statusline").lualine_component },
+      },
+    })
+<
+==============================================================================
+Health                                                           *sandbox-health*
+
+sandbox.nvim integrates with Neovim's health-check system: >vim
+    :checkhealth sandbox
+<
+This verifies that the configured engine (`podman`/`docker`/`nerdctl`) is
+valid and that the matching CLI executable is reachable on `$PATH`. If an
+unsupported engine is configured, or the CLI binary is missing, a clear
+actionable error is shown.
+
+==============================================================================
+About                                                             *sandbox-about*
+
+Repository:  https://github.com/StefanBartl/sandbox.nvim
+Issues:      https://github.com/StefanBartl/sandbox.nvim/issues
+License, contribution guide, and architecture notes live in the repo's
+`docs/` directory (`CONTRIBUTING.md`, `ADD_USECASE.md`, `ROADMAP.md`).
+
+vim:tw=78:ts=8:noet:ft=help:norl:
