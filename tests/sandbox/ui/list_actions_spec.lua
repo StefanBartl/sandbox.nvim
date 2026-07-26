@@ -75,17 +75,19 @@ describe("list_actions.bulk_confirm_then", function()
 
   after_each(function()
     require("sandbox.config").options.confirm_destructive = orig_confirm_destructive
+    package.loaded["lib.nvim.ui.kit"] = nil
   end)
 
   it("prompts once for the whole batch, then restores confirm_destructive", function()
     require("sandbox.config").options.confirm_destructive = true
 
     local prompts = 0
-    ---@diagnostic disable-next-line: duplicate-set-field
-    vim.ui.select = function(_choices, _opts, cb)
-      prompts = prompts + 1
-      cb("Yes")
-    end
+    package.loaded["lib.nvim.ui.kit"] = {
+      confirm = function(opts)
+        prompts = prompts + 1
+        opts.on_answer(true)
+      end,
+    }
 
     local applied = {}
     list_actions.bulk_confirm_then(
@@ -104,11 +106,12 @@ describe("list_actions.bulk_confirm_then", function()
     require("sandbox.config").options.confirm_destructive = false
 
     local prompts = 0
-    ---@diagnostic disable-next-line: duplicate-set-field
-    vim.ui.select = function(_choices, _opts, cb)
-      prompts = prompts + 1
-      cb("Yes")
-    end
+    package.loaded["lib.nvim.ui.kit"] = {
+      confirm = function(opts)
+        prompts = prompts + 1
+        opts.on_answer(true)
+      end,
+    }
 
     local applied = {}
     list_actions.bulk_confirm_then("Remove", "widget", { { name = "x" } }, function(i) return i.name end, function(id)

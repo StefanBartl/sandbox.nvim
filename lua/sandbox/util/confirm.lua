@@ -1,6 +1,8 @@
 -- Confirmation gate for destructive actions (remove/prune/kill), skippable
 -- via config.confirm_destructive = false.
 
+local kit = require("lib.nvim.ui.kit")
+
 local M = {}
 
 --- Ask for confirmation before running a destructive action.
@@ -13,11 +15,14 @@ function M.destructive(prompt, on_confirm)
     return
   end
 
-  vim.ui.select({ "Yes", "No" }, { prompt = prompt }, function(choice)
-    if choice == "Yes" then
-      on_confirm()
-    end
-  end)
+  kit.confirm({
+    question = prompt,
+    on_answer = function(yes)
+      if yes then
+        on_confirm()
+      end
+    end,
+  })
 end
 
 return M
