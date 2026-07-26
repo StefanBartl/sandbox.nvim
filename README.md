@@ -166,7 +166,7 @@ If an unsupported engine is set, or if the CLI binary is missing, clear error me
 
 ## Usage
 
-See [`/docs/BINDINGS.md`](./docs/BINDINGS.md) for the full list of user commands (container, image, terminal-buffer and WSL variants).
+See [`/docs/BINDINGS.md`](./docs/BINDINGS.md) for the full list of user commands (container, image, terminal-buffer and WSL variants), or run `:help sandbox` inside Neovim for the same reference as `:help`-native vimdoc.
 
 ---
 
