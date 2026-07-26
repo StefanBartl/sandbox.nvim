@@ -422,7 +422,10 @@ than a flat dump — `za`/`zo`/`zc` toggle sections, `q` closes the buffer.
 Set |sandbox-config-refresh_interval| in `setup({})` to have a visible
 list buffer re-run its `list` command on a timer instead of relying only
 on `R`/manually reopening it; refreshing pauses while the buffer isn't
-shown in any window.
+shown in any window. There is no global augroup for any of this — a
+buffer-local, one-shot `BufWipeout` autocmd per list/log-follow buffer
+stops its timer/job when that specific buffer is wiped, so nothing lingers
+after you close it.
 
 ==============================================================================
 Statusline                                                 *sandbox-statusline*
