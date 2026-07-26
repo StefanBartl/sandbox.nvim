@@ -53,11 +53,14 @@ return function(containers)
     { lhs = "p", desc = "pause", fn = function(c) container_cmds.pause(ref(c)) end },
     { lhs = "P", desc = "unpause", fn = function(c) container_cmds.unpause(ref(c)) end },
     { lhs = "n", desc = "rename", fn = function(c)
-        vim.ui.input({ prompt = "New name for " .. (c.name or c.id) .. ": " }, function(new_name)
-          if new_name and new_name ~= "" then
-            container_cmds.rename(ref(c), new_name)
-          end
-        end)
+        require("lib.nvim.ui.kit").input({
+          title = "New name for " .. (c.name or c.id) .. ": ",
+          on_submit = function(new_name)
+            if new_name and new_name ~= "" then
+              container_cmds.rename(ref(c), new_name)
+            end
+          end,
+        })
       end },
     { lhs = "D", desc = "remove", fn = function(c) container_cmds.remove(ref(c)) end },
     { lhs = "l", desc = "logs", fn = function(c) container_cmds.logs(ref(c)) end },
