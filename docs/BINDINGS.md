@@ -244,4 +244,17 @@ toggle sections. `q` closes the buffer.
 
 ## Autocmds
 
-None defined.
+No global augroup — but two buffer-local, one-shot `BufWipeout` autocmds
+exist purely for cleanup, scoped to a single scratch buffer each rather
+than persisting globally:
+
+- `ui/list_actions.lua`: stops and closes a list view's `refresh_interval`
+  timer (see the README's Configuration section) when its buffer is
+  wiped, so auto-refresh doesn't keep a `luv` timer running against a
+  buffer that no longer exists.
+- `ui/log_follow_view.lua`: stops the `logs -f` job when a
+  `container logs-follow` buffer is wiped, so following doesn't keep a
+  background job running after the buffer is gone.
+
+Neither registers a `nvim_create_augroup` or listens outside its own
+buffer; both are `once = true` and self-remove after firing.
