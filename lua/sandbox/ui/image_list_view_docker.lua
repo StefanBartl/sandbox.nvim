@@ -40,11 +40,14 @@ return function(images)
     { lhs = "i", desc = "inspect", fn = function(img) image_cmds.inspect(ref(img)) end },
     { lhs = "h", desc = "history", fn = function(img) image_cmds.history(ref(img)) end },
     { lhs = "t", desc = "tag", fn = function(img)
-        vim.ui.input({ prompt = "Tag " .. ref(img) .. " as: " }, function(target)
-          if target and target ~= "" then
-            image_cmds.tag(ref(img), target)
-          end
-        end)
+        require("lib.nvim.ui.kit").input({
+          title = "Tag " .. ref(img) .. " as: ",
+          on_submit = function(target)
+            if target and target ~= "" then
+              image_cmds.tag(ref(img), target)
+            end
+          end,
+        })
       end },
     { lhs = "D", desc = "remove", fn = function(img) image_cmds.remove(ref(img)) end },
     { lhs = "R", desc = "refresh list", no_item = true, fn = function() image_cmds.list() end },
