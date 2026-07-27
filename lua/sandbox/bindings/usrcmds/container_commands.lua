@@ -377,72 +377,48 @@ function M.run()
     return vim.split(s, ",", { trimempty = true })
   end
 
-  -- Chained kit.input prompts (Image/Name/Ports/Volumes/Env). Optional fields
-  -- treat <Esc> the same as an empty submit (skip that field, keep going) to
-  -- match vim.ui.input's old callback(nil) behavior -- only the required
-  -- Image field aborts the whole flow on cancel.
+  -- kit.form chains one kit.input per field into a single keyed result
+  -- table. Image is the only `required` field: <Esc> there aborts the whole
+  -- form (on_cancel fires below); <Esc> on the other four just leaves them
+  -- blank and moves on, matching vim.ui.input's old callback(nil) behavior.
+  -- Image submitted-but-empty (bare <CR>) isn't a form-level concept kit.form
+  -- validates mid-flow, so that check happens here in on_submit instead --
+  -- the only observable difference from the old chained-kit.input version is
+  -- that an empty Image now gets caught after all five fields are asked
+  -- rather than immediately.
   local kit = require("lib.nvim.ui.kit")
 
-  local function run_with(image, name, ports, volumes, env)
-    ---@type Sandbox.RunOpts
-    local opts = {
-      image = image,
-      name = name ~= "" and name or nil,
-      ports = split_csv(ports),
-      volumes = split_csv(volumes),
-      env = split_csv(env),
-    }
-
-    local usecase = require("sandbox.core.usecases.containers.run_container")
-    usecase(engine, opts, function(ok, result)
-      if ok then
-        notify.info("Container started: " .. (result or opts.name or opts.image))
-      else
-        notify.error("Failed to run container: " .. friendly_error(result), { opts = opts, err = result })
-      end
-    end)
-  end
-
-  local function ask_env(image, name, ports, volumes)
-    kit.input({
-      title = "Env vars, comma-separated KEY=VALUE (optional): ",
-      on_submit = function(env) run_with(image, name, ports, volumes, env) end,
-      on_cancel = function() run_with(image, name, ports, volumes, nil) end,
-    })
-  end
-
-  local function ask_volumes(image, name, ports)
-    kit.input({
-      title = "Volume mounts, comma-separated host:container (optional): ",
-      on_submit = function(volumes) ask_env(image, name, ports, volumes) end,
-      on_cancel = function() ask_env(image, name, ports, nil) end,
-    })
-  end
-
-  local function ask_ports(image, name)
-    kit.input({
-      title = "Port mappings, comma-separated host:container (optional): ",
-      on_submit = function(ports) ask_volumes(image, name, ports) end,
-      on_cancel = function() ask_volumes(image, name, nil) end,
-    })
-  end
-
-  local function ask_name(image)
-    kit.input({
-      title = "Container name (optional): ",
-      on_submit = function(name) ask_ports(image, name) end,
-      on_cancel = function() ask_ports(image, nil) end,
-    })
-  end
-
-  kit.input({
-    title = "Image (e.g. alpine:latest): ",
-    on_submit = function(image)
-      if not image or image == "" then
+  kit.form({
+    fields = {
+      { name = "image",   label = "Image (e.g. alpine:latest): ",                    required = true },
+      { name = "name",    label = "Container name (optional): " },
+      { name = "ports",   label = "Port mappings, comma-separated host:container (optional): " },
+      { name = "volumes", label = "Volume mounts, comma-separated host:container (optional): " },
+      { name = "env",     label = "Env vars, comma-separated KEY=VALUE (optional): " },
+    },
+    on_submit = function(values)
+      if not values.image or values.image == "" then
         notify.warn("Aborted: no image given")
         return
       end
-      ask_name(image)
+
+      ---@type Sandbox.RunOpts
+      local opts = {
+        image = values.image,
+        name = values.name ~= "" and values.name or nil,
+        ports = split_csv(values.ports),
+        volumes = split_csv(values.volumes),
+        env = split_csv(values.env),
+      }
+
+      local usecase = require("sandbox.core.usecases.containers.run_container")
+      usecase(engine, opts, function(ok, result)
+        if ok then
+          notify.info("Container started: " .. (result or opts.name or opts.image))
+        else
+          notify.error("Failed to run container: " .. friendly_error(result), { opts = opts, err = result })
+        end
+      end)
     end,
     on_cancel = function()
       notify.warn("Aborted: no image given")
