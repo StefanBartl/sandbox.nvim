@@ -3,14 +3,32 @@ describe("bindings.usrcmds.container_commands.run", function()
 
   before_each(function()
     package.loaded["sandbox"] = { get_engine = function() return "docker" end }
+    -- Mirrors kit.form's real step-through-fields/required-abort contract
+    -- (lib.nvim's lua/lib/nvim/ui/kit/form.lua) so these specs exercise the
+    -- same field-order/cancel semantics container_commands.lua relies on.
     package.loaded["lib.nvim.ui.kit"] = {
-      input = function(opts)
-        local step = table.remove(queue, 1)
-        if step.cancel then
-          if opts.on_cancel then opts.on_cancel() end
-        else
-          opts.on_submit(step.value)
+      form = function(opts)
+        local fields = opts.fields or {}
+        local values = {}
+        local function step(i)
+          local field = fields[i]
+          if not field then
+            if opts.on_submit then opts.on_submit(values) end
+            return
+          end
+          local item = table.remove(queue, 1)
+          if item.cancel then
+            if field.required then
+              if opts.on_cancel then opts.on_cancel() end
+              return
+            end
+            values[field.name] = field.default or ""
+          else
+            values[field.name] = item.value
+          end
+          step(i + 1)
         end
+        step(1)
       end,
     }
     package.loaded["sandbox.bindings.usrcmds.container_commands"] = nil
