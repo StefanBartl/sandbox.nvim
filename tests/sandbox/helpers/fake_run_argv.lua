@@ -17,7 +17,7 @@ local M = {}
 ---@class FakeRunArgv.State
 ---@field calls FakeRunArgv.Call[]
 
---- @param opts? { ok?: boolean, output?: string, on_call?: fun(cmd: string[], input: string|nil) }
+--- @param opts? { ok?: boolean, output?: string, code?: integer, on_call?: fun(cmd: string[], input: string|nil) }
 --- @return FakeRunArgv.State
 function M.install(opts)
   opts = opts or {}
@@ -26,6 +26,10 @@ function M.install(opts)
     ok = true
   end
   local output = opts.output or ""
+  -- Mirrors the real runner's third callback argument. Adapters fall back to
+  -- "exit code N" when a failing command wrote nothing to stderr, so a fake
+  -- that omitted this would make them concatenate nil.
+  local code = opts.code or (ok and 0 or 1)
 
   ---@type FakeRunArgv.State
   local state = { calls = {} }
@@ -46,7 +50,7 @@ function M.install(opts)
       end,
       run_async_captured = function(cmd, on_done)
         record(cmd, nil)
-        on_done(ok, output)
+        on_done(ok, output, code)
         return { stop = function() end }
       end,
     }
