@@ -10,6 +10,7 @@
 ---@field refresh_interval integer|nil ms between auto-refreshes of list views; nil/0 disables (default nil)
 ---@field list_split "above"|"below"|"left"|"right"|nil window placement for list views (default "left")
 ---@field list_size integer|nil width/height of list view splits; nil uses Neovim's default
+---@field progress_style "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"|nil indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
 
 ---@class Sandbox.RunOpts
 ---@field image string
