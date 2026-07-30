@@ -68,8 +68,11 @@ end
 --- `build`) with nothing on screen until `on_done` fires. Cancelling it kills
 --- the process, which the returned handle could already do - `on_cancel` just
 --- routes the interactive styles ("float"/"kit") to the same `stop`.
+--- `code` is passed as a third argument so callers can still report a bare
+--- "exit code N" when the process failed without writing anything to stderr;
+--- existing two-parameter callbacks simply ignore it.
 --- @param cmd string[]
---- @param on_done fun(ok: boolean, output: string)
+--- @param on_done fun(ok: boolean, output: string, code: integer)
 --- @return table handle with a `:stop()` method
 function M.run_async_captured(cmd, on_done)
   local chunks = {}
@@ -96,7 +99,7 @@ function M.run_async_captured(cmd, on_done)
           progress:finish(progress_label(cmd) .. " failed (exit " .. tostring(obj.code) .. ")")
         end
       end
-      on_done(obj.code == 0, table.concat(chunks))
+      on_done(obj.code == 0, table.concat(chunks), obj.code)
     end)
   end)
 

@@ -126,10 +126,11 @@ progress_style ~
     Type: `"auto"|"notify"|"statusline"|"fidget"|"float"|"kit"`
     Default: `"auto"`
     How to show that a long-running command is in flight. The commands
-    that never block the editor — `image pull`, `image push` and the
-    devcontainer `build` — can still run for minutes with no output of
-    their own, so each one gets a progress indicator labelled with the
-    operation (e.g. `docker pull nginx`).
+    that never block the editor — `image pull`/`push`, the devcontainer
+    `build`, `compose up`/`down`/`restart` and the four `prune`
+    commands — can still run for minutes with no output of their own, so
+    each one gets a progress indicator labelled with the operation
+    (e.g. `docker pull nginx`).
 
     Requires `lib.nvim`, which provides the indicator via its
     `lib.nvim.progress` module. Without `lib.nvim` installed the option

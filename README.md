@@ -99,7 +99,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
       list_split = "left",
       -- Width/height of list view splits; nil uses Neovim's default
       list_size = nil,
-      -- Indicator while pull/push/build run (needs lib.nvim, no-op without it):
+      -- Indicator while pull/push/build/compose/prune run (needs lib.nvim,
+      -- no-op without it):
       -- "auto"|"notify"|"statusline"|"fidget"|"float"|"kit" (default: "auto")
       progress_style = "auto",
     })
