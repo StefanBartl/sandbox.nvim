@@ -121,6 +121,28 @@ list_size ~
     Width (for left/right splits) or height (for above/below splits) of
     list view windows. `nil` uses Neovim's own default sizing.
 
+                                              *sandbox-config-progress_style*
+progress_style ~
+    Type: `"auto"|"notify"|"statusline"|"fidget"|"float"|"kit"`
+    Default: `"auto"`
+    How to show that a long-running command is in flight. The commands
+    that never block the editor — `image pull`, `image push` and the
+    devcontainer `build` — can still run for minutes with no output of
+    their own, so each one gets a progress indicator labelled with the
+    operation (e.g. `docker pull nginx`).
+
+    Requires `lib.nvim`, which provides the indicator via its
+    `lib.nvim.progress` module. Without `lib.nvim` installed the option
+    is silently a no-op — the commands behave exactly as before.
+
+    `"auto"` prefers `fidget.nvim` when installed and falls back to
+    `vim.notify`. `"statusline"` draws nothing and instead publishes the
+    text for your own statusline to read via
+    `require("lib.nvim.progress.styles.statusline").active()`.
+    `"float"` and `"kit"` open a small window that can be focused and
+    `<Esc>`-ed to abort the command (`SIGTERM`), same as the handle's own
+    `stop()`.
+
 Per-project engine override: drop a `.sandboxrc` file with a single
 `engine=docker` (or `podman`/`nerdctl`) line in a repository's root to pin
 that repository to a specific engine regardless of the global default —

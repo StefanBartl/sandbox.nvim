@@ -9,4 +9,5 @@ return {
   refresh_interval = nil, -- ms between list-view auto-refreshes; nil/0 disables
   list_split = "left", -- window placement for list views
   list_size = nil, -- width/height of list view splits; nil uses Neovim's default
+  progress_style = "auto", -- indicator while pull/push/build run; needs lib.nvim, no-op without it
 }
