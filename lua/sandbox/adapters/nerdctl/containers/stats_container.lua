@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to get a one-shot resource usage snapshot of a container
+---@module 'sandbox.adapters.nerdctl.containers.stats_container'
+--- Nerdctl Adapter: Function to get a one-shot resource usage snapshot of a container
 
 local run_argv = require("sandbox.util.run_argv")
 

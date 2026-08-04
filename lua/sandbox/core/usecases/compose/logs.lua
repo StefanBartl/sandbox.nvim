@@ -1,4 +1,5 @@
--- Use case: Show logs for a compose project
+---@module 'sandbox.core.usecases.compose.logs'
+--- Use case: Show logs for a compose project
 --- @param engine table: must implement logs(file)
 --- @param file string
 --- @return string[]|nil lines, string|nil err

@@ -1,4 +1,5 @@
--- Use case: Tag a local image
+---@module 'sandbox.core.usecases.images.tag_image'
+--- Use case: Tag a local image
 --- @param engine table: must implement tag_image(source, target)
 --- @param source string
 --- @param target string

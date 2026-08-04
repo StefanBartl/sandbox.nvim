@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to retrieve logs of a container
+---@module 'sandbox.adapters.nerdctl.containers.get_logs'
+--- Nerdctl Adapter: Function to retrieve logs of a container
 
 local run_argv = require("sandbox.util.run_argv")
 

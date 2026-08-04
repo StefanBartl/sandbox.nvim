@@ -1,4 +1,5 @@
--- Docker Adapter: Stream a container's logs live (`docker logs -f <id>`)
+---@module 'sandbox.adapters.docker.containers.follow_logs'
+--- Docker Adapter: Stream a container's logs live (`docker logs -f <id>`)
 
 local M = {}
 

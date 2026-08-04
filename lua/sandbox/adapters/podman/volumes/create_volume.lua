@@ -1,4 +1,5 @@
--- Podman Adapter: Function to create a volume
+---@module 'sandbox.adapters.podman.volumes.create_volume'
+--- Podman Adapter: Function to create a volume
 
 local run_argv = require("sandbox.util.run_argv")
 

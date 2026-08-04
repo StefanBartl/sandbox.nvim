@@ -1,9 +1,8 @@
---[[
-  Docker Container Adapter
-
-  Implements container-related operations of the ContainerEngine port
-  for Docker: list, start, stop, exec, inspect, remove, prune, etc.
-]]
+---@module 'sandbox.adapters.docker.containers_engine'
+--- Docker Container Adapter
+---
+--- Implements container-related operations of the ContainerEngine port
+--- for Docker: list, start, stop, exec, inspect, remove, prune, etc.
 
 local list_containers = require("sandbox.adapters.docker.containers.list_containers")
 local get_logs = require("sandbox.adapters.docker.containers.get_logs")

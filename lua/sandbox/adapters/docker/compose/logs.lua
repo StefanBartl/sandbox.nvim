@@ -1,4 +1,5 @@
--- Docker Adapter: Show logs for a compose project
+---@module 'sandbox.adapters.docker.compose.logs'
+--- Docker Adapter: Show logs for a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Podman Adapter: Functions to pause/unpause a container
+---@module 'sandbox.adapters.podman.containers.pause_container'
+--- Podman Adapter: Functions to pause/unpause a container
 
 local M = {}
 

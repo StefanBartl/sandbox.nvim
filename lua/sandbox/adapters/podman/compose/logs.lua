@@ -1,4 +1,5 @@
--- Podman Adapter: Show logs for a compose project
+---@module 'sandbox.adapters.podman.compose.logs'
+--- Podman Adapter: Show logs for a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Podman Adapter: Function to export an image to a tarball
+---@module 'sandbox.adapters.podman.images.save_image'
+--- Podman Adapter: Function to export an image to a tarball
 
 local run_argv = require("sandbox.util.run_argv")
 

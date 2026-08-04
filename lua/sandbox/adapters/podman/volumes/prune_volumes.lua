@@ -1,4 +1,5 @@
--- Podman Adapter: Function to prune unused volumes
+---@module 'sandbox.adapters.podman.volumes.prune_volumes'
+--- Podman Adapter: Function to prune unused volumes
 
 local run_argv = require("sandbox.util.run_argv")
 

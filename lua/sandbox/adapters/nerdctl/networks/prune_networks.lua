@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to prune unused networks
+---@module 'sandbox.adapters.nerdctl.networks.prune_networks'
+--- Nerdctl Adapter: Function to prune unused networks
 
 local run_argv = require("sandbox.util.run_argv")
 

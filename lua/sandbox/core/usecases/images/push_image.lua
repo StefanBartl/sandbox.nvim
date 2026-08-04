@@ -1,3 +1,4 @@
+---@module 'sandbox.core.usecases.images.push_image'
 --- Pushes a container image to a remote registry without blocking the UI thread.
 --- @param engine table
 --- @param image_name string

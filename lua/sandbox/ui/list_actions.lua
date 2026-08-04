@@ -1,3 +1,4 @@
+---@module 'sandbox.ui.list_actions'
 --- Shared buffer-local keymap wiring for read-only list-view scratch buffers,
 --- so a key on the line under the cursor can act on that item directly
 --- instead of re-typing `:Sandbox <kind> <action> <id>` by hand.

@@ -1,3 +1,4 @@
+---@module 'sandbox.core.usecases.containers.get_container_logs'
 --- Use Case: Get logs from container
 --- @param engine table: must implement get_logs(id: string)
 --- @param container_id string

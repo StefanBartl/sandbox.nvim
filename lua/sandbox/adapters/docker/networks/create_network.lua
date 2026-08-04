@@ -1,4 +1,5 @@
--- Docker Adapter: Function to create a network
+---@module 'sandbox.adapters.docker.networks.create_network'
+--- Docker Adapter: Function to create a network
 
 local run_argv = require("sandbox.util.run_argv")
 

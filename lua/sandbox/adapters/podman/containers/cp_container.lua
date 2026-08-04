@@ -1,4 +1,5 @@
--- Podman Adapter: Function to copy files/directories between host and container
+---@module 'sandbox.adapters.podman.containers.cp_container'
+--- Podman Adapter: Function to copy files/directories between host and container
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Docker Adapter: Function to pull an image
+---@module 'sandbox.adapters.docker.images.pull_image'
+--- Docker Adapter: Function to pull an image
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,5 +1,7 @@
+---@module 'sandbox.ui.image_list_view_podman'
 --- Render a list of container images in a new buffer, with buffer-local
 --- keymaps to act on the image under the cursor (see `?` inside the buffer).
+
 --- @param images table[]
 local list_actions = require("sandbox.ui.list_actions")
 return function(images)

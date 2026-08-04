@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to prune dangling images
+---@module 'sandbox.adapters.nerdctl.images.prune_images'
+--- Nerdctl Adapter: Function to prune dangling images
 
 local run_argv = require("sandbox.util.run_argv")
 

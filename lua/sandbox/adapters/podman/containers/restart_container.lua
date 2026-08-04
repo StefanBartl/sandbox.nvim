@@ -1,4 +1,5 @@
--- Podman Adapter: Function to restart a container
+---@module 'sandbox.adapters.podman.containers.restart_container'
+--- Podman Adapter: Function to restart a container
 
 local M = {}
 

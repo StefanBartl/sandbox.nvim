@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Functions to pause/unpause a container
+---@module 'sandbox.adapters.nerdctl.containers.pause_container'
+--- Nerdctl Adapter: Functions to pause/unpause a container
 
 local M = {}
 

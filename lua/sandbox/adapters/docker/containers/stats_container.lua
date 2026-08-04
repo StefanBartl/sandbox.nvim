@@ -1,4 +1,5 @@
--- Docker Adapter: Function to get a one-shot resource usage snapshot of a container
+---@module 'sandbox.adapters.docker.containers.stats_container'
+--- Docker Adapter: Function to get a one-shot resource usage snapshot of a container
 
 local run_argv = require("sandbox.util.run_argv")
 

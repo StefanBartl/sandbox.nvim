@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Show logs for a compose project
+---@module 'sandbox.adapters.nerdctl.compose.logs'
+--- Nerdctl Adapter: Show logs for a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

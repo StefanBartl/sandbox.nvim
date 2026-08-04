@@ -1,4 +1,5 @@
--- Docker Adapter: Function to list all networks
+---@module 'sandbox.adapters.docker.networks.list_networks'
+--- Docker Adapter: Function to list all networks
 
 local run_argv = require("sandbox.util.run_argv")
 

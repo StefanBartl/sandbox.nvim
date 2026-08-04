@@ -1,4 +1,5 @@
--- Docker Adapter: Function to kill a container
+---@module 'sandbox.adapters.docker.containers.kill_container'
+--- Docker Adapter: Function to kill a container
 
 local M = {}
 

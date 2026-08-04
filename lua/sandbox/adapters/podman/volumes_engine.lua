@@ -1,9 +1,8 @@
---[[
-  Podman Volume Adapter Aggregator
-
-  Combines all volume operations into a unified interface
-  for the ContainerEngine port (specific to Podman).
-]]
+---@module 'sandbox.adapters.podman.volumes_engine'
+--- Podman Volume Adapter Aggregator
+---
+--- Combines all volume operations into a unified interface
+--- for the ContainerEngine port (specific to Podman).
 
 local list_volumes = require("sandbox.adapters.podman.volumes.list_volumes")
 local create_volume = require("sandbox.adapters.podman.volumes.create_volume")

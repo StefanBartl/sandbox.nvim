@@ -1,3 +1,6 @@
+---@module 'sandbox.adapters.podman.containers.start_container'
+--- Start a specific container
+
 local run_argv = require("sandbox.util.run_argv")
 
 local M = {}

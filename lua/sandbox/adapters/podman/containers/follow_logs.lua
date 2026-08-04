@@ -1,4 +1,5 @@
--- Podman Adapter: Stream a container's logs live (`podman logs -f <id>`)
+---@module 'sandbox.adapters.podman.containers.follow_logs'
+--- Podman Adapter: Stream a container's logs live (`podman logs -f <id>`)
 
 local M = {}
 

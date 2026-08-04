@@ -1,4 +1,5 @@
--- Docker Adapter: Function to create a volume
+---@module 'sandbox.adapters.docker.volumes.create_volume'
+--- Docker Adapter: Function to create a volume
 
 local run_argv = require("sandbox.util.run_argv")
 

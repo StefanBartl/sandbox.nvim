@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to remove a local image
+---@module 'sandbox.adapters.nerdctl.images.remove_image'
+--- Nerdctl Adapter: Function to remove a local image
 
 local M = {}
 

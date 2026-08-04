@@ -1,4 +1,5 @@
--- Use case: List services in a compose project
+---@module 'sandbox.core.usecases.compose.ps'
+--- Use case: List services in a compose project
 --- @param engine table: must implement ps(file)
 --- @param file string
 --- @return string[]|nil lines, string|nil err

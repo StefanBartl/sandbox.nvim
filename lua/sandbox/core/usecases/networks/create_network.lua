@@ -1,4 +1,5 @@
--- Use case: Create a new named network
+---@module 'sandbox.core.usecases.networks.create_network'
+--- Use case: Create a new named network
 --- @param engine table: must implement create_network(name)
 --- @param name string
 --- @return boolean ok, string|nil err

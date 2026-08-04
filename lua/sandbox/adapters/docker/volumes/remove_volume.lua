@@ -1,4 +1,5 @@
--- Docker Adapter: Function to remove a volume
+---@module 'sandbox.adapters.docker.volumes.remove_volume'
+--- Docker Adapter: Function to remove a volume
 
 local M = {}
 

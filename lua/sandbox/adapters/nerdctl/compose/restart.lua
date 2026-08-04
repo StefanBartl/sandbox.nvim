@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Restart a compose project
+---@module 'sandbox.adapters.nerdctl.compose.restart'
+--- Nerdctl Adapter: Restart a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

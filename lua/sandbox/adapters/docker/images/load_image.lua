@@ -1,4 +1,5 @@
--- Docker Adapter: Function to import an image from a tarball
+---@module 'sandbox.adapters.docker.images.load_image'
+--- Docker Adapter: Function to import an image from a tarball
 
 local run_argv = require("sandbox.util.run_argv")
 

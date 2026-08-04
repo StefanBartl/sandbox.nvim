@@ -1,4 +1,5 @@
--- Docker Adapter: Authenticate against a registry
+---@module 'sandbox.adapters.docker.registry.login'
+--- Docker Adapter: Authenticate against a registry
 
 local run_argv = require("sandbox.util.run_argv")
 

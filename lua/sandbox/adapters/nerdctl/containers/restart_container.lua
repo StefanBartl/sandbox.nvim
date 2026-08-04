@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to restart a container
+---@module 'sandbox.adapters.nerdctl.containers.restart_container'
+--- Nerdctl Adapter: Function to restart a container
 
 local M = {}
 

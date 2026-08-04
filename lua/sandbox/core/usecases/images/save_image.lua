@@ -1,4 +1,5 @@
--- Use case: Save (export) an image to a tarball on disk
+---@module 'sandbox.core.usecases.images.save_image'
+--- Use case: Save (export) an image to a tarball on disk
 --- @param engine table: must implement save_image(image, path)
 --- @param image string
 --- @param path string

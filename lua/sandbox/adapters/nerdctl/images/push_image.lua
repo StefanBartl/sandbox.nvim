@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to push an image to a remote registry
+---@module 'sandbox.adapters.nerdctl.images.push_image'
+--- Nerdctl Adapter: Function to push an image to a remote registry
 
 local run_argv = require("sandbox.util.run_argv")
 

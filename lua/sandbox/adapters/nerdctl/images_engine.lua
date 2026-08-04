@@ -1,9 +1,8 @@
---[[
-  Nerdctl Image Adapter Aggregator
-
-  Combines all image operations into a unified interface
-  for the ContainerEngine port (specific to Nerdctl).
-]]
+---@module 'sandbox.adapters.nerdctl.images_engine'
+--- Nerdctl Image Adapter Aggregator
+---
+--- Combines all image operations into a unified interface
+--- for the ContainerEngine port (specific to Nerdctl).
 
 local list_images = require("sandbox.adapters.nerdctl.images.list_images")
 local pull_image = require("sandbox.adapters.nerdctl.images.pull_image")

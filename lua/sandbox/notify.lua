@@ -1,10 +1,11 @@
--- Notify wrapper: uses lib.nvim's notify factory when lib.nvim is installed,
--- falls back to plain vim.notify otherwise (lib.nvim stays an optional dependency).
---
--- warn/error additionally forward to sandbox.logger for structured
--- diagnostics (raw CLI output, exit codes, ...) via an optional `ctx` table,
--- without showing that context to the user - the logger's own notify sink is
--- off, so this never double-notifies.
+---@module 'sandbox.notify'
+--- Notify wrapper: uses lib.nvim's notify factory when lib.nvim is installed,
+--- falls back to plain vim.notify otherwise (lib.nvim stays an optional dependency).
+---
+--- warn/error additionally forward to sandbox.logger for structured
+--- diagnostics (raw CLI output, exit codes, ...) via an optional `ctx` table,
+--- without showing that context to the user - the logger's own notify sink is
+--- off, so this never double-notifies.
 
 local logger = require("sandbox.logger")
 

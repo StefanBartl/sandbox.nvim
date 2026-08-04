@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to list processes running inside a container
+---@module 'sandbox.adapters.nerdctl.containers.top_container'
+--- Nerdctl Adapter: Function to list processes running inside a container
 
 local run_argv = require("sandbox.util.run_argv")
 

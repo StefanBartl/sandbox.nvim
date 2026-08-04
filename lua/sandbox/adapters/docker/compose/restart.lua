@@ -1,4 +1,5 @@
--- Docker Adapter: Restart a compose project
+---@module 'sandbox.adapters.docker.compose.restart'
+--- Docker Adapter: Restart a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

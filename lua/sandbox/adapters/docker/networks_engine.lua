@@ -1,9 +1,8 @@
---[[
-  Docker Network Adapter Aggregator
-
-  Combines all network operations into a unified interface
-  for the ContainerEngine port (specific to Docker).
-]]
+---@module 'sandbox.adapters.docker.networks_engine'
+--- Docker Network Adapter Aggregator
+---
+--- Combines all network operations into a unified interface
+--- for the ContainerEngine port (specific to Docker).
 
 local list_networks = require("sandbox.adapters.docker.networks.list_networks")
 local create_network = require("sandbox.adapters.docker.networks.create_network")

@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to export an image to a tarball
+---@module 'sandbox.adapters.nerdctl.images.save_image'
+--- Nerdctl Adapter: Function to export an image to a tarball
 
 local run_argv = require("sandbox.util.run_argv")
 

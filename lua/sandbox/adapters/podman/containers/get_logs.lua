@@ -1,4 +1,5 @@
--- Podman Adapter: Function to retrieve the logs of a container
+---@module 'sandbox.adapters.podman.containers.get_logs'
+--- Podman Adapter: Function to retrieve the logs of a container
 
 local run_argv = require("sandbox.util.run_argv")
 

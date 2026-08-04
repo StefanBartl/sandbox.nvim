@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to remove a volume
+---@module 'sandbox.adapters.nerdctl.volumes.remove_volume'
+--- Nerdctl Adapter: Function to remove a volume
 
 local M = {}
 

@@ -1,4 +1,5 @@
--- Use case: Rename a container
+---@module 'sandbox.core.usecases.containers.rename_container'
+--- Use case: Rename a container
 --- @param engine table: must implement rename_container(container_id, new_name)
 --- @param container_id string
 --- @param new_name string

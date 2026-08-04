@@ -1,4 +1,5 @@
--- Docker Adapter: Function to remove a container
+---@module 'sandbox.adapters.docker.containers.remove_container'
+--- Docker Adapter: Function to remove a container
 
 local M = {}
 

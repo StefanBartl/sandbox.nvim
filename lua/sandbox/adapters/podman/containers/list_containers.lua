@@ -1,4 +1,5 @@
--- Podman Adapter: Function to list all containers
+---@module 'sandbox.adapters.podman.containers.list_containers'
+--- Podman Adapter: Function to list all containers
 
 local run_argv = require("sandbox.util.run_argv")
 

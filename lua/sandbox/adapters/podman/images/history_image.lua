@@ -1,4 +1,5 @@
--- Podman Adapter: Function to show an image's layer history
+---@module 'sandbox.adapters.podman.images.history_image'
+--- Podman Adapter: Function to show an image's layer history
 
 local run_argv = require("sandbox.util.run_argv")
 

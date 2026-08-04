@@ -1,4 +1,5 @@
--- file: lua/sandbox/ui/error_view.lua
+---@module 'sandbox.ui.error_view'
+--- file: lua/sandbox/ui/error_view.lua
 
 --- Display an error message in a new split buffer
 --- @param lines string[]  -- error lines to show

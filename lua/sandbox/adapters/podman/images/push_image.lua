@@ -1,4 +1,5 @@
--- Podman Adapter: Push image to a remote registry
+---@module 'sandbox.adapters.podman.images.push_image'
+--- Podman Adapter: Push image to a remote registry
 
 local run_argv = require("sandbox.util.run_argv")
 

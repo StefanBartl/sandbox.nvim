@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to show an image's layer history
+---@module 'sandbox.adapters.nerdctl.images.history_image'
+--- Nerdctl Adapter: Function to show an image's layer history
 
 local run_argv = require("sandbox.util.run_argv")
 

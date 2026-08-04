@@ -1,9 +1,8 @@
---[[
-  Docker Image Adapter Aggregator
-
-  Combines all image operations into a unified interface
-  for the ContainerEngine port (specific to Docker).
-]]
+---@module 'sandbox.adapters.docker.images_engine'
+--- Docker Image Adapter Aggregator
+---
+--- Combines all image operations into a unified interface
+--- for the ContainerEngine port (specific to Docker).
 
 local list_images = require("sandbox.adapters.docker.images.list_images")
 local pull_image = require("sandbox.adapters.docker.images.pull_image")

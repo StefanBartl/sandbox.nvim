@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to remove a container
+---@module 'sandbox.adapters.nerdctl.containers.remove_container'
+--- Nerdctl Adapter: Function to remove a container
 
 local M = {}
 

@@ -1,4 +1,5 @@
--- Podman Adapter: Functions to connect/disconnect a container to/from a network
+---@module 'sandbox.adapters.podman.networks.connect_network'
+--- Podman Adapter: Functions to connect/disconnect a container to/from a network
 
 local run_argv = require("sandbox.util.run_argv")
 

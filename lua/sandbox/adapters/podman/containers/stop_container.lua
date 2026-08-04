@@ -1,3 +1,6 @@
+---@module 'sandbox.adapters.podman.containers.stop_container'
+--- Stop a specific container
+
 local M = {}
 
 --- Stop a specific container

@@ -1,4 +1,5 @@
--- Docker Adapter: Function to start a container
+---@module 'sandbox.adapters.docker.containers.start_container'
+--- Docker Adapter: Function to start a container
 
 local run_argv = require("sandbox.util.run_argv")
 

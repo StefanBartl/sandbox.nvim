@@ -1,6 +1,7 @@
--- Argv runner: uses lib.nvim's cross.run_argv when lib.nvim is installed,
--- falls back to plain vim.fn.system otherwise (lib.nvim stays an optional
--- dependency, matching containers/notify.lua's convention).
+---@module 'sandbox.util.run_argv'
+--- Argv runner: uses lib.nvim's cross.run_argv when lib.nvim is installed,
+--- falls back to plain vim.fn.system otherwise (lib.nvim stays an optional
+--- dependency, matching containers/notify.lua's convention).
 
 local ok, lib_run_argv = pcall(require, "lib.nvim.cross.run_argv")
 
@@ -21,6 +22,7 @@ end
 
 local ok_progress, progress_mod = pcall(require, "lib.nvim.progress")
 
+---@internal
 --- Label a progress handle by the operation rather than the full argv: the
 --- image reference is often a long registry URL that would push the useful
 --- part ("docker pull") out of a statusline. `{"docker","pull","nginx"}`
@@ -39,6 +41,7 @@ local function progress_label(cmd)
   return vim.trim(verb .. " " .. subject)
 end
 
+---@internal
 --- Start an indicator for `cmd`, or nil when lib.nvim isn't installed. The
 --- style is read lazily from the live config so `setup()` ordering never
 --- matters, and the whole thing is a no-op without lib.nvim - progress is a

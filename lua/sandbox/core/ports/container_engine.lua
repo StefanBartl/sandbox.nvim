@@ -1,4 +1,5 @@
--- Defines the expected interface for container engines
+---@module 'sandbox.core.ports.container_engine'
+--- Defines the expected interface for container engines
 
 return {
 

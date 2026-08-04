@@ -1,4 +1,5 @@
--- Docker Adapter: Function to list all containers (running and stopped)
+---@module 'sandbox.adapters.docker.containers.list_containers'
+--- Docker Adapter: Function to list all containers (running and stopped)
 
 local run_argv = require("sandbox.util.run_argv")
 

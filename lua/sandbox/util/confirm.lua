@@ -1,5 +1,6 @@
--- Confirmation gate for destructive actions (remove/prune/kill), skippable
--- via config.confirm_destructive = false.
+---@module 'sandbox.util.confirm'
+--- Confirmation gate for destructive actions (remove/prune/kill), skippable
+--- via config.confirm_destructive = false.
 
 local kit = require("lib.nvim.ui.kit")
 

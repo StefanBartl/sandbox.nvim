@@ -1,4 +1,5 @@
--- Docker Adapter: Function to remove a network
+---@module 'sandbox.adapters.docker.networks.remove_network'
+--- Docker Adapter: Function to remove a network
 
 local M = {}
 

@@ -1,4 +1,5 @@
--- Docker Adapter: List services in a compose project
+---@module 'sandbox.adapters.docker.compose.ps'
+--- Docker Adapter: List services in a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

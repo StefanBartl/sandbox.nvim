@@ -1,4 +1,5 @@
--- Podman Adapter: Authenticate against a registry
+---@module 'sandbox.adapters.podman.registry.login'
+--- Podman Adapter: Authenticate against a registry
 
 local run_argv = require("sandbox.util.run_argv")
 

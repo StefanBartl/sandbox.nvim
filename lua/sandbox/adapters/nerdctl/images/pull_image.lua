@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to pull an image
+---@module 'sandbox.adapters.nerdctl.images.pull_image'
+--- Nerdctl Adapter: Function to pull an image
 
 local run_argv = require("sandbox.util.run_argv")
 

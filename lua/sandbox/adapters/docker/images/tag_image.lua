@@ -1,4 +1,5 @@
--- Docker Adapter: Function to tag a local image
+---@module 'sandbox.adapters.docker.images.tag_image'
+--- Docker Adapter: Function to tag a local image
 
 local run_argv = require("sandbox.util.run_argv")
 

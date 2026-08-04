@@ -1,9 +1,8 @@
---[[
-  Podman Registry Adapter
-
-  Implements registry authentication (login/logout) operations of the
-  ContainerEngine port for Podman.
-]]
+---@module 'sandbox.adapters.podman.registry_engine'
+--- Podman Registry Adapter
+---
+--- Implements registry authentication (login/logout) operations of the
+--- ContainerEngine port for Podman.
 
 local login = require("sandbox.adapters.podman.registry.login")
 local logout = require("sandbox.adapters.podman.registry.logout")

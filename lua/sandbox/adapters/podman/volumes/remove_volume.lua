@@ -1,4 +1,5 @@
--- Podman Adapter: Function to remove a volume
+---@module 'sandbox.adapters.podman.volumes.remove_volume'
+--- Podman Adapter: Function to remove a volume
 
 local M = {}
 

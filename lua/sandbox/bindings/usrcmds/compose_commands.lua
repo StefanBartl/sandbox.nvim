@@ -13,6 +13,7 @@ local friendly_error = require("sandbox.util.friendly_error")
 local compose_file = require("sandbox.util.compose_file")
 local M = {}
 
+---@internal
 ---@return string|nil
 local function require_file()
   local file = compose_file.find()

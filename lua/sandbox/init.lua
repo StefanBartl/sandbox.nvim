@@ -1,4 +1,5 @@
--- Entry point for the plugin
+---@module 'sandbox'
+--- Entry point for the plugin
 
 local config = require("sandbox.config")
 local notify = require("sandbox.notify")

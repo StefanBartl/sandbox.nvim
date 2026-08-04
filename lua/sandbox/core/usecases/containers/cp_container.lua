@@ -1,4 +1,5 @@
--- Use case: Copy a file or directory between the host and a container
+---@module 'sandbox.core.usecases.containers.cp_container'
+--- Use case: Copy a file or directory between the host and a container
 --- @param engine table: must implement cp_container(src, dest)
 --- @param src string
 --- @param dest string

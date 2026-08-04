@@ -1,4 +1,5 @@
--- Podman Adapter: Function to import an image from a tarball
+---@module 'sandbox.adapters.podman.images.load_image'
+--- Podman Adapter: Function to import an image from a tarball
 
 local run_argv = require("sandbox.util.run_argv")
 

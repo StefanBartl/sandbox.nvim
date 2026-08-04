@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to list all containers (running and stopped)
+---@module 'sandbox.adapters.nerdctl.containers.list_containers'
+--- Nerdctl Adapter: Function to list all containers (running and stopped)
 
 local run_argv = require("sandbox.util.run_argv")
 

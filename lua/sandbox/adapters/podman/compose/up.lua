@@ -1,4 +1,5 @@
--- Podman Adapter: Bring a compose project up (detached)
+---@module 'sandbox.adapters.podman.compose.up'
+--- Podman Adapter: Bring a compose project up (detached)
 
 local run_argv = require("sandbox.util.run_argv")
 

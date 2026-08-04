@@ -1,4 +1,5 @@
--- Healthcheck for sandbox.nvim
+---@module 'sandbox.health'
+--- Healthcheck for sandbox.nvim
 
 local config = require("sandbox.config")
 local health = vim.health

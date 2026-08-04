@@ -1,4 +1,5 @@
--- Configuration for the plugin
+---@module 'sandbox.config'
+--- Configuration for the plugin
 
 local M = {}
 

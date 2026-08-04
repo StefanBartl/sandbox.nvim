@@ -1,4 +1,5 @@
--- Docker Adapter: Functions to connect/disconnect a container to/from a network
+---@module 'sandbox.adapters.docker.networks.connect_network'
+--- Docker Adapter: Functions to connect/disconnect a container to/from a network
 
 local run_argv = require("sandbox.util.run_argv")
 

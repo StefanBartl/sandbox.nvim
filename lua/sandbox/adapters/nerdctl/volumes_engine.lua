@@ -1,9 +1,8 @@
---[[
-  Nerdctl Volume Adapter Aggregator
-
-  Combines all volume operations into a unified interface
-  for the ContainerEngine port (specific to Nerdctl).
-]]
+---@module 'sandbox.adapters.nerdctl.volumes_engine'
+--- Nerdctl Volume Adapter Aggregator
+---
+--- Combines all volume operations into a unified interface
+--- for the ContainerEngine port (specific to Nerdctl).
 
 local list_volumes = require("sandbox.adapters.nerdctl.volumes.list_volumes")
 local create_volume = require("sandbox.adapters.nerdctl.volumes.create_volume")

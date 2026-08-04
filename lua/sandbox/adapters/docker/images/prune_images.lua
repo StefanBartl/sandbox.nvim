@@ -1,4 +1,5 @@
--- Docker Adapter: Function to prune dangling images
+---@module 'sandbox.adapters.docker.images.prune_images'
+--- Docker Adapter: Function to prune dangling images
 
 local run_argv = require("sandbox.util.run_argv")
 

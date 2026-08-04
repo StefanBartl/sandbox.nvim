@@ -17,6 +17,7 @@ local notify = require("sandbox.notify")
 local confirm = require("sandbox.util.confirm")
 local M = {}
 
+---@internal
 local function open_term_buffer(name, cmd)
   -- Reuse an existing buffer with the same name if still valid
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -36,6 +37,7 @@ local function open_term_buffer(name, cmd)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
 end
 
+---@internal
 ---@return string|nil engine_name, string|nil err
 local function require_engine()
   local engine_name = require("sandbox.config").options.engine

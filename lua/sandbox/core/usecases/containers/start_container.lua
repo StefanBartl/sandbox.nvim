@@ -1,3 +1,4 @@
+---@module 'sandbox.core.usecases.containers.start_container'
 --- Use case: Start a container
 --- @param engine table: must implement start_container(container_id)
 --- @param container_id string: ID of the container to start

@@ -1,4 +1,5 @@
--- Use case: Remove a container
+---@module 'sandbox.core.usecases.containers.remove_container'
+--- Use case: Remove a container
 --- @param engine table: must implement remove_container(container_id, on_done)
 --- @param container_id string
 --- @param on_done? fun(ok: boolean, err: string|nil)

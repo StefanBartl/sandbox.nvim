@@ -1,4 +1,5 @@
--- Podman Adapter: Stop and remove a compose project
+---@module 'sandbox.adapters.podman.compose.down'
+--- Podman Adapter: Stop and remove a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

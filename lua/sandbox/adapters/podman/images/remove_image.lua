@@ -1,4 +1,5 @@
--- Podman Adapter: Remove image
+---@module 'sandbox.adapters.podman.images.remove_image'
+--- Podman Adapter: Remove image
 
 local M = {}
 

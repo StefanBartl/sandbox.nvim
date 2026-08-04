@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to remove a network
+---@module 'sandbox.adapters.nerdctl.networks.remove_network'
+--- Nerdctl Adapter: Function to remove a network
 
 local M = {}
 

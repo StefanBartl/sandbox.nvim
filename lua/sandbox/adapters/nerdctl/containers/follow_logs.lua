@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Stream a container's logs live (`nerdctl logs -f <id>`)
+---@module 'sandbox.adapters.nerdctl.containers.follow_logs'
+--- Nerdctl Adapter: Stream a container's logs live (`nerdctl logs -f <id>`)
 
 local M = {}
 

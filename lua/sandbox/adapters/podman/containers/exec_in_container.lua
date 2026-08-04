@@ -1,4 +1,5 @@
--- Podman Adapter: Execute a command inside a running container
+---@module 'sandbox.adapters.podman.containers.exec_in_container'
+--- Podman Adapter: Execute a command inside a running container
 
 local M = {}
 

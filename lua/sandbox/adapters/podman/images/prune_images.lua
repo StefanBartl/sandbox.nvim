@@ -1,4 +1,5 @@
--- Podman Adapter: Prune images
+---@module 'sandbox.adapters.podman.images.prune_images'
+--- Podman Adapter: Prune images
 
 local run_argv = require("sandbox.util.run_argv")
 

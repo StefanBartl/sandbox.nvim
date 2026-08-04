@@ -1,9 +1,8 @@
---[[
-  Nerdctl Network Adapter Aggregator
-
-  Combines all network operations into a unified interface
-  for the ContainerEngine port (specific to Nerdctl).
-]]
+---@module 'sandbox.adapters.nerdctl.networks_engine'
+--- Nerdctl Network Adapter Aggregator
+---
+--- Combines all network operations into a unified interface
+--- for the ContainerEngine port (specific to Nerdctl).
 
 local list_networks = require("sandbox.adapters.nerdctl.networks.list_networks")
 local create_network = require("sandbox.adapters.nerdctl.networks.create_network")

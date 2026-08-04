@@ -14,6 +14,7 @@ local notify = require("sandbox.notify")
 local friendly_error = require("sandbox.util.friendly_error")
 local M = {}
 
+---@internal
 ---@return table|nil config, string|nil path
 local function find_and_parse()
   local devcontainer_file = require("sandbox.util.devcontainer_file")
@@ -32,6 +33,7 @@ local function find_and_parse()
   return config, path
 end
 
+---@internal
 ---@param workspace_dir string
 ---@return string
 local function container_name_for(workspace_dir)

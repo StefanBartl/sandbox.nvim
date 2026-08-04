@@ -1,4 +1,5 @@
--- Docker Adapter: Bring a compose project up (detached)
+---@module 'sandbox.adapters.docker.compose.up'
+--- Docker Adapter: Bring a compose project up (detached)
 
 local run_argv = require("sandbox.util.run_argv")
 

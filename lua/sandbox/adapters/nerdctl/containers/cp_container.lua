@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to copy files/directories between host and container
+---@module 'sandbox.adapters.nerdctl.containers.cp_container'
+--- Nerdctl Adapter: Function to copy files/directories between host and container
 
 local run_argv = require("sandbox.util.run_argv")
 

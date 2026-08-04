@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to list all volumes
+---@module 'sandbox.adapters.nerdctl.volumes.list_volumes'
+--- Nerdctl Adapter: Function to list all volumes
 
 local run_argv = require("sandbox.util.run_argv")
 

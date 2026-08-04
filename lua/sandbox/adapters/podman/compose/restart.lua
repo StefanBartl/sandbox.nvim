@@ -1,4 +1,5 @@
--- Podman Adapter: Restart a compose project
+---@module 'sandbox.adapters.podman.compose.restart'
+--- Podman Adapter: Restart a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 
