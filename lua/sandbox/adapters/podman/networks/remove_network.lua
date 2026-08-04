@@ -1,4 +1,5 @@
--- Podman Adapter: Function to remove a network
+---@module 'sandbox.adapters.podman.networks.remove_network'
+--- Podman Adapter: Function to remove a network
 
 local M = {}
 

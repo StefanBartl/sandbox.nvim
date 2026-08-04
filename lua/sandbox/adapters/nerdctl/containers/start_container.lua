@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to start a container
+---@module 'sandbox.adapters.nerdctl.containers.start_container'
+--- Nerdctl Adapter: Function to start a container
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,13 +1,12 @@
---[[
-  Podman Adapter Aggregator
-
-  Combines container and image adapters into a full implementation of the
-  ContainerEngine port. Merges the sub-aggregators wholesale (rather than
-  re-listing every field by hand) so a new container/image method only has
-  to be added to containers_engine.lua/images_engine.lua to be reachable
-  through sandbox.get_engine() -- a hand-copied field list silently drops
-  new methods the moment someone forgets to update it here too.
-]]
+---@module 'sandbox.adapters.podman.engine'
+--- Podman Adapter Aggregator
+---
+--- Combines container and image adapters into a full implementation of the
+--- ContainerEngine port. Merges the sub-aggregators wholesale (rather than
+--- re-listing every field by hand) so a new container/image method only has
+--- to be added to containers_engine.lua/images_engine.lua to be reachable
+--- through sandbox.get_engine() -- a hand-copied field list silently drops
+--- new methods the moment someone forgets to update it here too.
 
 local containers = require("sandbox.adapters.podman.containers_engine")
 local images = require("sandbox.adapters.podman.images_engine")

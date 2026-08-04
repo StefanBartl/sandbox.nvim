@@ -1,4 +1,5 @@
--- Podman Adapter: Function to list all volumes
+---@module 'sandbox.adapters.podman.volumes.list_volumes'
+--- Podman Adapter: Function to list all volumes
 
 local run_argv = require("sandbox.util.run_argv")
 

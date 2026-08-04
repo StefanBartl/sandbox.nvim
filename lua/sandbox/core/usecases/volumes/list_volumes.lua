@@ -1,4 +1,5 @@
--- Use case: List all volumes
+---@module 'sandbox.core.usecases.volumes.list_volumes'
+--- Use case: List all volumes
 --- @param engine table: must implement list_volumes()
 --- @return table[]|nil volumes, string|nil err
 return function(engine)

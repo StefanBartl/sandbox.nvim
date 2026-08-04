@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Authenticate against a registry
+---@module 'sandbox.adapters.nerdctl.registry.login'
+--- Nerdctl Adapter: Authenticate against a registry
 
 local run_argv = require("sandbox.util.run_argv")
 

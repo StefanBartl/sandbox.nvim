@@ -1,4 +1,5 @@
--- Docker Adapter: Function to create and start a new container
+---@module 'sandbox.adapters.docker.containers.run_container'
+--- Docker Adapter: Function to create and start a new container
 
 local M = {}
 

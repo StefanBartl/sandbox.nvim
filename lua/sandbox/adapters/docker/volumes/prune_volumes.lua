@@ -1,4 +1,5 @@
--- Docker Adapter: Function to prune unused volumes
+---@module 'sandbox.adapters.docker.volumes.prune_volumes'
+--- Docker Adapter: Function to prune unused volumes
 
 local run_argv = require("sandbox.util.run_argv")
 

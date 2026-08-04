@@ -1,4 +1,5 @@
--- Docker Adapter: Function to prune all stopped containers
+---@module 'sandbox.adapters.docker.containers.prune_containers'
+--- Docker Adapter: Function to prune all stopped containers
 
 local run_argv = require("sandbox.util.run_argv")
 

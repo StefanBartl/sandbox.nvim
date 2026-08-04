@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to create a volume
+---@module 'sandbox.adapters.nerdctl.volumes.create_volume'
+--- Nerdctl Adapter: Function to create a volume
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Podman Adapter: Prune containers
+---@module 'sandbox.adapters.podman.containers.prune_containers'
+--- Podman Adapter: Prune containers
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Podman Adapter: Function to get a one-shot resource usage snapshot of a container
+---@module 'sandbox.adapters.podman.containers.stats_container'
+--- Podman Adapter: Function to get a one-shot resource usage snapshot of a container
 
 local run_argv = require("sandbox.util.run_argv")
 

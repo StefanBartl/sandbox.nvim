@@ -1,4 +1,5 @@
--- Use case: Pause a container's processes
+---@module 'sandbox.core.usecases.containers.pause_container'
+--- Use case: Pause a container's processes
 --- @param engine table: must implement pause_container(container_id, on_done)
 --- @param container_id string
 --- @param on_done? fun(ok: boolean, err: string|nil)

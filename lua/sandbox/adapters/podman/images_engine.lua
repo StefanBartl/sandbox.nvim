@@ -1,9 +1,8 @@
---[[
-  Podman Image Adapter
-
-  Implements image-related operations of the ContainerEngine port
-  for Podman: list, pull, remove, prune
-]]
+---@module 'sandbox.adapters.podman.images_engine'
+--- Podman Image Adapter
+---
+--- Implements image-related operations of the ContainerEngine port
+--- for Podman: list, pull, remove, prune
 
 local list_images = require("sandbox.adapters.podman.images.list_images")
 local pull_image = require("sandbox.adapters.podman.images.pull_image")

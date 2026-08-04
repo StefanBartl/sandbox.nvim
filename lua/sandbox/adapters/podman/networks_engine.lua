@@ -1,9 +1,8 @@
---[[
-  Podman Network Adapter Aggregator
-
-  Combines all network operations into a unified interface
-  for the ContainerEngine port (specific to Podman).
-]]
+---@module 'sandbox.adapters.podman.networks_engine'
+--- Podman Network Adapter Aggregator
+---
+--- Combines all network operations into a unified interface
+--- for the ContainerEngine port (specific to Podman).
 
 local list_networks = require("sandbox.adapters.podman.networks.list_networks")
 local create_network = require("sandbox.adapters.podman.networks.create_network")

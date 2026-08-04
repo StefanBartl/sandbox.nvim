@@ -1,4 +1,5 @@
--- Podman Adapter: Function to list all networks
+---@module 'sandbox.adapters.podman.networks.list_networks'
+--- Podman Adapter: Function to list all networks
 
 local run_argv = require("sandbox.util.run_argv")
 

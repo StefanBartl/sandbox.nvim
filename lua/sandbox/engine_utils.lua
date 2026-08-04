@@ -1,4 +1,5 @@
--- Utility to detect available container engine
+---@module 'sandbox.engine_utils'
+--- Utility to detect available container engine
 
 local notify = require("sandbox.notify")
 

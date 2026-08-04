@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to create a network
+---@module 'sandbox.adapters.nerdctl.networks.create_network'
+--- Nerdctl Adapter: Function to create a network
 
 local run_argv = require("sandbox.util.run_argv")
 

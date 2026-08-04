@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to create and start a new container
+---@module 'sandbox.adapters.nerdctl.containers.run_container'
+--- Nerdctl Adapter: Function to create and start a new container
 
 local M = {}
 

@@ -1,9 +1,8 @@
---[[
-  Podman Compose Adapter Aggregator
-
-  Combines compose operations into a full implementation of the
-  ComposeEngine port, backed by the `podman compose` CLI.
-]]
+---@module 'sandbox.adapters.podman.compose_engine'
+--- Podman Compose Adapter Aggregator
+---
+--- Combines compose operations into a full implementation of the
+--- ComposeEngine port, backed by the `podman compose` CLI.
 
 local up = require("sandbox.adapters.podman.compose.up")
 local down = require("sandbox.adapters.podman.compose.down")

@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to prune unused volumes
+---@module 'sandbox.adapters.nerdctl.volumes.prune_volumes'
+--- Nerdctl Adapter: Function to prune unused volumes
 
 local run_argv = require("sandbox.util.run_argv")
 

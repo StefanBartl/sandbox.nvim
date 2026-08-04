@@ -1,4 +1,5 @@
--- Nerdctl Adapter: List services in a compose project
+---@module 'sandbox.adapters.nerdctl.compose.ps'
+--- Nerdctl Adapter: List services in a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

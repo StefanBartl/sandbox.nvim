@@ -1,4 +1,5 @@
--- Use case: Create a new named volume
+---@module 'sandbox.core.usecases.volumes.create_volume'
+--- Use case: Create a new named volume
 --- @param engine table: must implement create_volume(name)
 --- @param name string
 --- @return boolean ok, string|nil err

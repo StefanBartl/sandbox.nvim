@@ -1,9 +1,8 @@
---[[
-  Nerdctl Compose Adapter Aggregator
-
-  Combines compose operations into a full implementation of the
-  ComposeEngine port, backed by the `nerdctl compose` CLI plugin.
-]]
+---@module 'sandbox.adapters.nerdctl.compose_engine'
+--- Nerdctl Compose Adapter Aggregator
+---
+--- Combines compose operations into a full implementation of the
+--- ComposeEngine port, backed by the `nerdctl compose` CLI plugin.
 
 local up = require("sandbox.adapters.nerdctl.compose.up")
 local down = require("sandbox.adapters.nerdctl.compose.down")

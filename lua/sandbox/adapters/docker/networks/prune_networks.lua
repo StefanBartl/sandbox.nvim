@@ -1,4 +1,5 @@
--- Docker Adapter: Function to prune unused networks
+---@module 'sandbox.adapters.docker.networks.prune_networks'
+--- Docker Adapter: Function to prune unused networks
 
 local run_argv = require("sandbox.util.run_argv")
 

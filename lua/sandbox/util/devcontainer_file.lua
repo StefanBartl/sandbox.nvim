@@ -44,6 +44,7 @@ function M.workspace_dir(path)
   return vim.fs.dirname(path) -- .../.devcontainer.json
 end
 
+---@internal
 --- Strip JSONC comments (respecting string literals, so `//`/`/*` inside a
 --- string value is left alone) and trailing commas, then decode.
 --- @param text string

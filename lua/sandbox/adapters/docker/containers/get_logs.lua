@@ -1,4 +1,5 @@
--- Docker Adapter: Function to retrieve logs of a container
+---@module 'sandbox.adapters.docker.containers.get_logs'
+--- Docker Adapter: Function to retrieve logs of a container
 
 local run_argv = require("sandbox.util.run_argv")
 

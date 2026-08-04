@@ -1,3 +1,4 @@
+---@module 'sandbox.core.usecases.registry.login'
 --- Authenticate against a registry (password piped via stdin, never argv).
 --- @param engine table
 --- @param username string

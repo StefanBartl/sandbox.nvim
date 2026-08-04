@@ -1,4 +1,5 @@
--- Podman Adapter: Pull image
+---@module 'sandbox.adapters.podman.images.pull_image'
+--- Podman Adapter: Pull image
 
 local run_argv = require("sandbox.util.run_argv")
 

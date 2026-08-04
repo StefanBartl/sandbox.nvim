@@ -17,6 +17,7 @@ local STATUS_CACHE_TTL_MS = 3000
 ---@type { text: string, at: integer }|nil
 local cache = nil
 
+---@internal
 ---@return string
 local function compute()
   local sandbox = require("sandbox")

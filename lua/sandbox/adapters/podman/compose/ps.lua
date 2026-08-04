@@ -1,4 +1,5 @@
--- Podman Adapter: List services in a compose project
+---@module 'sandbox.adapters.podman.compose.ps'
+--- Podman Adapter: List services in a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

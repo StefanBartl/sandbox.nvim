@@ -1,9 +1,8 @@
---[[
-  Docker Compose Adapter Aggregator
-
-  Combines compose operations into a full implementation of the
-  ComposeEngine port, backed by the `docker compose` CLI plugin.
-]]
+---@module 'sandbox.adapters.docker.compose_engine'
+--- Docker Compose Adapter Aggregator
+---
+--- Combines compose operations into a full implementation of the
+--- ComposeEngine port, backed by the `docker compose` CLI plugin.
 
 local up = require("sandbox.adapters.docker.compose.up")
 local down = require("sandbox.adapters.docker.compose.down")

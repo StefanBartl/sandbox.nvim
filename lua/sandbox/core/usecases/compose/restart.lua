@@ -1,4 +1,5 @@
--- Use case: Restart a compose project
+---@module 'sandbox.core.usecases.compose.restart'
+--- Use case: Restart a compose project
 --- @param engine table: must implement restart(file, on_done)
 --- @param file string
 --- @param on_done? fun(ok: boolean, err: string|nil)

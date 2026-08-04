@@ -1,4 +1,5 @@
--- Docker Adapter: Function to list all volumes
+---@module 'sandbox.adapters.docker.volumes.list_volumes'
+--- Docker Adapter: Function to list all volumes
 
 local run_argv = require("sandbox.util.run_argv")
 

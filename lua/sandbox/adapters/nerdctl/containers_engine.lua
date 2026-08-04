@@ -1,9 +1,8 @@
---[[
-  Nerdctl Container Adapter
-
-  Implements container-related operations of the ContainerEngine port
-  for Nerdctl: list, start, stop, exec, inspect, remove, prune, etc.
-]]
+---@module 'sandbox.adapters.nerdctl.containers_engine'
+--- Nerdctl Container Adapter
+---
+--- Implements container-related operations of the ContainerEngine port
+--- for Nerdctl: list, start, stop, exec, inspect, remove, prune, etc.
 
 local list_containers = require("sandbox.adapters.nerdctl.containers.list_containers")
 local get_logs = require("sandbox.adapters.nerdctl.containers.get_logs")

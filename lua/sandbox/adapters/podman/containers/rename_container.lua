@@ -1,4 +1,5 @@
--- Podman Adapter: Function to rename a container
+---@module 'sandbox.adapters.podman.containers.rename_container'
+--- Podman Adapter: Function to rename a container
 
 local run_argv = require("sandbox.util.run_argv")
 

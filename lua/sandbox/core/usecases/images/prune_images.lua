@@ -1,3 +1,4 @@
+---@module 'sandbox.core.usecases.images.prune_images'
 --- Removes all dangling images
 --- @param engine table
 --- @param on_done? fun(ok: boolean, err: string|nil)

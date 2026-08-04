@@ -1,9 +1,8 @@
---[[
-  Podman Container Adapter
-
-  Implements container-related operations of the ContainerEngine port
-  for Podman: list, start, stop, exec, inspect, remove, prune, etc.
-]]
+---@module 'sandbox.adapters.podman.containers_engine'
+--- Podman Container Adapter
+---
+--- Implements container-related operations of the ContainerEngine port
+--- for Podman: list, start, stop, exec, inspect, remove, prune, etc.
 
 local list_containers = require("sandbox.adapters.podman.containers.list_containers")
 local get_logs = require("sandbox.adapters.podman.containers.get_logs")

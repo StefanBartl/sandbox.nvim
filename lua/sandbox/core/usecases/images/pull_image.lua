@@ -1,3 +1,4 @@
+---@module 'sandbox.core.usecases.images.pull_image'
 --- Pulls a container image by name without blocking the UI thread.
 --- @param engine table
 --- @param image_name string

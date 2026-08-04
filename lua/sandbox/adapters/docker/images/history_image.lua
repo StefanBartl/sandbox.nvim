@@ -1,4 +1,5 @@
--- Docker Adapter: Function to show an image's layer history
+---@module 'sandbox.adapters.docker.images.history_image'
+--- Docker Adapter: Function to show an image's layer history
 
 local run_argv = require("sandbox.util.run_argv")
 

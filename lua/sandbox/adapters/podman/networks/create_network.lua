@@ -1,4 +1,5 @@
--- Podman Adapter: Function to create a network
+---@module 'sandbox.adapters.podman.networks.create_network'
+--- Podman Adapter: Function to create a network
 
 local run_argv = require("sandbox.util.run_argv")
 

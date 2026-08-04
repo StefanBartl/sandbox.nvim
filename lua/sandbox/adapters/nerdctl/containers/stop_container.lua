@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to stop a container
+---@module 'sandbox.adapters.nerdctl.containers.stop_container'
+--- Nerdctl Adapter: Function to stop a container
 
 local M = {}
 

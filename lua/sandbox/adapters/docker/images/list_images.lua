@@ -1,4 +1,5 @@
--- Docker Adapter: Function to list all images
+---@module 'sandbox.adapters.docker.images.list_images'
+--- Docker Adapter: Function to list all images
 
 local run_argv = require("sandbox.util.run_argv")
 

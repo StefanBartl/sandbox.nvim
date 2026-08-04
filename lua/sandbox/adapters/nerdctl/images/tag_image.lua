@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to tag a local image
+---@module 'sandbox.adapters.nerdctl.images.tag_image'
+--- Nerdctl Adapter: Function to tag a local image
 
 local run_argv = require("sandbox.util.run_argv")
 

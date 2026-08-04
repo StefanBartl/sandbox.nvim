@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to list all images
+---@module 'sandbox.adapters.nerdctl.images.list_images'
+--- Nerdctl Adapter: Function to list all images
 
 local run_argv = require("sandbox.util.run_argv")
 

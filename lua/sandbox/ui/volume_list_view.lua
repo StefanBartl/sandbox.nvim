@@ -1,5 +1,7 @@
+---@module 'sandbox.ui.volume_list_view'
 --- Display a list of volumes in a vertical split buffer, with buffer-local
 --- keymaps to act on the volume under the cursor (see `?` inside the buffer).
+
 --- @param volumes table[]: List of standardized volume objects (name, driver, mountpoint)
 local notify = require("sandbox.notify")
 local list_actions = require("sandbox.ui.list_actions")

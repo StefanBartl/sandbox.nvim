@@ -1,4 +1,5 @@
--- Podman Adapter: Function to tag a local image
+---@module 'sandbox.adapters.podman.images.tag_image'
+--- Podman Adapter: Function to tag a local image
 
 local run_argv = require("sandbox.util.run_argv")
 

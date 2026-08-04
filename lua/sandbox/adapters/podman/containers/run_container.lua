@@ -1,4 +1,5 @@
--- Podman Adapter: Function to create and start a new container
+---@module 'sandbox.adapters.podman.containers.run_container'
+--- Podman Adapter: Function to create and start a new container
 
 local M = {}
 

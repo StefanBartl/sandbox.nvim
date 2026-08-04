@@ -42,6 +42,7 @@ local CACHE_TTL_MS = 4000
 ---@type table<string, { items: string[], at: integer }>
 local list_cache = {}
 
+---@internal
 ---@param key string
 ---@param fetch fun(): table[]
 ---@param to_name fun(item: table): string
@@ -80,6 +81,7 @@ local function cached_names(key, fetch, to_name)
   return names
 end
 
+---@internal
 ---@param list string[]
 ---@param arg_lead string
 ---@return string[]
@@ -152,6 +154,7 @@ composer.register_type("DISTRO_NAME", {
 
 local BUFFER_FLAG = { { name = "buffer", short = "b", bool = true } }
 
+---@internal
 ---@param ctx table composer Ctx
 ---@return string[]
 local function command_tail(ctx)
@@ -165,6 +168,7 @@ local function command_tail(ctx)
   return #out > 0 and out or nil
 end
 
+---@internal
 ---@return table[]
 local function container_routes()
   return {
@@ -296,6 +300,7 @@ local function container_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function image_routes()
   return {
@@ -369,6 +374,7 @@ local function image_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function volume_routes()
   return {
@@ -395,6 +401,7 @@ local function volume_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function network_routes()
   return {
@@ -437,6 +444,7 @@ local function network_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function compose_routes()
   return {
@@ -462,6 +470,7 @@ local function compose_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function wsl_routes()
   return {
@@ -521,6 +530,7 @@ local function wsl_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function engine_routes()
   return {
@@ -541,6 +551,7 @@ end
 
 local GENERATED_DOCS_PATH = "docs/GENERATED_COMMANDS.md"
 
+---@internal
 ---@return table[]
 local function docs_routes()
   return {
@@ -559,6 +570,7 @@ local function docs_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function devcontainer_routes()
   return {
@@ -572,6 +584,7 @@ local function devcontainer_routes()
   }
 end
 
+---@internal
 ---@return table[]
 local function registry_routes()
   return {

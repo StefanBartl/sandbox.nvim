@@ -1,9 +1,10 @@
--- Turns a raw adapter error (often multi-line docker/podman/wsl CLI stderr)
--- into a short, human-readable message suitable for a single vim.notify
--- popup. Common daemon-unreachable failures are mapped to an actionable
--- message; anything else falls back to the first line of the raw text,
--- capped in length. The full raw text should still be logged separately
--- via sandbox.logger for postmortem debugging.
+---@module 'sandbox.util.friendly_error'
+--- Turns a raw adapter error (often multi-line docker/podman/wsl CLI stderr)
+--- into a short, human-readable message suitable for a single vim.notify
+--- popup. Common daemon-unreachable failures are mapped to an actionable
+--- message; anything else falls back to the first line of the raw text,
+--- capped in length. The full raw text should still be logged separately
+--- via sandbox.logger for postmortem debugging.
 
 local MAX_LEN = 200
 
@@ -20,6 +21,7 @@ local KNOWN_PATTERNS = {
   { pattern = "unable to connect to podman socket", message = PODMAN_UNREACHABLE },
 }
 
+---@internal
 --- @param raw_err string|nil
 --- @return string
 local function first_line(raw_err)

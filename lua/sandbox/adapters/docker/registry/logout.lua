@@ -1,4 +1,5 @@
--- Docker Adapter: Log out of a registry
+---@module 'sandbox.adapters.docker.registry.logout'
+--- Docker Adapter: Log out of a registry
 
 local run_argv = require("sandbox.util.run_argv")
 

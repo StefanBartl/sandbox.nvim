@@ -1,4 +1,5 @@
--- Podman Adapter: List images
+---@module 'sandbox.adapters.podman.images.list_images'
+--- Podman Adapter: List images
 
 local run_argv = require("sandbox.util.run_argv")
 

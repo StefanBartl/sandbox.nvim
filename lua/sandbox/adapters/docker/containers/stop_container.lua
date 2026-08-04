@@ -1,4 +1,5 @@
--- Docker Adapter: Function to stop a container
+---@module 'sandbox.adapters.docker.containers.stop_container'
+--- Docker Adapter: Function to stop a container
 
 local M = {}
 

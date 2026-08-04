@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Stop and remove a compose project
+---@module 'sandbox.adapters.nerdctl.compose.down'
+--- Nerdctl Adapter: Stop and remove a compose project
 
 local run_argv = require("sandbox.util.run_argv")
 

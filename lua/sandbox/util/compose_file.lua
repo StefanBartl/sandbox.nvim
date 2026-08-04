@@ -1,6 +1,7 @@
--- Detect a docker-compose/compose/podman-compose file in the cwd or an
--- ancestor directory, matching the filenames docker compose/podman compose
--- look for themselves.
+---@module 'sandbox.util.compose_file'
+--- Detect a docker-compose/compose/podman-compose file in the cwd or an
+--- ancestor directory, matching the filenames docker compose/podman compose
+--- look for themselves.
 
 local CANDIDATES = {
   "docker-compose.yml", "docker-compose.yaml",

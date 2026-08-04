@@ -1,4 +1,5 @@
--- Docker Adapter: Functions to pause/unpause a container
+---@module 'sandbox.adapters.docker.containers.pause_container'
+--- Docker Adapter: Functions to pause/unpause a container
 
 local M = {}
 

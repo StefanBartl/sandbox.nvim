@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to kill a container
+---@module 'sandbox.adapters.nerdctl.containers.kill_container'
+--- Nerdctl Adapter: Function to kill a container
 
 local M = {}
 

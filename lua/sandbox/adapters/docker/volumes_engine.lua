@@ -1,9 +1,8 @@
---[[
-  Docker Volume Adapter Aggregator
-
-  Combines all volume operations into a unified interface
-  for the ContainerEngine port (specific to Docker).
-]]
+---@module 'sandbox.adapters.docker.volumes_engine'
+--- Docker Volume Adapter Aggregator
+---
+--- Combines all volume operations into a unified interface
+--- for the ContainerEngine port (specific to Docker).
 
 local list_volumes = require("sandbox.adapters.docker.volumes.list_volumes")
 local create_volume = require("sandbox.adapters.docker.volumes.create_volume")

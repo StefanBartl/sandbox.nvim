@@ -1,4 +1,5 @@
--- Use Case: List processes running inside a container
+---@module 'sandbox.core.usecases.containers.top_container'
+--- Use Case: List processes running inside a container
 --- @param engine table: must implement top_container(id: string)
 --- @param container_id string
 --- @return string[]|nil lines, string|nil err

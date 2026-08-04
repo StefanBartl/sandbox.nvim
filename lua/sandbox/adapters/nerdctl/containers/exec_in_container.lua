@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to execute a shell command inside a container
+---@module 'sandbox.adapters.nerdctl.containers.exec_in_container'
+--- Nerdctl Adapter: Function to execute a shell command inside a container
 
 local M = {}
 

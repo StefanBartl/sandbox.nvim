@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Bring a compose project up (detached)
+---@module 'sandbox.adapters.nerdctl.compose.up'
+--- Nerdctl Adapter: Bring a compose project up (detached)
 
 local run_argv = require("sandbox.util.run_argv")
 

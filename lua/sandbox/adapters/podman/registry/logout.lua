@@ -1,4 +1,5 @@
--- Podman Adapter: Log out of a registry
+---@module 'sandbox.adapters.podman.registry.logout'
+--- Podman Adapter: Log out of a registry
 
 local run_argv = require("sandbox.util.run_argv")
 

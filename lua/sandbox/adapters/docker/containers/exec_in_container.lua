@@ -1,4 +1,5 @@
--- Docker Adapter: Function to execute a shell command inside a container
+---@module 'sandbox.adapters.docker.containers.exec_in_container'
+--- Docker Adapter: Function to execute a shell command inside a container
 
 local M = {}
 

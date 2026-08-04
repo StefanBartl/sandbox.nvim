@@ -1,4 +1,5 @@
--- Use case: Resume a paused container's processes
+---@module 'sandbox.core.usecases.containers.unpause_container'
+--- Use case: Resume a paused container's processes
 --- @param engine table: must implement unpause_container(container_id, on_done)
 --- @param container_id string
 --- @param on_done? fun(ok: boolean, err: string|nil)

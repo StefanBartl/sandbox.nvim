@@ -1,6 +1,8 @@
+---@module 'sandbox.ui.list_view'
 --- Display a list of containers in a vertical split buffer, with
 --- buffer-local keymaps to act on the container under the cursor
 --- (see `?` inside the buffer, or docs/BINDINGS.md).
+
 --- @param containers table[]: List of standardized container objects (id, name, status, image)
 local notify = require("sandbox.notify")
 local list_actions = require("sandbox.ui.list_actions")

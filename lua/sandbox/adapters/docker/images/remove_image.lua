@@ -1,4 +1,5 @@
--- Docker Adapter: Function to remove a local image
+---@module 'sandbox.adapters.docker.images.remove_image'
+--- Docker Adapter: Function to remove a local image
 
 local M = {}
 

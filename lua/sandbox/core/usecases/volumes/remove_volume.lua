@@ -1,4 +1,5 @@
--- Use case: Remove a volume
+---@module 'sandbox.core.usecases.volumes.remove_volume'
+--- Use case: Remove a volume
 --- @param engine table: must implement remove_volume(name, on_done)
 --- @param name string
 --- @param on_done? fun(ok: boolean, err: string|nil)

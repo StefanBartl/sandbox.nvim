@@ -1,4 +1,5 @@
--- Docker Adapter: Function to list processes running inside a container
+---@module 'sandbox.adapters.docker.containers.top_container'
+--- Docker Adapter: Function to list processes running inside a container
 
 local run_argv = require("sandbox.util.run_argv")
 

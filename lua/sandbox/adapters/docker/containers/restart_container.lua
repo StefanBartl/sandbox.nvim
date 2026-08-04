@@ -1,4 +1,5 @@
--- Docker Adapter: Function to restart a container
+---@module 'sandbox.adapters.docker.containers.restart_container'
+--- Docker Adapter: Function to restart a container
 
 local M = {}
 

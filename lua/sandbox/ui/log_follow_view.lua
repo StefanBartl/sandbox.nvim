@@ -1,7 +1,9 @@
+---@module 'sandbox.ui.log_follow_view'
 --- Stream a container's logs live into a scratch buffer (`logs -f`) instead
 --- of a one-shot snapshot. Press `q` to stop following and close the buffer;
 --- the underlying process is also killed automatically if the buffer is
 --- wiped some other way.
+
 --- @param engine table active ContainerEngine implementation
 --- @param container_id string
 return function(engine, container_id)
