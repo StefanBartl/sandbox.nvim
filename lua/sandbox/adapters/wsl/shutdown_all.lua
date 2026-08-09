@@ -9,13 +9,13 @@ local M = {}
 ---@return boolean ok
 ---@return string|nil err
 function M.shutdown_all()
-	local ok, output = run_argv.run_blocking_captured({ "wsl", "--shutdown" })
+  local ok, output = run_argv.run_blocking_captured({ "wsl", "--shutdown" })
 
-	if not ok then
-		return false, output
-	end
+  if not ok then
+    return false, output
+  end
 
-	return true, nil
+  return true, nil
 end
 
 return M

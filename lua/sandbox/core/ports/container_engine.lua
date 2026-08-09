@@ -3,7 +3,7 @@
 
 return {
 
--- Container interfaces
+  -- Container interfaces
   --- @return table[]|nil containers, string|nil err
   list_containers = function()
     error("list_containers not implemented.")
@@ -94,7 +94,7 @@ return {
     error(id .. ": inspect_container not implemented.")
   end,
 
--- Image interfaces
+  -- Image interfaces
   --- @return table[]|nil images, string|nil err
   list_images = function()
     error("list_images not implemented")
@@ -129,7 +129,7 @@ return {
     error("tag_image not implemented. " .. source .. " -> " .. target)
   end,
 
--- Volume interfaces
+  -- Volume interfaces
   --- @return table[]|nil volumes, string|nil err
   list_volumes = function()
     error("list_volumes not implemented")
@@ -175,7 +175,7 @@ return {
     error(image .. ": inspect_image not implemented.")
   end,
 
--- Network interfaces
+  -- Network interfaces
   --- @return table[]|nil networks, string|nil err
   list_networks = function()
     error("list_networks not implemented")
@@ -212,7 +212,7 @@ return {
     error("prune_networks not implemented")
   end,
 
--- Registry interfaces
+  -- Registry interfaces
   --- Authenticate against a registry (password piped via stdin, never argv).
   --- @param username string
   --- @param password string

@@ -14,10 +14,7 @@ describe("adapters.*.registry", function()
 
     assert.is_true(ok)
     local call = state.calls[1]
-    assert.are.same(
-      { "docker", "login", "--username", "myuser", "--password-stdin", "registry.example.com" },
-      call.cmd
-    )
+    assert.are.same({ "docker", "login", "--username", "myuser", "--password-stdin", "registry.example.com" }, call.cmd)
     assert.are.equal("s3cr3t", call.input)
     for _, arg in ipairs(call.cmd) do
       assert.is_nil(arg:find("s3cr3t", 1, true))

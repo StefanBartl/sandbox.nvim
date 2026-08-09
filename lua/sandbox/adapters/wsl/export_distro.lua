@@ -10,13 +10,13 @@ local M = {}
 ---@return boolean ok
 ---@return string|nil err
 function M.export_distro(name, path)
-	local ok, output = run_argv.run_blocking_captured({ "wsl", "--export", name, path })
+  local ok, output = run_argv.run_blocking_captured({ "wsl", "--export", name, path })
 
-	if not ok then
-		return false, output
-	end
+  if not ok then
+    return false, output
+  end
 
-	return true, nil
+  return true, nil
 end
 
 return M

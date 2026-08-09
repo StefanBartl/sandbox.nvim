@@ -108,7 +108,7 @@ describe("devcontainer_file.parse (JSONC)", function()
   it("strips // line comments", function()
     local config, err = parse_text(table.concat({
       "{",
-      '  // a comment',
+      "  // a comment",
       '  "image": "ubuntu"',
       "}",
     }, "\n"))

@@ -6,7 +6,9 @@
 --- @param container_id string: ID or name of the container
 return function(lines, container_id)
   local bufnr = require("lib.nvim.window").open_named_scratch(
-    "sandbox.nvim://logs/" .. container_id, lines, { filetype = "log", split = "left" }
+    "sandbox.nvim://logs/" .. container_id,
+    lines,
+    { filetype = "log", split = "left" }
   )
   vim.bo[bufnr].modifiable = false
 end

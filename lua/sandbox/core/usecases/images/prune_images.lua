@@ -5,4 +5,3 @@
 return function(engine, on_done)
   return engine.prune_images(on_done)
 end
-

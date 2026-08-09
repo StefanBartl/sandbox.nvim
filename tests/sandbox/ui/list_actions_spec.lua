@@ -28,7 +28,13 @@ describe("list_actions.set_visual_bulk_actions", function()
     local bufnr = make_buf({ "line1", "line2", "line3" })
     local captured
     list_actions.set_visual_bulk_actions(bufnr, {
-      { lhs = "X", desc = "test", fn = function(selected) captured = selected end },
+      {
+        lhs = "X",
+        desc = "test",
+        fn = function(selected)
+          captured = selected
+        end,
+      },
     }, items, 0)
 
     vim.api.nvim_win_set_cursor(0, { 1, 0 })
@@ -42,7 +48,13 @@ describe("list_actions.set_visual_bulk_actions", function()
     local bufnr = make_buf({ "line1", "line2", "line3" })
     local captured
     list_actions.set_visual_bulk_actions(bufnr, {
-      { lhs = "X", desc = "test", fn = function(selected) captured = selected end },
+      {
+        lhs = "X",
+        desc = "test",
+        fn = function(selected)
+          captured = selected
+        end,
+      },
     }, items, 0)
 
     vim.api.nvim_win_set_cursor(0, { 3, 0 })
@@ -55,7 +67,13 @@ describe("list_actions.set_visual_bulk_actions", function()
     local bufnr = make_buf({ "HEADER", "----", "line1", "line2" })
     local captured
     list_actions.set_visual_bulk_actions(bufnr, {
-      { lhs = "X", desc = "test", fn = function(selected) captured = selected end },
+      {
+        lhs = "X",
+        desc = "test",
+        fn = function(selected)
+          captured = selected
+        end,
+      },
     }, items, 2)
 
     vim.api.nvim_win_set_cursor(0, { 3, 0 })
@@ -91,10 +109,15 @@ describe("list_actions.bulk_confirm_then", function()
 
     local applied = {}
     list_actions.bulk_confirm_then(
-      "Remove", "widget",
+      "Remove",
+      "widget",
       { { name = "a" }, { name = "b" }, { name = "c" } },
-      function(item) return item.name end,
-      function(id) applied[#applied + 1] = id end
+      function(item)
+        return item.name
+      end,
+      function(id)
+        applied[#applied + 1] = id
+      end
     )
 
     assert.are.equal(1, prompts)
@@ -114,7 +137,9 @@ describe("list_actions.bulk_confirm_then", function()
     }
 
     local applied = {}
-    list_actions.bulk_confirm_then("Remove", "widget", { { name = "x" } }, function(i) return i.name end, function(id)
+    list_actions.bulk_confirm_then("Remove", "widget", { { name = "x" } }, function(i)
+      return i.name
+    end, function(id)
       applied[#applied + 1] = id
     end)
 

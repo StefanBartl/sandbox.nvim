@@ -45,6 +45,8 @@ return function(engine, container_id)
   vim.api.nvim_create_autocmd("BufWipeout", {
     buffer = bufnr,
     once = true,
-    callback = function() handle.stop() end,
+    callback = function()
+      handle.stop()
+    end,
   })
 end

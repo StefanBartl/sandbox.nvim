@@ -144,7 +144,8 @@ function M.tag(source, target)
   local ok, err = usecase(engine, source, target)
   if not ok then
     notify.error(
-      "Failed to tag image " .. source .. ": " .. friendly_error(err), { source = source, target = target, err = err }
+      "Failed to tag image " .. source .. ": " .. friendly_error(err),
+      { source = source, target = target, err = err }
     )
     return
   end
@@ -170,7 +171,8 @@ function M.save(image, path)
   local ok, err = usecase(engine, image, path)
   if not ok then
     notify.error(
-      "Failed to save image " .. image .. ": " .. friendly_error(err), { image = image, path = path, err = err }
+      "Failed to save image " .. image .. ": " .. friendly_error(err),
+      { image = image, path = path, err = err }
     )
     return
   end

@@ -11,11 +11,18 @@ local logger = require("sandbox.logger")
 
 local ok, lib_notify = pcall(require, "lib.nvim.notify")
 
-local base = ok and lib_notify.create("[sandbox.nvim]") or {
-  info = function(msg) vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.INFO) end,
-  warn = function(msg) vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.WARN) end,
-  error = function(msg) vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.ERROR) end,
-}
+local base = ok and lib_notify.create("[sandbox.nvim]")
+  or {
+    info = function(msg)
+      vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.INFO)
+    end,
+    warn = function(msg)
+      vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.WARN)
+    end,
+    error = function(msg)
+      vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.ERROR)
+    end,
+  }
 
 local M = {}
 

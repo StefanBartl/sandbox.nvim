@@ -45,8 +45,13 @@ return {
   --- @param tar_path string source .tar file path
   --- @return boolean ok, string|nil err
   import_distro = function(name, install_path, tar_path)
-    error(name .. ": import_distro not implemented. install_path: " .. tostring(install_path)
-      .. " tar_path: " .. tostring(tar_path))
+    error(
+      name
+        .. ": import_distro not implemented. install_path: "
+        .. tostring(install_path)
+        .. " tar_path: "
+        .. tostring(tar_path)
+    )
   end,
   --- @return boolean ok, string|nil err
   shutdown_all = function()

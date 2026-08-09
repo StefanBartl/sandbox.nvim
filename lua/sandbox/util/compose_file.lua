@@ -4,9 +4,12 @@
 --- look for themselves.
 
 local CANDIDATES = {
-  "docker-compose.yml", "docker-compose.yaml",
-  "compose.yml", "compose.yaml",
-  "podman-compose.yml", "podman-compose.yaml",
+  "docker-compose.yml",
+  "docker-compose.yaml",
+  "compose.yml",
+  "compose.yaml",
+  "podman-compose.yml",
+  "podman-compose.yaml",
 }
 
 local M = {}

@@ -35,39 +35,41 @@ function M.build(opts)
   local actions = require("telescope.actions")
   local action_state = require("telescope.actions.state")
 
-  pickers.new({}, {
-    prompt_title = opts.title,
-    finder = finders.new_table({
-      results = opts.items,
-      entry_maker = function(item)
-        local e = opts.entry(item)
-        return { value = item, display = e.display, ordinal = e.ordinal }
-      end,
-    }),
-    sorter = conf.generic_sorter({}),
-    attach_mappings = function(prompt_bufnr, map)
-      actions.select_default:replace(function()
-        local selection = action_state.get_selected_entry()
-        actions.close(prompt_bufnr)
-        if selection and opts.keys[1] then
-          opts.keys[1].fn(selection.value)
-        end
-      end)
-
-      for i = 2, #opts.keys do
-        local key = opts.keys[i]
-        map({ "i", "n" }, key.lhs, function()
+  pickers
+    .new({}, {
+      prompt_title = opts.title,
+      finder = finders.new_table({
+        results = opts.items,
+        entry_maker = function(item)
+          local e = opts.entry(item)
+          return { value = item, display = e.display, ordinal = e.ordinal }
+        end,
+      }),
+      sorter = conf.generic_sorter({}),
+      attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
           local selection = action_state.get_selected_entry()
           actions.close(prompt_bufnr)
-          if selection then
-            key.fn(selection.value)
+          if selection and opts.keys[1] then
+            opts.keys[1].fn(selection.value)
           end
         end)
-      end
 
-      return true
-    end,
-  }):find()
+        for i = 2, #opts.keys do
+          local key = opts.keys[i]
+          map({ "i", "n" }, key.lhs, function()
+            local selection = action_state.get_selected_entry()
+            actions.close(prompt_bufnr)
+            if selection then
+              key.fn(selection.value)
+            end
+          end)
+        end
+
+        return true
+      end,
+    })
+    :find()
 end
 
 return M

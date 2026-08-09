@@ -11,13 +11,13 @@ local M = {}
 ---@return boolean ok
 ---@return string|nil err
 function M.import_distro(name, install_path, tar_path)
-	local ok, output = run_argv.run_blocking_captured({ "wsl", "--import", name, install_path, tar_path })
+  local ok, output = run_argv.run_blocking_captured({ "wsl", "--import", name, install_path, tar_path })
 
-	if not ok then
-		return false, output
-	end
+  if not ok then
+    return false, output
+  end
 
-	return true, nil
+  return true, nil
 end
 
 return M

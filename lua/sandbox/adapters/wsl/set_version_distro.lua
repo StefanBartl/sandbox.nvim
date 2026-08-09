@@ -10,13 +10,13 @@ local M = {}
 ---@return boolean ok
 ---@return string|nil err
 function M.set_version_distro(name, version)
-	local ok, output = run_argv.run_blocking_captured({ "wsl", "--set-version", name, tostring(version) })
+  local ok, output = run_argv.run_blocking_captured({ "wsl", "--set-version", name, tostring(version) })
 
-	if not ok then
-		return false, output
-	end
+  if not ok then
+    return false, output
+  end
 
-	return true, nil
+  return true, nil
 end
 
 return M

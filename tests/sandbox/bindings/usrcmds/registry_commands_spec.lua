@@ -10,9 +10,11 @@ describe("bindings.usrcmds.registry_commands.login", function()
 
   before_each(function()
     notified = {}
-    package.loaded["sandbox"] = { get_engine = function()
-      return { login_registry = function() end }
-    end }
+    package.loaded["sandbox"] = {
+      get_engine = function()
+        return { login_registry = function() end }
+      end,
+    }
     package.loaded["sandbox.notify"] = {
       warn = record("warn"),
       error = record("error"),

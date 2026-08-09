@@ -12,15 +12,15 @@ local M = {}
 ---@return boolean ok
 ---@return string|nil err
 function M.start_distro(name)
-	-- WSL distros start implicitly when a command is executed inside them.
-	-- Running `echo` is the canonical no-op start trigger.
-	local ok, output = run_argv.run_blocking_captured({ "wsl", "-d", name, "--", "echo" })
+  -- WSL distros start implicitly when a command is executed inside them.
+  -- Running `echo` is the canonical no-op start trigger.
+  local ok, output = run_argv.run_blocking_captured({ "wsl", "-d", name, "--", "echo" })
 
-	if not ok then
-		return false, output
-	end
+  if not ok then
+    return false, output
+  end
 
-	return true, nil
+  return true, nil
 end
 
 return M

@@ -15,7 +15,8 @@ return function(data, container_id)
 
   local list_opts = require("sandbox.config").options
   local bufnr, winid = require("lib.nvim.window").open_named_scratch(
-    "sandbox.nvim://inspect/" .. container_id, lines,
+    "sandbox.nvim://inspect/" .. container_id,
+    lines,
     { filetype = "lua", split = list_opts.list_split, size = list_opts.list_size }
   )
 

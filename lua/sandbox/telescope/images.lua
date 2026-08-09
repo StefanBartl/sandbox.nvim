@@ -36,13 +36,16 @@ return function()
       return string.format("[%s:%s] %s", repo, tag, id), ref
     end
 
-    local ref = (img.repository and img.repository ~= "<none>")
-      and (img.repository .. ":" .. (img.tag or "latest"))
+    local ref = (img.repository and img.repository ~= "<none>") and (img.repository .. ":" .. (img.tag or "latest"))
       or img.id
     return string.format(
       "[%s:%s] %s (%s)",
-      img.repository or "<none>", img.tag or "<none>", img.id and img.id:sub(1, 12) or "<no id>", img.size or "?"
-    ), ref
+      img.repository or "<none>",
+      img.tag or "<none>",
+      img.id and img.id:sub(1, 12) or "<no id>",
+      img.size or "?"
+    ),
+      ref
   end
 
   require("sandbox.telescope.picker").build({
@@ -53,18 +56,30 @@ return function()
       return { display = text, ordinal = text }
     end,
     keys = {
-      { lhs = "<CR>", desc = "inspect", fn = function(img)
+      {
+        lhs = "<CR>",
+        desc = "inspect",
+        fn = function(img)
           local _, ref = describe(img)
           image_cmds.inspect(ref)
-        end },
-      { lhs = "<C-h>", desc = "history", fn = function(img)
+        end,
+      },
+      {
+        lhs = "<C-h>",
+        desc = "history",
+        fn = function(img)
           local _, ref = describe(img)
           image_cmds.history(ref)
-        end },
-      { lhs = "<C-d>", desc = "remove", fn = function(img)
+        end,
+      },
+      {
+        lhs = "<C-d>",
+        desc = "remove",
+        fn = function(img)
           local _, ref = describe(img)
           image_cmds.remove(ref)
-        end },
+        end,
+      },
     },
   })
 end

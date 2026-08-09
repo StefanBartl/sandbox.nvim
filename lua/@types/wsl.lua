@@ -10,4 +10,3 @@
 ---@field start_distro fun(name: string): boolean
 ---@field stop_distro fun(name: string): boolean
 ---@field exec_in_distro fun(name: string, command: string[]|nil): nil
-

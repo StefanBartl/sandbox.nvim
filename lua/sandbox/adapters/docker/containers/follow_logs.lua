@@ -33,10 +33,14 @@ function M.follow_logs(container_id, on_line, on_exit)
     function(obj)
       if buffered ~= "" then
         local last = buffered
-        vim.schedule(function() on_line(last) end)
+        vim.schedule(function()
+          on_line(last)
+        end)
       end
       if on_exit then
-        vim.schedule(function() on_exit(obj.code) end)
+        vim.schedule(function()
+          on_exit(obj.code)
+        end)
       end
     end
   )

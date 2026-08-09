@@ -46,19 +46,14 @@ function M.list()
   lines[#lines + 1] = string.rep("-", 50)
 
   for _, d in ipairs(distros) do
-    lines[#lines + 1] = string.format(
-      "%-23s %-11s %s",
-      d.name,
-      d.state,
-      d.default and "*" or ""
-    )
+    lines[#lines + 1] = string.format("%-23s %-11s %s", d.name, d.state, d.default and "*" or "")
   end
 
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   vim.bo[buf].modifiable = false
-  vim.bo[buf].buftype    = "nofile"
-  vim.bo[buf].bufhidden  = "wipe"
-  vim.bo[buf].filetype   = "log"
+  vim.bo[buf].buftype = "nofile"
+  vim.bo[buf].bufhidden = "wipe"
+  vim.bo[buf].filetype = "log"
 end
 
 --- Start a WSL distro
@@ -111,9 +106,7 @@ function M.set_default(name)
   local usecase = require("sandbox.core.usecases.wsl.set_default_distro")
   local ok, err = usecase(wsl_engine, name)
   if not ok then
-    notify.error(
-      "Failed to set default WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err }
-    )
+    notify.error("Failed to set default WSL distro " .. name .. ": " .. friendly_error(err), { name = name, err = err })
     return
   end
 
@@ -135,9 +128,7 @@ function M.set_version(name, version)
   local usecase = require("sandbox.core.usecases.wsl.set_version_distro")
   local ok, err = usecase(wsl_engine, name, version_num)
   if not ok then
-    notify.error(
-      "Failed to set WSL version for " .. name .. ": " .. friendly_error(err), { name = name, err = err }
-    )
+    notify.error("Failed to set WSL version for " .. name .. ": " .. friendly_error(err), { name = name, err = err })
     return
   end
 

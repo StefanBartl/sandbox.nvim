@@ -43,10 +43,7 @@ function M.login(registry)
           local usecase = require("sandbox.core.usecases.registry.login")
           local ok, err = usecase(engine, username, password, registry)
           if not ok then
-            notify.error(
-              "Registry login failed: " .. friendly_error(err),
-              { registry = registry, err = err }
-            )
+            notify.error("Registry login failed: " .. friendly_error(err), { registry = registry, err = err })
             return
           end
 

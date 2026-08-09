@@ -41,5 +41,5 @@ return {
   run_container = run_container.run_container,
   remove_container = remove_container.remove_container,
   inspect_container = inspect_container.inspect_container,
-  prune_containers = prune_containers.prune_containers
+  prune_containers = prune_containers.prune_containers,
 }

@@ -36,12 +36,48 @@ return function()
       return { display = text, ordinal = text }
     end,
     keys = {
-      { lhs = "<CR>", desc = "inspect", fn = function(c) container_cmds.inspect(ref(c)) end },
-      { lhs = "<C-s>", desc = "start", fn = function(c) container_cmds.start(ref(c)) end },
-      { lhs = "<C-x>", desc = "stop", fn = function(c) container_cmds.stop(ref(c)) end },
-      { lhs = "<C-r>", desc = "restart", fn = function(c) container_cmds.restart(ref(c)) end },
-      { lhs = "<C-l>", desc = "logs", fn = function(c) container_cmds.logs(ref(c)) end },
-      { lhs = "<C-d>", desc = "remove", fn = function(c) container_cmds.remove(ref(c)) end },
+      {
+        lhs = "<CR>",
+        desc = "inspect",
+        fn = function(c)
+          container_cmds.inspect(ref(c))
+        end,
+      },
+      {
+        lhs = "<C-s>",
+        desc = "start",
+        fn = function(c)
+          container_cmds.start(ref(c))
+        end,
+      },
+      {
+        lhs = "<C-x>",
+        desc = "stop",
+        fn = function(c)
+          container_cmds.stop(ref(c))
+        end,
+      },
+      {
+        lhs = "<C-r>",
+        desc = "restart",
+        fn = function(c)
+          container_cmds.restart(ref(c))
+        end,
+      },
+      {
+        lhs = "<C-l>",
+        desc = "logs",
+        fn = function(c)
+          container_cmds.logs(ref(c))
+        end,
+      },
+      {
+        lhs = "<C-d>",
+        desc = "remove",
+        fn = function(c)
+          container_cmds.remove(ref(c))
+        end,
+      },
     },
   })
 end

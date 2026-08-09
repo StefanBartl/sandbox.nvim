@@ -352,7 +352,8 @@ function M.cp(src, dest)
   local ok, err = usecase(engine, src, dest)
   if not ok then
     notify.error(
-      "Failed to copy " .. src .. " -> " .. dest .. ": " .. friendly_error(err), { src = src, dest = dest, err = err }
+      "Failed to copy " .. src .. " -> " .. dest .. ": " .. friendly_error(err),
+      { src = src, dest = dest, err = err }
     )
     return
   end
@@ -390,11 +391,11 @@ function M.run()
 
   kit.form({
     fields = {
-      { name = "image",   label = "Image (e.g. alpine:latest): ",                    required = true },
-      { name = "name",    label = "Container name (optional): " },
-      { name = "ports",   label = "Port mappings, comma-separated host:container (optional): " },
+      { name = "image", label = "Image (e.g. alpine:latest): ", required = true },
+      { name = "name", label = "Container name (optional): " },
+      { name = "ports", label = "Port mappings, comma-separated host:container (optional): " },
       { name = "volumes", label = "Volume mounts, comma-separated host:container (optional): " },
-      { name = "env",     label = "Env vars, comma-separated KEY=VALUE (optional): " },
+      { name = "env", label = "Env vars, comma-separated KEY=VALUE (optional): " },
     },
     on_submit = function(values)
       if not values.image or values.image == "" then

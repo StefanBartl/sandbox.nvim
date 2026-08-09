@@ -19,37 +19,51 @@ describe("adapters: long-running commands via run_argv", function()
   local cases = {
     {
       module = "sandbox.adapters.docker.compose.up",
-      call = function(M, cb) return M.up("docker-compose.yml", cb) end,
+      call = function(M, cb)
+        return M.up("docker-compose.yml", cb)
+      end,
       argv = { "docker", "compose", "-f", "docker-compose.yml", "up", "-d" },
     },
     {
       module = "sandbox.adapters.docker.compose.down",
-      call = function(M, cb) return M.down("docker-compose.yml", cb) end,
+      call = function(M, cb)
+        return M.down("docker-compose.yml", cb)
+      end,
       argv = { "docker", "compose", "-f", "docker-compose.yml", "down" },
     },
     {
       module = "sandbox.adapters.docker.compose.restart",
-      call = function(M, cb) return M.restart("docker-compose.yml", cb) end,
+      call = function(M, cb)
+        return M.restart("docker-compose.yml", cb)
+      end,
       argv = { "docker", "compose", "-f", "docker-compose.yml", "restart" },
     },
     {
       module = "sandbox.adapters.docker.images.prune_images",
-      call = function(M, cb) return M.prune_images(cb) end,
+      call = function(M, cb)
+        return M.prune_images(cb)
+      end,
       argv = { "docker", "image", "prune", "-f" },
     },
     {
       module = "sandbox.adapters.docker.containers.prune_containers",
-      call = function(M, cb) return M.prune_containers(cb) end,
+      call = function(M, cb)
+        return M.prune_containers(cb)
+      end,
       argv = { "docker", "container", "prune", "-f" },
     },
     {
       module = "sandbox.adapters.docker.networks.prune_networks",
-      call = function(M, cb) return M.prune_networks(cb) end,
+      call = function(M, cb)
+        return M.prune_networks(cb)
+      end,
       argv = { "docker", "network", "prune", "-f" },
     },
     {
       module = "sandbox.adapters.docker.volumes.prune_volumes",
-      call = function(M, cb) return M.prune_volumes(cb) end,
+      call = function(M, cb)
+        return M.prune_volumes(cb)
+      end,
       argv = { "docker", "volume", "prune", "-f" },
     },
   }

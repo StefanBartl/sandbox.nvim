@@ -24,22 +24,54 @@ return function(volumes)
 
   local list_opts = require("sandbox.config").options
   local bufnr = require("lib.nvim.window").open_named_scratch(
-    "sandbox.nvim://volume-list", lines,
+    "sandbox.nvim://volume-list",
+    lines,
     { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
   )
 
   local volume_cmds = require("sandbox.bindings.usrcmds.volume_commands")
   list_actions.set_keymaps(bufnr, {
-    { lhs = "<CR>", desc = "inspect", fn = function(v) volume_cmds.inspect(v.name) end },
-    { lhs = "i", desc = "inspect", fn = function(v) volume_cmds.inspect(v.name) end },
-    { lhs = "D", desc = "remove", fn = function(v) volume_cmds.remove(v.name) end },
-    { lhs = "R", desc = "refresh list", no_item = true, fn = function() volume_cmds.list() end },
+    {
+      lhs = "<CR>",
+      desc = "inspect",
+      fn = function(v)
+        volume_cmds.inspect(v.name)
+      end,
+    },
+    {
+      lhs = "i",
+      desc = "inspect",
+      fn = function(v)
+        volume_cmds.inspect(v.name)
+      end,
+    },
+    {
+      lhs = "D",
+      desc = "remove",
+      fn = function(v)
+        volume_cmds.remove(v.name)
+      end,
+    },
+    {
+      lhs = "R",
+      desc = "refresh list",
+      no_item = true,
+      fn = function()
+        volume_cmds.list()
+      end,
+    },
   }, volumes, 2)
 
   list_actions.set_visual_bulk_actions(bufnr, {
-    { lhs = "D", desc = "remove selection", fn = function(selected)
-        list_actions.bulk_confirm_then("Remove", "volume", selected, function(v) return v.name end, volume_cmds.remove)
-      end },
+    {
+      lhs = "D",
+      desc = "remove selection",
+      fn = function(selected)
+        list_actions.bulk_confirm_then("Remove", "volume", selected, function(v)
+          return v.name
+        end, volume_cmds.remove)
+      end,
+    },
   }, volumes, 2)
 
   list_actions.setup_autorefresh(bufnr, volume_cmds.list)

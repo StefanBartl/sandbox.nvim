@@ -25,10 +25,34 @@ return function()
       return { display = text, ordinal = text }
     end,
     keys = {
-      { lhs = "<CR>", desc = "exec", fn = function(d) wsl_cmds.exec(d.name) end },
-      { lhs = "<C-s>", desc = "start", fn = function(d) wsl_cmds.start(d.name) end },
-      { lhs = "<C-x>", desc = "stop", fn = function(d) wsl_cmds.stop(d.name) end },
-      { lhs = "<C-d>", desc = "set default", fn = function(d) wsl_cmds.set_default(d.name) end },
+      {
+        lhs = "<CR>",
+        desc = "exec",
+        fn = function(d)
+          wsl_cmds.exec(d.name)
+        end,
+      },
+      {
+        lhs = "<C-s>",
+        desc = "start",
+        fn = function(d)
+          wsl_cmds.start(d.name)
+        end,
+      },
+      {
+        lhs = "<C-x>",
+        desc = "stop",
+        fn = function(d)
+          wsl_cmds.stop(d.name)
+        end,
+      },
+      {
+        lhs = "<C-d>",
+        desc = "set default",
+        fn = function(d)
+          wsl_cmds.set_default(d.name)
+        end,
+      },
     },
   })
 end

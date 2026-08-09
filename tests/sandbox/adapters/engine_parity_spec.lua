@@ -22,7 +22,11 @@ end
 describe("engine aggregators expose every sub-aggregator method", function()
   local engines = { "docker", "podman", "nerdctl" }
   local sub_aggregators = {
-    "containers_engine", "images_engine", "volumes_engine", "networks_engine", "registry_engine",
+    "containers_engine",
+    "images_engine",
+    "volumes_engine",
+    "networks_engine",
+    "registry_engine",
   }
 
   for _, engine_name in ipairs(engines) do

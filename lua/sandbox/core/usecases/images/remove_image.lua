@@ -6,4 +6,3 @@
 return function(engine, image_id, on_done)
   return engine.remove_image(image_id, on_done)
 end
-

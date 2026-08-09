@@ -32,7 +32,9 @@ describe("util.run_argv", function()
 
     assert.is_function(handle.stop)
     -- on_done hasn't necessarily fired synchronously -- give the event loop a turn.
-    vim.wait(2000, function() return done_ok ~= nil end, 10)
+    vim.wait(2000, function()
+      return done_ok ~= nil
+    end, 10)
 
     assert.is_true(done_ok)
     assert.is_not_nil(done_output:find("hello", 1, true))
@@ -64,19 +66,23 @@ describe("util.run_argv", function()
 
       -- Long enough to outlive the 150ms delay guard, so the handle actually
       -- becomes visible rather than being suppressed as a fast operation.
-      local sleep_cmd = vim.fn.has("win32") == 1
-        and { "cmd", "/c", "ping -n 2 127.0.0.1 >NUL" }
-        or { "sleep", "1" }
+      local sleep_cmd = vim.fn.has("win32") == 1 and { "cmd", "/c", "ping -n 2 127.0.0.1 >NUL" } or { "sleep", "1" }
 
       local finished = false
-      run_argv.run_async_captured(sleep_cmd, function() finished = true end)
+      run_argv.run_async_captured(sleep_cmd, function()
+        finished = true
+      end)
 
-      vim.wait(1000, function() return #statusline.active() > 0 end, 10)
+      vim.wait(1000, function()
+        return #statusline.active() > 0
+      end, 10)
       local active = statusline.active()
       assert.is_true(#active > 0)
       assert.is_not_nil(active[1]:find("sandbox.nvim", 1, true))
 
-      vim.wait(5000, function() return finished end, 10)
+      vim.wait(5000, function()
+        return finished
+      end, 10)
       -- finish() runs in the same tick as on_done, so the registry is already
       -- drained by the time the callback has fired.
       assert.equals(0, #statusline.active())
@@ -87,17 +93,21 @@ describe("util.run_argv", function()
         return
       end
 
-      local sleep_cmd = vim.fn.has("win32") == 1
-        and { "cmd", "/c", "ping -n 5 127.0.0.1 >NUL" }
-        or { "sleep", "5" }
+      local sleep_cmd = vim.fn.has("win32") == 1 and { "cmd", "/c", "ping -n 5 127.0.0.1 >NUL" } or { "sleep", "5" }
 
       local finished = false
-      local handle = run_argv.run_async_captured(sleep_cmd, function() finished = true end)
+      local handle = run_argv.run_async_captured(sleep_cmd, function()
+        finished = true
+      end)
 
-      vim.wait(1000, function() return #statusline.active() > 0 end, 10)
+      vim.wait(1000, function()
+        return #statusline.active() > 0
+      end, 10)
       handle.stop()
 
-      vim.wait(5000, function() return finished end, 10)
+      vim.wait(5000, function()
+        return finished
+      end, 10)
       assert.is_true(finished)
       assert.equals(0, #statusline.active())
     end)

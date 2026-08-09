@@ -116,18 +116,15 @@ end
 ---@param fn fun(id: string)
 function M.bulk_confirm_then(label, noun, items, ref, fn)
   local confirm = require("sandbox.util.confirm")
-  confirm.destructive(
-    string.format("%s %d %s%s?", label, #items, noun, #items > 1 and "s" or ""),
-    function()
-      local config = require("sandbox.config")
-      local prev = config.options.confirm_destructive
-      config.options.confirm_destructive = false
-      for _, item in ipairs(items) do
-        fn(ref(item))
-      end
-      config.options.confirm_destructive = prev
+  confirm.destructive(string.format("%s %d %s%s?", label, #items, noun, #items > 1 and "s" or ""), function()
+    local config = require("sandbox.config")
+    local prev = config.options.confirm_destructive
+    config.options.confirm_destructive = false
+    for _, item in ipairs(items) do
+      fn(ref(item))
     end
-  )
+    config.options.confirm_destructive = prev
+  end)
 end
 
 --- Periodically re-run `refresh_fn` (e.g. `container_commands.list`) while
@@ -147,16 +144,20 @@ function M.setup_autorefresh(bufnr, refresh_fn)
   vim.b[bufnr].sandbox_autorefresh_active = true
 
   local timer = vim.uv.new_timer()
-  timer:start(interval, interval, vim.schedule_wrap(function()
-    if not vim.api.nvim_buf_is_valid(bufnr) or vim.fn.bufwinid(bufnr) == -1 then
-      if not timer:is_closing() then
-        timer:stop()
-        timer:close()
+  timer:start(
+    interval,
+    interval,
+    vim.schedule_wrap(function()
+      if not vim.api.nvim_buf_is_valid(bufnr) or vim.fn.bufwinid(bufnr) == -1 then
+        if not timer:is_closing() then
+          timer:stop()
+          timer:close()
+        end
+        return
       end
-      return
-    end
-    refresh_fn()
-  end))
+      refresh_fn()
+    end)
+  )
 
   vim.api.nvim_create_autocmd("BufWipeout", {
     buffer = bufnr,
