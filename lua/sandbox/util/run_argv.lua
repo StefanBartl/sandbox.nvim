@@ -4,11 +4,36 @@
 --- dependency, matching containers/notify.lua's convention).
 
 local ok, lib_run_argv = pcall(require, "lib.nvim.cross.run_argv")
+-- Optional dependency, same convention as lib_run_argv above: a completed
+-- env (PATH + session vars — docker/podman/nerdctl's socket/context binding
+-- is exactly the session-bound-auth problem this module fixes) for
+-- container CLIs that are easy to miss from a non-login Neovim start.
+local ok_env, spawn_env = pcall(require, "lib.nvim.cross.run.env")
 
 local M = {}
 
 if ok then
-  M.run_blocking_captured = lib_run_argv.run_blocking_captured
+  ---`lib.nvim.cross.run_argv.run_blocking_captured` takes no opts (no env
+  ---support), so route through `vim.system` directly with a completed env
+  ---when both lib.nvim's env module and `vim.system` are available; fall
+  ---back to the unenriched `run_argv` call otherwise (old Neovim without
+  ---`vim.system`, or lib.nvim installed without the env submodule).
+  ---@param cmd string[]
+  ---@param input? string
+  ---@return boolean ok
+  ---@return string output
+  function M.run_blocking_captured(cmd, input)
+    if ok_env and vim.system then
+      local sok, obj = pcall(function()
+        return vim.system(cmd, spawn_env.apply({ text = true, stdin = input })):wait()
+      end)
+      if not sok then
+        return false, tostring(obj)
+      end
+      return obj.code == 0, obj.stdout or ""
+    end
+    return lib_run_argv.run_blocking_captured(cmd, input)
+  end
 else
   ---@param cmd string[]
   ---@param input? string
@@ -88,7 +113,11 @@ function M.run_async_captured(cmd, on_done)
 
   local progress = start_progress(cmd)
 
-  local job = vim.system(cmd, { stdout = collect, stderr = collect }, function(obj)
+  local spawn_opts = { stdout = collect, stderr = collect }
+  if ok_env then
+    spawn_opts = spawn_env.apply(spawn_opts)
+  end
+  local job = vim.system(cmd, spawn_opts, function(obj)
     vim.schedule(function()
       -- A cancelled job also exits non-zero, but `request_cancel` already
       -- closed the indicator with its own message - reporting "failed" on top
