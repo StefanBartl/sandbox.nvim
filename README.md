@@ -41,7 +41,9 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
 
 - ✅ Full container lifecycle: list, start/stop/kill/restart, pause/unpause,
   rename, remove/prune, inspect, `cp`, an interactive `run` wizard, one-shot
-  `stats`/`top`, and log viewing — including live-following logs (`logs -f`)
+  `stats`/`top`, log viewing — including live-following logs (`logs -f`) —
+  and `exec`/`exec-once` to open an interactive shell or run a one-off
+  command inside a container
 - ✅ Images: list, pull/push (async, non-blocking), tag, build, save/load,
   history, inspect, remove/prune
 - ✅ Volumes and networks: list, create, remove/prune, inspect (plus
@@ -139,7 +141,7 @@ installed and one project specifically needs the other.
 {
   "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
-  cmd = { "Container", "Image", "Wsl" },
+  cmd = { "Sandbox", "Sbx" },
   config = function()
     require("sandbox").setup({})
   end,
