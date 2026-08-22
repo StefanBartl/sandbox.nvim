@@ -19,6 +19,13 @@
 --- Docker Desktop on Windows) every STATUS_CACHE_TTL_MS. The indicator is
 --- suppressed for this call (`progress = false`): an ambient refresh every few
 --- seconds would otherwise paint a permanent "docker ps" handle.
+---
+--- Not entirely free: spawning a process is synchronous up to the fork/exec, so
+--- the redraw that triggers a refresh still pays ~10ms on Windows (measured;
+--- the environment build next to it is under 1ms). That is once per
+--- STATUS_CACHE_TTL_MS, against 100-500ms for the full round-trip before -- but
+--- it is the reason to raise the TTL rather than lower it if the component ever
+--- feels sticky.
 
 local M = {}
 
