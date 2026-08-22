@@ -14,8 +14,9 @@ return {
   -- felt (100-500ms, more under Docker Desktop on Windows) -- the short
   -- mutating calls stay synchronous.
   --- @param _on_done? fun(containers: table[]|nil, err: string|nil)
+  --- @param _opts? { progress?: boolean } Only meaningful with _on_done.
   --- @return table[]|nil containers, string|nil err
-  list_containers = function(_on_done)
+  list_containers = function(_on_done, _opts)
     error("list_containers not implemented.")
   end,
   --- @param id string

@@ -99,10 +99,15 @@ end
 --- `code` is passed as a third argument so callers can still report a bare
 --- "exit code N" when the process failed without writing anything to stderr;
 --- existing two-parameter callbacks simply ignore it.
+--- `opts.progress = false` suppresses the indicator. That is for *ambient*
+--- callers - the statusline component refreshing itself every few seconds -
+--- where an indicator would be permanent noise rather than information. Every
+--- user-initiated command should leave it on.
 --- @param cmd string[]
 --- @param on_done fun(ok: boolean, output: string, code: integer)
+--- @param opts? { progress?: boolean }
 --- @return table handle with a `:stop()` method
-function M.run_async_captured(cmd, on_done)
+function M.run_async_captured(cmd, on_done, opts)
   local chunks = {}
 
   local function collect(_, data)
@@ -111,7 +116,10 @@ function M.run_async_captured(cmd, on_done)
     end
   end
 
-  local progress = start_progress(cmd)
+  local progress = nil
+  if not (opts and opts.progress == false) then
+    progress = start_progress(cmd)
+  end
 
   local spawn_opts = { stdout = collect, stderr = collect }
   if ok_env then

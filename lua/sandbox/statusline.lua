@@ -10,6 +10,15 @@
 --- redraw. Any failure (daemon down, no engine configured) degrades to an
 --- empty string rather than erroring or notifying -- a statusline is not
 --- the place for error popups.
+---
+--- The refresh itself is stale-while-revalidate: `M.status()` always returns
+--- the cached text immediately and, when that text has gone stale, kicks off a
+--- background `ps` whose result replaces the cache for the next redraw. It used
+--- to call the engine synchronously, which meant a statusline component froze
+--- Neovim for the length of a `docker ps` (100-500ms, appreciably more under
+--- Docker Desktop on Windows) every STATUS_CACHE_TTL_MS. The indicator is
+--- suppressed for this call (`progress = false`): an ambient refresh every few
+--- seconds would otherwise paint a permanent "docker ps" handle.
 
 local M = {}
 
@@ -18,24 +27,11 @@ local STATUS_CACHE_TTL_MS = 3000
 local cache = nil
 
 ---@internal
+---Format the summary line from a container list.
+---@param engine_name string
+---@param containers table[]
 ---@return string
-local function compute()
-  local sandbox = require("sandbox")
-  local engine_name = sandbox.resolve_engine_name()
-  if not engine_name then
-    return ""
-  end
-
-  local engine = sandbox.get_engine()
-  if not engine then
-    return ""
-  end
-
-  local ok, containers = pcall(engine.list_containers)
-  if not ok or not containers then
-    return engine_name
-  end
-
+local function format_summary(engine_name, containers)
   local highlights = require("sandbox.ui.highlights")
   local running = 0
   for _, c in ipairs(containers) do
@@ -47,19 +43,62 @@ local function compute()
   return string.format("%s (%d/%d)", engine_name, running, #containers)
 end
 
+---@internal
+---True while a background refresh is in flight, so a statusline redrawing many
+---times a second cannot stack up one `ps` per redraw while the first is still
+---running.
+local refreshing = false
+
+---@internal
+---Start a background refresh of the cache. Never blocks, never notifies.
+---@return nil
+local function refresh()
+  if refreshing then
+    return
+  end
+
+  local sandbox = require("sandbox")
+  local engine_name = sandbox.resolve_engine_name()
+  if not engine_name then
+    cache = { text = "", at = vim.uv.now() }
+    return
+  end
+
+  local engine = sandbox.get_engine()
+  if not engine then
+    cache = { text = "", at = vim.uv.now() }
+    return
+  end
+
+  refreshing = true
+
+  -- pcall guards the *call*: an engine that does not implement
+  -- list_containers throws synchronously (the port's error(...) stub).
+  local ok_call = pcall(engine.list_containers, function(containers)
+    refreshing = false
+    cache = {
+      text = containers and format_summary(engine_name, containers) or engine_name,
+      at = vim.uv.now(),
+    }
+  end, { progress = false })
+
+  if not ok_call then
+    refreshing = false
+    cache = { text = engine_name, at = vim.uv.now() }
+  end
+end
+
 --- Ambient "engine (running/total)" summary, e.g. "docker (2/5)".
---- Cached for STATUS_CACHE_TTL_MS; returns "" on any failure.
+--- Cached for STATUS_CACHE_TTL_MS; returns "" on any failure and never blocks.
 ---@return string
 function M.status()
   local now = vim.uv.now()
-  if cache and (now - cache.at) < STATUS_CACHE_TTL_MS then
-    return cache.text
+  if not cache or (now - cache.at) >= STATUS_CACHE_TTL_MS then
+    refresh()
   end
-
-  local ok, text = pcall(compute)
-  text = (ok and text) or ""
-  cache = { text = text, at = now }
-  return text
+  -- Stale value on the first redraw after expiry, correct one on the next --
+  -- for an ambient summary that is the right trade against a frozen editor.
+  return cache and cache.text or ""
 end
 
 --- Ready-made lualine component function. Usage:

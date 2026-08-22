@@ -7,10 +7,12 @@ local M = {}
 
 --- @param on_done? fun(...) Optional: when given, runs asynchronously and
 ---        delivers exactly the values the synchronous form returns.
+--- @param opts? { progress?: boolean } Forwarded to run_async_captured; only
+---        meaningful together with `on_done`.
 --- List all containers (running and stopped) using Nerdctl
 --- Sorts containers: running first, then others.
 --- @return table[]|nil containers, string|nil err
-function M.list_containers(on_done)
+function M.list_containers(on_done, opts)
   local argv = { "nerdctl", "ps", "-a", "--format", "{{json .}}" }
 
   -- Optional async path. `run_blocking_captured` blocks the UI thread for
@@ -61,9 +63,12 @@ function M.list_containers(on_done)
   end
 
   if on_done then
+    -- `opts` is forwarded verbatim; its only current use is
+    -- `{ progress = false }` from the ambient statusline refresh, which must
+    -- not paint an indicator every few seconds.
     run_argv.run_async_captured(argv, function(ok, output)
       on_done(parse(ok, output))
-    end)
+    end, opts)
     return
   end
 
