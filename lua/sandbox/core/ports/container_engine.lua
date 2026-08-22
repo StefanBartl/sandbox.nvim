@@ -4,13 +4,24 @@
 return {
 
   -- Container interfaces
+  --
+  -- The five read-heavy operations (list_containers, get_logs,
+  -- inspect_container, stats_container, top_container) take an optional
+  -- `on_done`. Without it they behave exactly as before and return
+  -- synchronously; with it the adapter runs the daemon round-trip through
+  -- `run_async_captured` and delivers the identical values to the callback.
+  -- Those five are singled out because they are the ones long enough to be
+  -- felt (100-500ms, more under Docker Desktop on Windows) -- the short
+  -- mutating calls stay synchronous.
+  --- @param _on_done? fun(containers: table[]|nil, err: string|nil)
   --- @return table[]|nil containers, string|nil err
-  list_containers = function()
+  list_containers = function(_on_done)
     error("list_containers not implemented.")
   end,
   --- @param id string
+  --- @param _on_done? fun(lines: string[]|nil, err: string|nil)
   --- @return string[]|nil lines, string|nil err
-  get_logs = function(id)
+  get_logs = function(id, _on_done)
     error(id .. ": get_logs not implemented.")
   end,
   --- Stream a container's logs (`logs -f`) until stopped or the process exits.
@@ -61,13 +72,15 @@ return {
     error(id .. ": rename_container not implemented.")
   end,
   --- @param id string
+  --- @param _on_done? fun(lines: string[]|nil, err: string|nil)
   --- @return string[]|nil lines, string|nil err
-  stats_container = function(id)
+  stats_container = function(id, _on_done)
     error(id .. ": stats_container not implemented.")
   end,
   --- @param id string
+  --- @param _on_done? fun(lines: string[]|nil, err: string|nil)
   --- @return string[]|nil lines, string|nil err
-  top_container = function(id)
+  top_container = function(id, _on_done)
     error(id .. ": top_container not implemented.")
   end,
   --- @param src string
@@ -90,7 +103,7 @@ return {
   prune_containers = function(_on_done)
     error("prune_containers not implemented.")
   end,
-  inspect_container = function(id)
+  inspect_container = function(id, _on_done)
     error(id .. ": inspect_container not implemented.")
   end,
 

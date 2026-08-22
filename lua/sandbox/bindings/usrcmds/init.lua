@@ -103,6 +103,11 @@ composer.register_type("CONTAINER_ID", {
     return true, raw, nil
   end,
   complete = function(arg_lead)
+    -- Stays synchronous on purpose: Neovim's cmdline completion API wants the
+    -- candidate list as a return value, so there is nowhere for a callback to
+    -- deliver into. `cached_names` keeps it to one `ps -a` per TTL rather than
+    -- one per <Tab>. list_containers' optional on_done is deliberately not
+    -- passed here.
     local names = cached_names("containers", function()
       local core = require("sandbox")
       return require("sandbox.core.usecases.containers.list_containers")(core.get_engine())

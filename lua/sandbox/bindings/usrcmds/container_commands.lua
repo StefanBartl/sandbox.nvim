@@ -21,20 +21,24 @@ function M.list()
   end
 
   local usecase = require("sandbox.core.usecases.containers.list_containers")
-  local containers, err = usecase(engine)
 
-  if not containers then
-    local error_view = require("sandbox.ui.error_view")
-    error_view({ "Failed to list containers:", err or "unknown error" })
-    return
-  end
+  -- Asynchronous: the daemon round-trip for this command is long enough to
+  -- be felt, so the result arrives through the adapter's optional on_done
+  -- rather than blocking the UI thread.
+  usecase(engine, function(containers, err)
+    if not containers then
+      local error_view = require("sandbox.ui.error_view")
+      error_view({ "Failed to list containers:", err or "unknown error" })
+      return
+    end
 
-  if err then
-    notify.warn("Some containers could not be parsed: " .. friendly_error(err), { err = err })
-  end
+    if err then
+      notify.warn("Some containers could not be parsed: " .. friendly_error(err), { err = err })
+    end
 
-  local view = require("sandbox.ui.list_view")
-  view(containers)
+    local view = require("sandbox.ui.list_view")
+    view(containers)
+  end)
 end
 
 --- Show logs of a specific container
@@ -51,14 +55,19 @@ function M.logs(id)
   end
 
   local usecase = require("sandbox.core.usecases.containers.get_container_logs")
-  local logs, err = usecase(engine, id)
-  if not logs then
-    notify.error("Failed to get logs for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
-    return
-  end
 
-  local view = require("sandbox.ui.log_view")
-  view(logs, id)
+  -- Asynchronous: the daemon round-trip for this command is long enough to
+  -- be felt, so the result arrives through the adapter's optional on_done
+  -- rather than blocking the UI thread.
+  usecase(engine, id, function(logs, err)
+    if not logs then
+      notify.error("Failed to get logs for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+      return
+    end
+
+    local view = require("sandbox.ui.log_view")
+    view(logs, id)
+  end)
 end
 
 --- Stream a container's logs live (`logs -f`) instead of a one-shot
@@ -300,14 +309,19 @@ function M.stats(id)
   end
 
   local usecase = require("sandbox.core.usecases.containers.stats_container")
-  local lines, err = usecase(engine, id)
-  if not lines then
-    notify.error("Failed to get stats for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
-    return
-  end
 
-  local view = require("sandbox.ui.log_view")
-  view(lines, "stats/" .. id)
+  -- Asynchronous: the daemon round-trip for this command is long enough to
+  -- be felt, so the result arrives through the adapter's optional on_done
+  -- rather than blocking the UI thread.
+  usecase(engine, id, function(lines, err)
+    if not lines then
+      notify.error("Failed to get stats for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+      return
+    end
+
+    local view = require("sandbox.ui.log_view")
+    view(lines, "stats/" .. id)
+  end)
 end
 
 --- List the processes running inside a container
@@ -324,14 +338,19 @@ function M.top(id)
   end
 
   local usecase = require("sandbox.core.usecases.containers.top_container")
-  local lines, err = usecase(engine, id)
-  if not lines then
-    notify.error("Failed to get processes for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
-    return
-  end
 
-  local view = require("sandbox.ui.log_view")
-  view(lines, "top/" .. id)
+  -- Asynchronous: the daemon round-trip for this command is long enough to
+  -- be felt, so the result arrives through the adapter's optional on_done
+  -- rather than blocking the UI thread.
+  usecase(engine, id, function(lines, err)
+    if not lines then
+      notify.error("Failed to get processes for " .. id .. ": " .. friendly_error(err), { id = id, err = err })
+      return
+    end
+
+    local view = require("sandbox.ui.log_view")
+    view(lines, "top/" .. id)
+  end)
 end
 
 --- Copy a file or directory between the host and a container
@@ -486,13 +505,20 @@ function M.inspect(id)
     return
   end
 
-  local ok, result = pcall(usecase, engine, id)
+  -- Asynchronous: the daemon round-trip for this command is long enough to
+  -- be felt, so the result arrives through the adapter's optional on_done
+  -- rather than blocking the UI thread.
+  --
+  -- The pcall stays: it guarded against the engine table not implementing the
+  -- method at all (the port's `error(...)` stubs), which is a synchronous
+  -- throw at call time and still is.
+  local ok, spawn_err = pcall(usecase, engine, id, function(result)
+    view(result, id)
+  end)
   if not ok then
-    notify.error("Failed to inspect container " .. id .. ": " .. tostring(result), { id = id, err = result })
+    notify.error("Failed to inspect container " .. id .. ": " .. tostring(spawn_err), { id = id, err = spawn_err })
     return
   end
-
-  view(result, id)
 end
 
 return M
