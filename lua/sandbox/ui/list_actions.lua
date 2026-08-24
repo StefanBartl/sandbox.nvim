@@ -32,7 +32,7 @@ end
 ---@param keys Sandbox.ListActions.Keymap[]
 ---@param items table[]
 ---@param header_offset integer|nil
-function M.set_keymaps(bufnr, keys, items, header_offset)
+function M.set_keymaps(bufnr, keys, items, header_offset, opts)
   for _, k in ipairs(keys) do
     vim.keymap.set("n", k.lhs, function()
       if k.no_item then
@@ -52,10 +52,41 @@ function M.set_keymaps(bufnr, keys, items, header_offset)
     vim.api.nvim_buf_delete(bufnr, { force = true })
   end, { buffer = bufnr, desc = "sandbox: close list buffer", nowait = true, silent = true })
 
+  -- Engine switch from inside the list. Reaching `:Sandbox engine set podman`
+  -- meant leaving the buffer, typing the command and reopening -- three steps
+  -- for something you decide while looking at the very list that would change.
+  vim.keymap.set("n", "E", function()
+    local engine_cmds = require("sandbox.bindings.usrcmds.engine_commands")
+    engine_cmds.cycle()
+    -- Re-render if the view told us how; otherwise the switch is applied and
+    -- the next open shows it.
+    if type(opts) == "table" and type(opts.refresh) == "function" then
+      opts.refresh()
+    end
+  end, { buffer = bufnr, desc = "sandbox: cycle container engine", nowait = true, silent = true })
+
+  -- Structured filter. `/` is Vim's own buffer search, which finds a line but
+  -- leaves every other one on screen; this narrows the list to what matches,
+  -- across every field of an item rather than just the rendered text.
+  if type(opts) == "table" and type(opts.filter) == "function" then
+    vim.keymap.set("n", "f", function()
+      require("lib.nvim.ui.kit").input({
+        title = "filter: ",
+        on_submit = function(query)
+          opts.filter(vim.trim(query or ""))
+        end,
+      })
+    end, { buffer = bufnr, desc = "sandbox: filter this list", nowait = true, silent = true })
+  end
+
   vim.keymap.set("n", "?", function()
     local lines = { "sandbox.nvim keymaps:" }
     for _, k in ipairs(keys) do
       lines[#lines + 1] = string.format("  %-6s %s", k.lhs, k.desc)
+    end
+    lines[#lines + 1] = "  E      cycle container engine"
+    if type(opts) == "table" and type(opts.filter) == "function" then
+      lines[#lines + 1] = "  f      filter this list"
     end
     lines[#lines + 1] = "  q      close this buffer"
     require("sandbox.notify").info(table.concat(lines, "\n"))
@@ -133,7 +164,27 @@ end
 ---@param fn fun(id: string)
 function M.bulk_confirm_then(label, noun, items, ref, fn)
   local confirm = require("sandbox.util.confirm")
-  confirm.destructive(string.format("%s %d %s%s?", label, #items, noun, #items > 1 and "s" or ""), function()
+
+  -- Name what is about to go. The question used to read "Remove 5
+  -- containers?" and stop there, which is the one question a confirmation
+  -- for a *bulk* action must not leave open -- a Visual selection is easy to
+  -- get one line wrong, and the answer is irreversible.
+  --
+  -- Capped, because a selection can be long and a prompt that scrolls is no
+  -- better than no list at all.
+  local MAX_SHOWN = 10
+  local shown = {}
+  for i = 1, math.min(#items, MAX_SHOWN) do
+    shown[#shown + 1] = "  " .. tostring(ref(items[i]))
+  end
+  if #items > MAX_SHOWN then
+    shown[#shown + 1] = ("  … and %d more"):format(#items - MAX_SHOWN)
+  end
+
+  local question =
+    string.format("%s %d %s%s?\n%s", label, #items, noun, #items > 1 and "s" or "", table.concat(shown, "\n"))
+
+  confirm.destructive(question, function()
     local config = require("sandbox.config")
     local prev = config.options.confirm_destructive
     config.options.confirm_destructive = false

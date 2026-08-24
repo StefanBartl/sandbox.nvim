@@ -91,18 +91,19 @@ end
 --- Open a shell session inside a running container
 ---@param id string
 ---@param shell? string
-function M.exec(id, shell)
+---@param workdir? string  # working directory inside the container (`-w`)
+function M.exec(id, shell, workdir)
   local engine = require("sandbox").get_engine()
   local usecase = require("sandbox.core.usecases.containers.exec_in_container")
 
   if not id or id == "" then
-    notify.warn("Usage: :Sandbox container exec <container-id> [<shell>]")
+    notify.warn("Usage: :Sandbox container exec <container-id> [<shell>] [workdir=<path>]")
     return
   end
 
   shell = shell or require("sandbox.config").options.default_shell or "sh"
 
-  local ok, err = pcall(usecase, engine, id, { shell })
+  local ok, err = pcall(usecase, engine, id, { shell }, workdir)
   if not ok then
     notify.error("Failed to exec in container " .. id .. ": " .. tostring(err), { id = id, err = err })
   end
@@ -112,12 +113,13 @@ end
 --- Unlike M.exec, this does not open an interactive shell session.
 ---@param id string
 ---@param command string[]|nil
-function M.exec_once(id, command)
+---@param workdir string|nil  # working directory inside the container (`-w`)
+function M.exec_once(id, command, workdir)
   local engine = require("sandbox").get_engine()
   local usecase = require("sandbox.core.usecases.containers.exec_in_container")
 
   if not id or id == "" then
-    notify.warn("Usage: :Sandbox container exec-once <container-id> [<command>...]")
+    notify.warn("Usage: :Sandbox container exec-once <container-id> [workdir=<path>] [<command>...]")
     return
   end
 
@@ -125,7 +127,7 @@ function M.exec_once(id, command)
     command = nil
   end
 
-  local ok, err = pcall(usecase, engine, id, command)
+  local ok, err = pcall(usecase, engine, id, command, workdir)
   if not ok then
     notify.error("Failed to exec in container " .. id .. ": " .. tostring(err), { id = id, err = err })
   end

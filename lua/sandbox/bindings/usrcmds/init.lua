@@ -193,6 +193,19 @@ local function command_tail(ctx)
   return #out > 0 and out or nil
 end
 
+---The working directory for an exec, from a `workdir=` kv.
+---
+--- `workdir=` rather than a positional: the command tail is free-form (every
+--- token after the id is part of what runs inside the container), so a
+--- positional could not be told apart from the command itself.
+---@internal
+---@param ctx table
+---@return string|nil
+local function exec_workdir(ctx)
+  local w = ctx.kv and ctx.kv.workdir
+  return (type(w) == "string" and w ~= "") and w or nil
+end
+
 ---@internal
 ---@return table[]
 local function container_routes()
@@ -223,9 +236,10 @@ local function container_routes()
         { name = "id", type = "CONTAINER_ID" },
         { name = "shell", type = "STRING", optional = true, values = { "sh", "bash", "zsh", "dash" } },
       },
-      desc = "Open a shell session inside a running container",
+      kv = { { key = "workdir", type = "STRING" } },
+      desc = "Open a shell session inside a running container  [workdir=<path>]",
       run = function(ctx)
-        container_cmds.exec(ctx.args.id, ctx.args.shell)
+        container_cmds.exec(ctx.args.id, ctx.args.shell, exec_workdir(ctx))
       end,
     },
 
@@ -235,9 +249,10 @@ local function container_routes()
         { name = "id", type = "CONTAINER_ID" },
         { name = "command", type = "STRING", optional = true },
       },
-      desc = "Run a one-off command inside a container (non-interactive)",
+      kv = { { key = "workdir", type = "STRING" } },
+      desc = "Run a one-off command inside a container (non-interactive)  [workdir=<path>]",
       run = function(ctx)
-        container_cmds.exec_once(ctx.args.id, command_tail(ctx))
+        container_cmds.exec_once(ctx.args.id, command_tail(ctx), exec_workdir(ctx))
       end,
     },
 

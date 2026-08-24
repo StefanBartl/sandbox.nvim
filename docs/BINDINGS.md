@@ -22,8 +22,8 @@ live route table, and diff it against this file to catch drift.
 | `list` | — | List all containers (running and stopped) |
 | `logs` | `{id}` | Show logs for a container |
 | `logs-follow` | `{id}` | Stream a container's logs live (`logs -f`); `q` in the buffer stops following |
-| `exec` | `{id} [shell]` | Open an interactive shell inside a container |
-| `exec-once` | `{id} [command...]` | Run a one-off command and show the output |
+| `exec` | `{id} [shell] [workdir=<path>]` | Open an interactive shell inside a container. `workdir=` becomes the engine's `-w` |
+| `exec-once` | `{id} [workdir=<path>] [command...]` | Run a one-off command and show the output |
 | `start` | `{id} [--buffer\|-b]` | Start a container |
 | `stop` | `{id} [--buffer\|-b]` | Stop a container |
 | `kill` | `{id} [--buffer\|-b]` | Kill a container |
@@ -188,7 +188,25 @@ isn't shown in any window.
 mode), then press the same key you'd use on a single line to apply it to
 every selected item — `s`/`x`/`X`/`D` (start/stop/kill/remove) in the
 container list, `D` (remove) elsewhere. Destructive bulk actions confirm
-once for the whole batch instead of once per item.
+once for the whole batch instead of once per item — **and the confirmation
+names them** (2026-08-24): it used to read "Remove 5 containers?" and stop
+there, which is the one question a bulk confirmation must not leave open,
+since a Visual selection is easy to get a line wrong and the answer is
+irreversible. Capped at ten with an "… and N more" tail, because a prompt
+that scrolls is no better than no list.
+
+**Engine switch (`E`)** cycles docker → podman → nerdctl for the session and
+re-renders the list. Reaching `:Sandbox engine set podman` previously meant
+leaving the buffer, typing the command and re-opening — three steps for
+something you decide while looking at the very list that would change.
+
+**Filter (`f`)** narrows the list to matching entries. `/` is Vim's own
+buffer search: it finds a line and leaves every other one on screen. `f`
+matches across every *field* of an entry — for a container that is name, id,
+status and image — so `f redis` finds the container running that image even
+though the image is not in the rendered line. An empty query restores the
+full list, and filtering always starts from the unfiltered set, so a second
+filter widens instead of compounding.
 
 **Right-click context menu**: every list-view buffer also binds
 `<RightMouse>` to a context menu (via [nvzone/menu](https://github.com/nvzone/menu),

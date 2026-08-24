@@ -21,6 +21,34 @@ function M.set(name)
   notify.info("Active engine set to " .. name .. " for this session")
 end
 
+--- The engines this session may switch between, in a fixed order.
+---
+--- Declared rather than derived from `VALID_ENGINES`, whose `pairs` order is
+--- nondeterministic -- cycling has to land in the same place every time.
+---@type string[]
+M.ENGINES = { "docker", "podman", "nerdctl" }
+
+--- Advance to the next engine in the cycle.
+---
+--- This is what the list views bind: reaching `:Sandbox engine set podman`
+--- from a container list meant leaving the list, typing the command and
+--- opening the list again, which is three steps for a thing you do while
+--- looking at the very buffer that would change.
+---@return string name  the engine now active
+function M.cycle()
+  local current = require("sandbox").resolve_engine_name()
+  local idx = 1
+  for i, name in ipairs(M.ENGINES) do
+    if name == current then
+      idx = i
+      break
+    end
+  end
+  local next_name = M.ENGINES[(idx % #M.ENGINES) + 1]
+  M.set(next_name)
+  return next_name
+end
+
 --- Clear the session-level override, falling back to .sandboxrc/config.
 function M.reset()
   vim.g.sandbox_engine = nil

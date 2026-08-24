@@ -17,6 +17,40 @@ per-resource keymap tables. `opts.list_split` controls window placement
 - **Config:** `opts.list_split` (default `"left"`), `opts.list_size`
   (default `nil`, uses Neovim's default)
 
+## Engine switch and filter from a list view (2026-08-24)
+
+Two buffer-local keys wired centrally in `list_actions.set_keymaps`, so every
+list view gets them:
+
+**`E`** cycles docker → podman → nerdctl for the session and re-renders.
+Reaching `:Sandbox engine set podman` previously meant leaving the buffer,
+typing the command and re-opening — three steps for something you decide
+while looking at the very list that would change. Re-rendering matters: a
+list belongs to the engine that produced it, so leaving stale rows on screen
+after switching would be worse than not offering the key.
+
+The cycle order is a declared list, not `pairs` over the valid-engines set —
+cycling has to land in the same place every time.
+
+**`f`** filters the list. `/` is Vim's own buffer search: it finds a line and
+leaves every other one on screen. `f` narrows to matching entries and matches
+across every *field*, not just the rendered text — `f redis` finds the
+container running that image even though the image is not in the line. An
+empty query restores the full list; filtering always starts from the
+unfiltered set, so a second filter widens rather than compounding.
+
+`f` is offered only where the view supplies a `filter` callback, since
+narrowing means re-rendering and only the view knows how.
+
+Also since 2026-08-24: a **bulk destructive confirmation names its items**
+(capped at ten, with an "… and N more" tail). It used to read "Remove 5
+containers?" and stop there — the one question a bulk confirmation must not
+leave open, given a Visual selection is easy to get a line wrong.
+
+- **Module:** `sandbox/ui/list_actions.lua` (`M.set_keymaps`,
+  `M.bulk_confirm_then`), `sandbox/bindings/usrcmds/engine_commands.lua`
+  (`M.cycle`, `M.ENGINES`)
+
 ## Right-click context menu (nvzone/menu)
 
 Every list-view buffer also binds `<RightMouse>` to a context menu (a soft

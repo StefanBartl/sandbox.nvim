@@ -3,6 +3,7 @@
 --- @param engine table: must implement exec_in_container(container_id, shell_cmd)
 --- @param container_id string
 --- @param shell_cmd string[]: shell command to run (e.g. { "sh" })
-return function(engine, container_id, shell_cmd)
-  return engine.exec_in_container(container_id, shell_cmd)
+--- @param workdir string?: working directory inside the container (`-w`)
+return function(engine, container_id, shell_cmd, workdir)
+  return engine.exec_in_container(container_id, shell_cmd, workdir)
 end
