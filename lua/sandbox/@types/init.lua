@@ -12,6 +12,14 @@
 ---@field list_size integer|nil width/height of list view splits; nil uses Neovim's default
 ---@field progress_style "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"|nil
 --- indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
+---@field menu Sandbox.MenuOptions|nil
+
+---Opt-out for the list-view right-click context menu
+---(sandbox.integrations.menu, lib.nvim.contextmenu). sandbox.nvim ships no
+---nvzone/menu dependency itself; this only gates whether the trigger is
+---bound and whether entries are returned.
+---@class Sandbox.MenuOptions
+---@field enable boolean|nil provide the right-click context menu on list-view buffers (default true)
 
 ---@class Sandbox.RunOpts
 ---@field image string

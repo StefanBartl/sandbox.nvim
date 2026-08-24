@@ -2,6 +2,15 @@
 --- Shared buffer-local keymap wiring for read-only list-view scratch buffers,
 --- so a key on the line under the cursor can act on that item directly
 --- instead of re-typing `:Sandbox <kind> <action> <id>` by hand.
+---
+--- Also binds a `<RightMouse>` context menu (nvzone/menu, soft dependency;
+--- entries from sandbox.integrations.menu) mirroring these same keymaps —
+--- every list view calls `M.set_keymaps` to bind its rows, so the menu
+--- trigger comes along for free instead of needing separate wiring per
+--- list type. Gated on `config.menu.enable` (default true); a missing
+--- nvzone/menu install degrades to a no-op, never an error.
+local contextmenu = require("lib.nvim.contextmenu")
+
 local M = {}
 
 ---@param items table[] items in the same order as the rendered lines
@@ -51,6 +60,14 @@ function M.set_keymaps(bufnr, keys, items, header_offset)
     lines[#lines + 1] = "  q      close this buffer"
     require("sandbox.notify").info(table.concat(lines, "\n"))
   end, { buffer = bufnr, desc = "sandbox: show keymaps", nowait = true, silent = true })
+
+  local menu_cfg = require("sandbox.config").options.menu
+  if not menu_cfg or menu_cfg.enable ~= false then
+    contextmenu.bind_buffer(bufnr, function()
+      local item = M.item_under_cursor(items, header_offset)
+      return require("sandbox.integrations.menu").items(keys, item)
+    end, { desc = "sandbox: right-click context menu" })
+  end
 end
 
 --- Items covered by the CURRENT visual selection. Must be called from

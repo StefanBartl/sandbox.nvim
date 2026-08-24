@@ -190,6 +190,17 @@ every selected item — `s`/`x`/`X`/`D` (start/stop/kill/remove) in the
 container list, `D` (remove) elsewhere. Destructive bulk actions confirm
 once for the whole batch instead of once per item.
 
+**Right-click context menu**: every list-view buffer also binds
+`<RightMouse>` to a context menu (via [nvzone/menu](https://github.com/nvzone/menu),
+a soft dependency) mirroring that buffer's own keymap table one-to-one —
+right-click never offers anything the keyboard doesn't already provide. If
+`nvzone/menu` isn't installed, right-clicking does nothing (one
+`:messages` notice per session, not an error). Set `menu = { enable = false }`
+in `setup({})` to disable the trigger entirely. Wired centrally in
+`sandbox.ui.list_actions.set_keymaps` (see `sandbox.integrations.menu` for
+the entry builder), so this applies uniformly to every list type below
+without per-list wiring.
+
 ### Container list (`sandbox.nvim://container-list`)
 
 | Key | Action | Key | Action |

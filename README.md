@@ -114,6 +114,10 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
       -- no-op without it):
       -- "auto"|"notify"|"statusline"|"fidget"|"float"|"kit" (default: "auto")
       progress_style = "auto",
+      -- Right-click context menu on list-view buffers (nvzone/menu, soft
+      -- dependency; entries mirror each list's own keymaps). Off
+      -- automatically when nvzone/menu isn't installed. See docs/BINDINGS.md.
+      menu = { enable = true },
     })
   end,
 }
