@@ -32,7 +32,7 @@ jobs:
         run: luarocks install luacheck
 
       - name: Run luacheck
-        run: luacheck lua tests
+        run: luacheck lua TESTS
 
   test:
     name: plenary tests
@@ -62,5 +62,5 @@ jobs:
           PLENARY_PATH: ${{ github.workspace }}/plenary.nvim
           LIB_NVIM_PATH: ${{ github.workspace }}/lib.nvim
         run: |
-          nvim --headless --noplugin -u tests/minimal_init.lua \
-            -c "PlenaryBustedDirectory tests/sandbox { minimal_init = 'tests/minimal_init.lua', sequential = true }"
+          nvim --headless --noplugin -u TESTS/minimal_init.lua \
+            -c "PlenaryBustedDirectory TESTS/sandbox { minimal_init = 'TESTS/minimal_init.lua', sequential = true }"

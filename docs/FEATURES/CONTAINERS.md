@@ -118,14 +118,14 @@ The flag is inserted **before** the container id in argv. After it, the
 engine would hand `-w` to the command running inside the container instead of
 consuming it — failing in a way that reads like the command's own error
 rather than ours. All three engines spell it the same, and
-`tests/sandbox/adapters/exec_workdir_spec.lua` pins the ordering for each.
+`TESTS/sandbox/adapters/exec_workdir_spec.lua` pins the ordering for each.
 
 - **Module:** `sandbox/core/usecases/containers/exec_in_container.lua`,
   `sandbox/adapters/{docker,podman,nerdctl}/containers/exec_in_container.lua`
 - **Usercmds:** `:Sandbox container exec {id} [shell] [workdir=<path>]`,
   `:Sandbox container exec-once {id} [workdir=<path>] [command...]`
 - **Config:** `opts.default_shell` (default `"sh"`)
-- **Tests:** `tests/sandbox/adapters/exec_workdir_spec.lua`
+- **Tests:** `TESTS/sandbox/adapters/exec_workdir_spec.lua`
 
 ## Stats and top
 

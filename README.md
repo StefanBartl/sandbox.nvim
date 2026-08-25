@@ -264,9 +264,9 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 
 ### Tests
 
-`tests/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+`TESTS/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 busted-style suite; adapters are tested against a faked `run_argv` instead of
-a real docker/podman/nerdctl/wsl binary. See [`tests/README.md`](./tests/README.md)
+a real docker/podman/nerdctl/wsl binary. See [`TESTS/README.md`](./tests/README.md)
 for how to run it locally. [GitHub Actions](./.github/workflows/ci.yml) runs
 `luacheck` and the full test suite on every push/PR to `main`.
 
