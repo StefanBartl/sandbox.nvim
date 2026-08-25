@@ -1,4 +1,4 @@
-local fake_run_argv = require("tests.sandbox.helpers.fake_run_argv")
+local fake_run_argv = require("TESTS.sandbox.helpers.fake_run_argv")
 
 describe("adapters.*.registry", function()
   after_each(function()
