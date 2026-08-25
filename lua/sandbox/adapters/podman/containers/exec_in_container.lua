@@ -3,10 +3,6 @@
 
 local M = {}
 
--- Compatibility fix for Lua versions:
--- 'unpack' is available as 'table.unpack' in newer Lua versions
-local unpack = table.unpack or unpack
-
 --- Execute a command inside a container
 --- Opens a vertical split window with a terminal session inside the specified container.
 ---

@@ -3,8 +3,6 @@
 
 local M = {}
 
-local unpack = table.unpack or unpack -- Compatibility for Lua 5.1 and 5.3+
-
 --- Execute a shell or command inside a running container
 --- @param container_id string: ID or name of the container
 --- @param command string[]?: Command to run inside the container (default: {"sh"})
