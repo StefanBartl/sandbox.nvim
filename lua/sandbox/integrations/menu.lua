@@ -46,7 +46,9 @@ function M.items(keys, item)
         k.fn(item)
       end
     end, k.lhs)
-    if e then out[#out + 1] = e end
+    if e then
+      out[#out + 1] = e
+    end
   end
   return out
 end
