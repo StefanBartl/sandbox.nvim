@@ -95,31 +95,26 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   event = "VimEnter",
-  config = function()
-    require("sandbox").setup({
-      -- Optional: explicitly select engine
-      -- If omitted, automatic detection will prefer Podman if installed, otherwise Docker
-      engine = "podman", -- or "docker" / "nerdctl"
-      -- Ask for confirmation before remove/prune/kill (default: true)
-      confirm_destructive = true,
-      -- Shell used by `container exec` when none is given (default: "sh")
-      default_shell = "sh",
-      -- ms between list-view auto-refreshes; nil/0 disables (default: nil)
-      refresh_interval = nil,
-      -- Window placement for list views: "above"|"below"|"left"|"right" (default: "left")
-      list_split = "left",
-      -- Width/height of list view splits; nil uses Neovim's default
-      list_size = nil,
-      -- Indicator while pull/push/build/compose/prune run (needs lib.nvim,
-      -- no-op without it):
-      -- "auto"|"notify"|"statusline"|"fidget"|"float"|"kit" (default: "auto")
-      progress_style = "auto",
-      -- Right-click context menu on list-view buffers (nvzone/menu, soft
-      -- dependency; entries mirror each list's own keymaps). Off
-      -- automatically when nvzone/menu isn't installed. See docs/BINDINGS.md.
-      menu = { enable = true },
-    })
-  end,
+  opts = {
+    -- Every value below is already the default -- shown so you can see the
+    -- surface, not because any of it has to be written out. `opts = {}` gives
+    -- you exactly this.
+    --
+    -- Engine: omit it and detection prefers Podman if installed, else Docker.
+    engine = "podman", -- or "docker" / "nerdctl"
+    confirm_destructive = true, -- ask before remove/prune/kill
+    default_shell = "sh", -- used by `container exec` when none is given
+    refresh_interval = nil, -- ms between list-view auto-refreshes; nil/0 disables
+    list_split = "left", -- "above" | "below" | "left" | "right"
+    list_size = nil, -- split width/height; nil uses Neovim's default
+    -- Indicator while pull/push/build/compose/prune run (needs lib.nvim, no-op
+    -- without it): "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"
+    progress_style = "auto",
+    -- Right-click context menu on list-view buffers (nvzone/menu, soft
+    -- dependency; entries mirror each list's own keymaps). Off automatically
+    -- when nvzone/menu isn't installed. See docs/BINDINGS.md.
+    menu = { enable = true },
+  },
 }
 ```
 
@@ -144,9 +139,7 @@ installed and one project specifically needs the other.
   "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   cmd = { "Sandbox", "Sbx" },
-  config = function()
-    require("sandbox").setup({})
-  end,
+  opts = {},
 }
 ```
 
