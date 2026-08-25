@@ -15,11 +15,11 @@
      "paramName": "All",
      "paramType": true,
      "semicolon": "All",
-     "setType": true,
+     "setType": true
     },
     "type": {
         "checkTableShape": true,
-        "inferParamType": true,
+        "inferParamType": true
     },
     "type.castNumberToInteger": true,
     "diagnostics.libraryFiles": "Disable",
