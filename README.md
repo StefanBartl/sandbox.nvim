@@ -134,9 +134,7 @@ installed and one project specifically needs the other.
   "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   lazy = false,
-  config = function()
-    require("sandbox").setup({})
-  end,
+  opts = {},
 }
 ```
 
