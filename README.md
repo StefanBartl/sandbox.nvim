@@ -19,7 +19,7 @@
 
 > Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it. [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) is an *optional* dependency — only needed for the picker extension (`:Telescope sandbox ...`), everything else works without it.
 
-> **Pairs well with** [reposcope.nvim](https://github.com/StefanBartl/reposcope.nvim):
+> 💡 Pairs well with [reposcope.nvim](https://github.com/StefanBartl/reposcope.nvim):
 > reposcope clones a repository into a directory, and sandbox picks up the
 > `compose.yml` / `.devcontainer/` that repository declares from the cwd or an
 > ancestor — so `up` and `devcontainer attach` work in the checkout you just
