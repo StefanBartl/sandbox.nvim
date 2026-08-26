@@ -96,7 +96,7 @@ return function(images)
         image_cmds.list()
       end,
     },
-  }, images, 2)
+  }, images, 2, { surface = "images" })
 
   list_actions.set_visual_bulk_actions(bufnr, {
     {
@@ -106,7 +106,7 @@ return function(images)
         list_actions.bulk_confirm_then("Remove", "image", selected, ref, image_cmds.remove)
       end,
     },
-  }, images, 2)
+  }, images, 2, "images")
 
   list_actions.setup_autorefresh(bufnr, image_cmds.list)
 end

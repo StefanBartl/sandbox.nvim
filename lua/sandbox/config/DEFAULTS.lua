@@ -11,6 +11,10 @@ return {
   list_split = "left", -- window placement for list views
   list_size = nil, -- width/height of list view splits; nil uses Neovim's default
   progress_style = "auto", -- indicator while pull/push/build run; needs lib.nvim, no-op without it
+  -- List-view keymaps. `false` binds none; a table overrides individual
+  -- actions per list kind (see Sandbox.Keymaps). Every key keeps its default
+  -- unless named here.
+  keymaps = nil,
   menu = {
     -- Right-click context menu on list-view buffers (nvzone/menu, soft
     -- dependency; entries provided by sandbox.integrations.menu). Off

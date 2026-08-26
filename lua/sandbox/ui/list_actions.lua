@@ -23,18 +23,121 @@ function M.item_under_cursor(items, header_offset)
 end
 
 ---@class Sandbox.ListActions.Keymap
----@field lhs string
----@field desc string
+---@field lhs string|string[] the default key(s)
+---@field desc string  # also the action's name, slugified ("logs (follow)" -> `logs_follow`)
 ---@field fn function called with the item under cursor, or with no args when `no_item` is set
 ---@field no_item? boolean set for buffer-wide actions that don't need a cursor item
 
+---@internal
+--- "logs (follow)" -> "logs_follow": the action name a user writes in
+--- `keymaps.<kind>` to move or drop that key.
+---@param desc string
+---@return string
+local function slug(desc)
+  return (desc:lower():gsub("[^%w]+", "_"):gsub("^_+", ""):gsub("_+$", ""))
+end
+
+---@internal
+--- The user's overrides for one list kind, or nil.
+---@param surface string
+---@return table|false|nil
+local function user_overrides(surface)
+  local cfg = require("sandbox.config").options.keymaps
+  if cfg == false then
+    return false
+  end
+  if type(cfg) ~= "table" then
+    return nil
+  end
+  local v = cfg[surface]
+  if type(v) == "table" or v == false then
+    return v
+  end
+  return nil
+end
+
+---@internal
+--- Turn a view's `keys` table into registry actions.
+---
+--- Entries sharing a `desc` become ONE action with several default keys --
+--- every list binds `<CR>` and `i` to "inspect", which is one thing a user
+--- would want to move, not two.
+---@param keys Sandbox.ListActions.Keymap[]
+---@param wrap fun(k: Sandbox.ListActions.Keymap): function
+---@param mode string
+---@return table<string, Lib.Keymap.Action> actions
+---@return string[] order
+---@return table<string, Sandbox.ListActions.Keymap> by_name
+local function actions_from(keys, wrap, mode)
+  local actions, order, by_name = {}, {}, {}
+  for _, k in ipairs(keys) do
+    local name = slug(k.desc)
+    local existing = actions[name]
+    if existing then
+      -- Same action, another default key.
+      local list = type(existing.default) == "table" and existing.default or { existing.default }
+      list[#list + 1] = k.lhs
+      existing.default = list
+    else
+      actions[name] = {
+        default = k.lhs,
+        desc = k.desc,
+        mode = mode,
+        rhs = wrap(k),
+        opts = { nowait = true, silent = true },
+      }
+      order[#order + 1] = name
+      by_name[name] = k
+    end
+  end
+  return actions, order, by_name
+end
+
+---@internal
+--- The `keys` table again, with the lhs the user actually ended up with and
+--- without the actions they switched off.
+---
+--- The right-click menu and the `?` help both read this rather than the
+--- declared defaults: an entry advertising a key that is no longer bound is
+--- worse than no entry at all.
+---@param bound Lib.Keymap.Registered[]
+---@param by_name table<string, Sandbox.ListActions.Keymap>
+---@return Sandbox.ListActions.Keymap[]
+local function resolved_keys(bound, by_name)
+  local out, seen = {}, {}
+  for _, e in ipairs(bound) do
+    if e.bound and e.lhs and not seen[e.name] and by_name[e.name] then
+      seen[e.name] = true
+      local k = by_name[e.name]
+      out[#out + 1] = { lhs = e.lhs, desc = k.desc, fn = k.fn, no_item = k.no_item }
+    end
+  end
+  return out
+end
+
+--- Bind one list view's row keymaps, plus the four every list shares.
+---
+--- Declared through `lib.nvim.bindings.keymap`'s registry, so each is a named
+--- action a user can move or drop:
+--- `keymaps = { containers = { remove = false } }`. The names come from the
+--- descriptions -- "logs (follow)" is `logs_follow` -- and the shared
+--- `q`/`E`/`f`/`?` live under `keymaps.list`, since they are the same four
+--- keys in every list rather than four per kind.
 ---@param bufnr integer
 ---@param keys Sandbox.ListActions.Keymap[]
 ---@param items table[]
 ---@param header_offset integer|nil
+---@param opts? { surface?: string, refresh?: function, filter?: fun(query: string) }
+---@return nil
 function M.set_keymaps(bufnr, keys, items, header_offset, opts)
-  for _, k in ipairs(keys) do
-    vim.keymap.set("n", k.lhs, function()
+  opts = type(opts) == "table" and opts or {}
+  local surface = opts.surface or "list"
+  local keymap = require("lib.nvim.bindings.keymap")
+
+  ---@param k Sandbox.ListActions.Keymap
+  ---@return function
+  local function row_action(k)
+    return function()
       if k.no_item then
         k.fn()
         return
@@ -45,58 +148,100 @@ function M.set_keymaps(bufnr, keys, items, header_offset, opts)
         return
       end
       k.fn(item)
-    end, { buffer = bufnr, desc = "sandbox: " .. k.desc, nowait = true, silent = true })
+    end
   end
 
-  vim.keymap.set("n", "q", function()
-    vim.api.nvim_buf_delete(bufnr, { force = true })
-  end, { buffer = bufnr, desc = "sandbox: close list buffer", nowait = true, silent = true })
+  local actions, order, by_name = actions_from(keys, row_action, "n")
+  local bound = keymap.register(
+    "sandbox",
+    { order = order, actions = actions },
+    user_overrides(surface),
+    { buffer = bufnr, surface = surface }
+  )
+  local live = resolved_keys(bound, by_name)
 
-  -- Engine switch from inside the list. Reaching `:Sandbox engine set podman`
-  -- meant leaving the buffer, typing the command and reopening -- three steps
-  -- for something you decide while looking at the very list that would change.
-  vim.keymap.set("n", "E", function()
-    local engine_cmds = require("sandbox.bindings.usrcmds.engine_commands")
-    engine_cmds.cycle()
-    -- Re-render if the view told us how; otherwise the switch is applied and
-    -- the next open shows it.
-    if type(opts) == "table" and type(opts.refresh) == "function" then
-      opts.refresh()
-    end
-  end, { buffer = bufnr, desc = "sandbox: cycle container engine", nowait = true, silent = true })
+  ---@type Lib.Keymap.Registered[]
+  local shared_bound
+
+  ---@type table<string, Lib.Keymap.Action>
+  local shared = {
+    close = {
+      default = "q",
+      desc = "close list buffer",
+      opts = { nowait = true, silent = true },
+      rhs = function()
+        vim.api.nvim_buf_delete(bufnr, { force = true })
+      end,
+    },
+
+    -- Engine switch from inside the list. Reaching `:Sandbox engine set podman`
+    -- meant leaving the buffer, typing the command and reopening -- three steps
+    -- for something you decide while looking at the very list that would change.
+    engine = {
+      default = "E",
+      desc = "cycle container engine",
+      opts = { nowait = true, silent = true },
+      rhs = function()
+        require("sandbox.bindings.usrcmds.engine_commands").cycle()
+        -- Re-render if the view told us how; otherwise the switch is applied
+        -- and the next open shows it.
+        if type(opts.refresh) == "function" then
+          opts.refresh()
+        end
+      end,
+    },
+
+    help = {
+      default = "?",
+      desc = "show keymaps",
+      opts = { nowait = true, silent = true },
+      rhs = function()
+        local lines = { "sandbox.nvim keymaps:" }
+        for _, k in ipairs(live) do
+          lines[#lines + 1] = string.format("  %-6s %s", k.lhs, k.desc)
+        end
+        for _, e in ipairs(shared_bound or {}) do
+          if e.bound and e.lhs then
+            lines[#lines + 1] = string.format("  %-6s %s", e.lhs, e.desc or e.name)
+          end
+        end
+        require("sandbox.notify").info(table.concat(lines, "\n"))
+      end,
+    },
+  }
 
   -- Structured filter. `/` is Vim's own buffer search, which finds a line but
   -- leaves every other one on screen; this narrows the list to what matches,
-  -- across every field of an item rather than just the rendered text.
-  if type(opts) == "table" and type(opts.filter) == "function" then
-    vim.keymap.set("n", "f", function()
-      require("lib.nvim.ui.kit").input({
-        title = "filter: ",
-        on_submit = function(query)
-          opts.filter(vim.trim(query or ""))
-        end,
-      })
-    end, { buffer = bufnr, desc = "sandbox: filter this list", nowait = true, silent = true })
+  -- across every field of an item rather than just the rendered text. Only
+  -- declared where the view knows how to filter itself.
+  if type(opts.filter) == "function" then
+    shared.filter = {
+      default = "f",
+      desc = "filter this list",
+      opts = { nowait = true, silent = true },
+      rhs = function()
+        require("lib.nvim.ui.kit").input({
+          title = "filter: ",
+          on_submit = function(query)
+            opts.filter(vim.trim(query or ""))
+          end,
+        })
+      end,
+    }
   end
 
-  vim.keymap.set("n", "?", function()
-    local lines = { "sandbox.nvim keymaps:" }
-    for _, k in ipairs(keys) do
-      lines[#lines + 1] = string.format("  %-6s %s", k.lhs, k.desc)
-    end
-    lines[#lines + 1] = "  E      cycle container engine"
-    if type(opts) == "table" and type(opts.filter) == "function" then
-      lines[#lines + 1] = "  f      filter this list"
-    end
-    lines[#lines + 1] = "  q      close this buffer"
-    require("sandbox.notify").info(table.concat(lines, "\n"))
-  end, { buffer = bufnr, desc = "sandbox: show keymaps", nowait = true, silent = true })
+  shared_bound = keymap.register(
+    "sandbox",
+    { order = { "close", "engine", "filter", "help" }, actions = shared },
+    user_overrides("list"),
+    { buffer = bufnr, surface = surface .. "/shared" }
+  )
 
   local menu_cfg = require("sandbox.config").options.menu
   if not menu_cfg or menu_cfg.enable ~= false then
     contextmenu.bind_buffer(bufnr, function()
       local item = M.item_under_cursor(items, header_offset)
-      return require("sandbox.integrations.menu").items(keys, item)
+      return require("sandbox.integrations.menu").items(live, item)
     end, { desc = "sandbox: right-click context menu" })
   end
 end
@@ -128,17 +273,59 @@ function M.items_in_visual_selection(items, header_offset)
   return selected
 end
 
+--- The single `q`-closes key the non-list scratch views use.
+---
+--- A named action like everything else here, so it can be moved or dropped
+--- via `keymaps.<surface>.close` -- `q` is a fine default for a read-only
+--- buffer and a poor one for anybody who records macros.
+---@param bufnr integer
+---@param surface string  # "inspect" or "logs"
+---@param desc string
+---@param before? fun(): nil  # runs before the buffer goes (stopping a stream)
+---@return nil
+function M.bind_close(bufnr, surface, desc, before)
+  require("lib.nvim.bindings.keymap").register("sandbox", {
+    order = { "close" },
+    actions = {
+      close = {
+        default = "q",
+        desc = desc,
+        opts = { nowait = true, silent = true },
+        rhs = function()
+          if before then
+            before()
+          end
+          if vim.api.nvim_buf_is_valid(bufnr) then
+            vim.api.nvim_buf_delete(bufnr, { force = true })
+          end
+        end,
+      },
+    },
+  }, user_overrides(surface), { buffer = bufnr, surface = surface })
+end
+
 --- Bind bulk actions triggered from a Visual-mode selection (multi-select),
 --- e.g. select several stopped containers with `V`/`j`/`j`/... then hit `D`
 --- to remove them all instead of reaching for `prune`. `fn` receives every
 --- item spanned by the selection.
+---
+--- Named actions like the row keymaps, under their own surface: overriding
+--- `keymaps.containers.remove` moves the normal-mode key and
+--- `keymaps.containers_visual.remove_selection` the visual one, because they
+--- are two keys a user may well want in two different places.
 ---@param bufnr integer
 ---@param keys { lhs: string, desc: string, fn: fun(items: table[]) }[]
 ---@param items table[]
 ---@param header_offset integer|nil
-function M.set_visual_bulk_actions(bufnr, keys, items, header_offset)
-  for _, k in ipairs(keys) do
-    vim.keymap.set("x", k.lhs, function()
+---@param surface? string  # list kind; the visual set is stored as `<kind>_visual`
+---@return nil
+function M.set_visual_bulk_actions(bufnr, keys, items, header_offset, surface)
+  surface = (surface or "list") .. "_visual"
+
+  ---@param k table
+  ---@return function
+  local function bulk(k)
+    return function()
       local selected = M.items_in_visual_selection(items, header_offset)
       -- Return to Normal mode; the mapping replaces the builtin visual
       -- action (delete/etc.) so nothing else exits Visual mode for us.
@@ -148,8 +335,16 @@ function M.set_visual_bulk_actions(bufnr, keys, items, header_offset)
         return
       end
       k.fn(selected)
-    end, { buffer = bufnr, desc = "sandbox: " .. k.desc .. " (selection)", nowait = true, silent = true })
+    end
   end
+
+  local actions, order = actions_from(keys, bulk, "x")
+  require("lib.nvim.bindings.keymap").register(
+    "sandbox",
+    { order = order, actions = actions },
+    user_overrides(surface),
+    { buffer = bufnr, surface = surface }
+  )
 end
 
 --- Confirm once for a whole batch (instead of once per item), then call

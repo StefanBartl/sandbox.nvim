@@ -187,6 +187,7 @@ return function(containers, all)
     containers,
     0,
     {
+      surface = "containers",
       -- Re-render after an engine switch: the list belongs to the engine that
       -- produced it, so leaving stale rows on screen after switching would be
       -- worse than not offering the key at all.
@@ -253,7 +254,7 @@ return function(containers, all)
         list_actions.bulk_confirm_then("Remove", "container", items, ref, container_cmds.remove)
       end,
     },
-  }, containers, 0)
+  }, containers, 0, "containers")
 
   list_actions.setup_autorefresh(bufnr, container_cmds.list)
 end

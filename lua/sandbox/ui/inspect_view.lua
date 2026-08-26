@@ -23,7 +23,8 @@ return function(data, container_id)
   vim.wo[winid].foldmethod = "indent"
   vim.wo[winid].foldlevel = 1
 
-  vim.keymap.set("n", "q", function()
-    vim.api.nvim_buf_delete(bufnr, { force = true })
-  end, { buffer = bufnr, desc = "sandbox: close inspect buffer", nowait = true, silent = true })
+  -- Declared rather than hardcoded so `keymaps.inspect = { close = "<Esc>" }`
+  -- can move it: `q` in a read-only scratch buffer is a reasonable default,
+  -- not a universal one -- somebody who records macros wants it back.
+  require("sandbox.ui.list_actions").bind_close(bufnr, "inspect", "close inspect buffer")
 end

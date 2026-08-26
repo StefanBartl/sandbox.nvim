@@ -35,12 +35,9 @@ return function(engine, container_id)
     end
   end)
 
-  vim.keymap.set("n", "q", function()
+  require("sandbox.ui.list_actions").bind_close(bufnr, "logs", "stop following logs", function()
     handle.stop()
-    if vim.api.nvim_buf_is_valid(bufnr) then
-      vim.api.nvim_buf_delete(bufnr, { force = true })
-    end
-  end, { buffer = bufnr, desc = "sandbox: stop following logs", nowait = true, silent = true })
+  end)
 
   vim.api.nvim_create_autocmd("BufWipeout", {
     buffer = bufnr,

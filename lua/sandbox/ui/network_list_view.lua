@@ -66,7 +66,7 @@ return function(networks)
         network_cmds.list()
       end,
     },
-  }, networks, 2)
+  }, networks, 2, { surface = "networks" })
 
   list_actions.set_visual_bulk_actions(bufnr, {
     {
@@ -76,7 +76,7 @@ return function(networks)
         list_actions.bulk_confirm_then("Remove", "network", selected, ref, network_cmds.remove)
       end,
     },
-  }, networks, 2)
+  }, networks, 2, "networks")
 
   list_actions.setup_autorefresh(bufnr, network_cmds.list)
 end

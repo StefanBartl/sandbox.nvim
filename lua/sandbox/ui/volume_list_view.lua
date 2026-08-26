@@ -60,7 +60,7 @@ return function(volumes)
         volume_cmds.list()
       end,
     },
-  }, volumes, 2)
+  }, volumes, 2, { surface = "volumes" })
 
   list_actions.set_visual_bulk_actions(bufnr, {
     {
@@ -72,7 +72,7 @@ return function(volumes)
         end, volume_cmds.remove)
       end,
     },
-  }, volumes, 2)
+  }, volumes, 2, "volumes")
 
   list_actions.setup_autorefresh(bufnr, volume_cmds.list)
 end

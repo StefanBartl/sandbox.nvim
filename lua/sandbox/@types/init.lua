@@ -13,6 +13,31 @@
 ---@field progress_style "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"|nil
 --- indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
 ---@field menu Sandbox.MenuOptions|nil
+---@field keymaps Sandbox.Keymaps|false|nil list-view keymap overrides (default: nil, all defaults)
+
+--- Per-list keymap overrides. Each field is a table of `action = lhs`, where
+--- an lhs may be one key, a list of keys, or `false` to drop that action; a
+--- whole list kind may be `false` to drop all of its keys.
+---
+--- Action names come from the descriptions the list views declare, slugified:
+--- "logs (follow)" is `logs_follow`. A name that matches nothing is reported
+--- rather than silently ignored, so `:messages` says what went wrong.
+---@class Sandbox.Keymaps
+--- The four keys every list shares: `close` (`q`), `engine` (`E`),
+--- `filter` (`f`), `help` (`?`).
+---@field list? table<string, string|string[]|false>|false
+--- e.g. `inspect` (`<CR>` and `i`), `remove` (`D`), `refresh_list` (`R`).
+---@field containers? table<string, string|string[]|false>|false
+---@field containers_visual? table<string, string|string[]|false>|false bulk actions on a Visual selection
+---@field images? table<string, string|string[]|false>|false
+---@field images_visual? table<string, string|string[]|false>|false
+---@field volumes? table<string, string|string[]|false>|false
+---@field volumes_visual? table<string, string|string[]|false>|false
+---@field networks? table<string, string|string[]|false>|false
+---@field networks_visual? table<string, string|string[]|false>|false
+--- The single `close` key of the inspect / log-follow scratch views.
+---@field inspect? table<string, string|string[]|false>|false
+---@field logs? table<string, string|string[]|false>|false
 
 ---Opt-out for the list-view right-click context menu
 ---(sandbox.integrations.menu, lib.nvim.contextmenu). sandbox.nvim ships no

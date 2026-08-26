@@ -208,6 +208,27 @@ though the image is not in the rendered line. An empty query restores the
 full list, and filtering always starts from the unfiltered set, so a second
 filter widens instead of compounding.
 
+**Every one of these keys is configurable** (2026-08-26). They are declared
+as named actions through
+[`lib.nvim.bindings.keymap`](https://github.com/StefanBartl/lib.nvim), and
+the name is the description slugified — "logs (follow)" is `logs_follow`:
+
+```lua
+require("sandbox").setup({
+  keymaps = {
+    list       = { engine = false },              -- drop `E` in every list
+    containers = { inspect = "o", remove = false },
+    containers_visual = { remove_selection = "X" },
+    inspect    = { close = "<Esc>" },              -- the inspect scratch buffer
+  },
+})
+```
+
+`keymaps = false` binds none of them. An lhs may be a list (`inspect = { "<CR>", "i" }`
+is the default), and a misspelled action name is reported rather than
+silently ignored. `?` and the right-click menu list what is actually bound,
+so both stay correct after a remap.
+
 **Right-click context menu**: every list-view buffer also binds
 `<RightMouse>` to a context menu (via [nvzone/menu](https://github.com/nvzone/menu),
 a soft dependency) mirroring that buffer's own keymap table one-to-one —
