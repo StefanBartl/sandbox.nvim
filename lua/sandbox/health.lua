@@ -41,7 +41,7 @@ function M.check()
     health.info("WSL not found in PATH – WSL commands not registered (expected on Linux/macOS)")
   end
 
-  require("lib.nvim.usercmd.composer").checkhealth("Sandbox")
+  require("lib.nvim.bindings.usercmd.composer").checkhealth("Sandbox")
 end
 
 return M

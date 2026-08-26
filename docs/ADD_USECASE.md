@@ -76,7 +76,7 @@ end
 
 ## 5. Register a Neovim Command
 
-Commands are built via [`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim)
+Commands are built via [`lib.nvim.bindings.usercmd.composer`](https://github.com/StefanBartl/lib.nvim)
 as subcommands of the single `:Sandbox`/`:Sbx` verb, under its `container`/
 `image`/`wsl` sub-namespaces — you do not register a new top-level command
 for a new use case, you add a route.

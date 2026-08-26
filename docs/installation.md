@@ -4,7 +4,7 @@
 
 - Neovim 0.10+
 - [`lib.nvim`](https://github.com/StefanBartl/lib.nvim) — **required**. The
-  `:Sandbox`/`:Sbx` command layer is built on `lib.nvim.usercmd.composer`, and
+  `:Sandbox`/`:Sbx` command layer is built on `lib.nvim.bindings.usercmd.composer`, and
   the buffer/window views under `lua/sandbox/ui/` depend on it directly.
   `sandbox.notify`/`sandbox.util.run_argv` fall back to plain
   `vim.notify`/`vim.fn.system` without it, but the plugin as a whole does not

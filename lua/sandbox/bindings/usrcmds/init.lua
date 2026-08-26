@@ -1,6 +1,6 @@
 ---@module 'sandbox.bindings.usrcmds'
 ---@brief Registers :Sandbox (and its short alias :Sbx) -- a single
---- lib.nvim.usercmd.composer verb with three sub-namespaces (container,
+--- lib.nvim.bindings.usercmd.composer verb with three sub-namespaces (container,
 --- image, and -- when wsl.exe is reachable -- wsl), e.g. `:Sandbox container
 --- list` / `:Sbx image pull <name>`. Replaces the earlier three independent
 --- verbs (:Container/:Image/:Wsl): those names were too generic and
@@ -21,7 +21,7 @@
 --- cached for CACHE_TTL_MS per list kind, refreshed lazily on the next
 --- completion request after expiry.
 
-local composer = require("lib.nvim.usercmd.composer")
+local composer = require("lib.nvim.bindings.usercmd.composer")
 
 local container_cmds = require("sandbox.bindings.usrcmds.container_commands")
 local container_buffer_cmds = require("sandbox.bindings.usrcmds.container_commands_buffer")

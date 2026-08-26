@@ -113,7 +113,7 @@ SandboxStatusRunning ...`) to customize.
 
 ## `docs generate`
 
-Regenerates `docs/GENERATED_COMMANDS.md` from the live `lib.nvim.usercmd.
+Regenerates `docs/GENERATED_COMMANDS.md` from the live `lib.nvim.bindings.usercmd.
 composer` route table, so the hand-maintained `docs/BINDINGS.md` can be
 diffed against it to catch drift between what's documented and what
 `:Sandbox <Tab>` actually offers.

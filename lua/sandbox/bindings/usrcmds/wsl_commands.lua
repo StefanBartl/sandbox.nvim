@@ -10,7 +10,7 @@
 --- always fail).
 ---
 --- Exported as plain functions rather than registering commands directly, so
---- lib.nvim.usercmd.composer can build typed routes + <Tab> completion
+--- lib.nvim.bindings.usercmd.composer can build typed routes + <Tab> completion
 --- around them. Each function's own body is unchanged from before the
 --- composer migration; only the registration site moved.
 

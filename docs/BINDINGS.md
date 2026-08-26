@@ -4,7 +4,7 @@ All functionality is exposed via a single user command, `:Sandbox` (short
 alias: `:Sbx`), with ten sub-namespaces — `container`, `image`, `volume`,
 `network`, `compose`, `engine`, `registry`, `docs`, `devcontainer`, and
 (only when `wsl.exe` is reachable) `wsl` — built on
-[`lib.nvim.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
+[`lib.nvim.bindings.usercmd.composer`](https://github.com/StefanBartl/lib.nvim) with
 `<Tab>` completion at every level: sub-namespace, subcommand name, then
 container/image/volume/distro names (resolved live from the active engine, cached
 briefly to avoid shelling out on every keystroke). No global keymaps or

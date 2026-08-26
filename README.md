@@ -17,7 +17,7 @@
 
 > 🔧 Beta stage – under active development. Changes possible.
 
-> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it. [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) is an *optional* dependency — only needed for the picker extension (`:Telescope sandbox ...`), everything else works without it.
+> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.bindings.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it. [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) is an *optional* dependency — only needed for the picker extension (`:Telescope sandbox ...`), everything else works without it.
 
 > 💡 Pairs well with [reposcope.nvim](https://github.com/StefanBartl/reposcope.nvim):
 > reposcope clones a repository into a directory, and sandbox picks up the
@@ -259,7 +259,7 @@ See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`]
 ### File Layout
 - Engine adapters: `lua/sandbox/adapters/<engine>/`
 - Use cases: `lua/sandbox/core/usecases/`
-- User commands: `lua/sandbox/bindings/usrcmds/` (registered via `lib.nvim.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
+- User commands: `lua/sandbox/bindings/usrcmds/` (registered via `lib.nvim.bindings.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
 - UI views: `lua/sandbox/ui/`
 
 ### Tests
@@ -278,7 +278,7 @@ from the actual command set as routes are added or renamed. Run
 `:Sandbox docs generate` to regenerate
 [`docs/GENERATED_COMMANDS.md`](./docs/GENERATED_COMMANDS.md) — a mechanical,
 always-accurate dump of every registered route (via
-`lib.nvim.usercmd.composer`'s `document()`) — and diff it against
+`lib.nvim.bindings.usercmd.composer`'s `document()`) — and diff it against
 `docs/BINDINGS.md` when adding/changing a command.
 
 Pull Requests and Issues are very welcome!
