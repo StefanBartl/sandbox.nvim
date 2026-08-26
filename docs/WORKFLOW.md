@@ -75,6 +75,49 @@ history — but a login only lasts as long as the underlying engine's own
 credential store does, so a `push` failing with an auth error after a long
 gap is usually a stale login, not a plugin bug.
 
+## `f` narrows the list, `/` searches it — they are not the same key twice
+
+`/` is Vim's own search: it finds a line and leaves every other one on screen.
+`f` narrows the buffer, and it matches across every *field* of an entry rather
+than only the rendered text — for a container that is name, id, status and
+image, so `f redis` finds the container running that image even though the
+image is not in the line you can see.
+
+An empty query restores everything, and filtering always starts from the
+unfiltered set, so a second `f` widens instead of compounding on the first.
+
+It is bound only where a view supplies the callback — narrowing means
+re-rendering, and only the view knows how. The container list has it; the other
+four do not bind the key at all rather than binding it to nothing.
+
+## `E` switches engine without leaving the list
+
+Deciding to switch engines usually happens while looking at the very list that
+would change, and `:Sandbox engine set podman` meant leaving the buffer, typing
+the command and reopening. `E` cycles from inside the view and re-renders —
+which is the part that matters, since a list belongs to the engine that
+produced it and stale rows after a switch would be worse than no key. The cycle
+order is declared, so it lands in the same place every time.
+
+## `workdir=` goes before the container id
+
+`:Sandbox container exec web bash workdir=/app` becomes the engine's `-w`. It
+is a `key=value` rather than a positional because every token *after* the id
+belongs to the command running inside the container — a positional could not be
+told apart from the command itself.
+
+Put it after the id and the engine hands `-w` to the inner command instead of
+consuming it, which fails in a way that reads like the command's own error
+rather than this plugin's. All three engines spell it identically, and an empty
+value is treated as none.
+
+## Bulk confirmations name what they are about to remove
+
+"Remove 5 containers?" left open the one question a bulk confirmation has to
+answer. The prompt now lists the items, capped at ten with an "… and N more"
+tail — which is worth actually reading, because a Visual selection is easy to
+get one line wrong and these actions do not come back.
+
 ## `:Sandbox docs generate` after touching the command tree
 
 If you're contributing a new usecase (see `docs/ADD_USECASE.md`), the last
