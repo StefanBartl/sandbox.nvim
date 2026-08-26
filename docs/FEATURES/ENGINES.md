@@ -22,6 +22,10 @@ in a repo's root, pins that repo to a specific engine regardless of the
 global/detected default — useful on a machine with more than one engine
 installed where one project specifically needs the other.
 
+- **Module:** `util/project_config.lua` (`read_engine_override`), consumed by `bindings/usrcmds/engine_commands.lua`
+- **Config:** a `.sandboxrc` in the repo root, `engine=docker|podman|nerdctl`
+- **Usercmds:** `:Sandbox engine get` reports which source won
+
 ## Runtime engine switching
 
 `:Sandbox engine set {docker|podman|nerdctl}` switches the active engine for
@@ -41,6 +45,9 @@ also covers containerd-backed setups without a separate integration.
 - **Module:** `sandbox/adapters/nerdctl/`
 
 ## Integrated healthcheck
+
+- **Module:** `health.lua`
+- **Usercmds:** `:checkhealth sandbox`
 
 `:checkhealth sandbox` reports which engine CLI(s) were found, which one is
 active and why, and whether `lib.nvim` (required) and telescope.nvim
