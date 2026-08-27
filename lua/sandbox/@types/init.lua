@@ -13,7 +13,8 @@
 ---@field progress_style "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"|nil
 --- indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
 --- How much of an unrecognized adapter error reaches the notification
---- (default 200). The full text always goes to sandbox.logger.
+--- (default 200). The full text always goes to sandbox.logger, and a
+--- truncated message says where to read it.
 ---@field max_error_length integer|nil
 ---@field status_cache_ttl_ms integer|nil how long a statusline reading stays fresh, in ms (default 3000)
 ---@field completion_cache_ttl_ms integer|nil how long a completion listing stays cached, in ms (default 4000)
