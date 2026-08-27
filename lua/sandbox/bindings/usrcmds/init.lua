@@ -18,7 +18,7 @@
 --- the live engine (docker/podman/wsl). Each list call shells out
 --- synchronously (run_argv.run_blocking_captured) with no built-in caching,
 --- so a naive per-keystroke <Tab> would shell out repeatedly -- results are
---- cached for CACHE_TTL_MS per list kind, refreshed lazily on the next
+--- cached for `completion_cache_ttl_ms` per list kind, refreshed lazily on the next
 --- completion request after expiry.
 
 local composer = require("lib.nvim.bindings.usercmd.composer")
@@ -38,7 +38,16 @@ local M = {}
 
 -- ── Cached dynamic completion ────────────────────────────────────────────
 
-local CACHE_TTL_MS = 4000
+---How long a completion listing stays cached, in ms.
+---@return integer
+local function cache_ttl_ms()
+  local ok, config = pcall(require, "sandbox.config")
+  if not ok then
+    return 4000
+  end
+  local n = (config.options or {}).completion_cache_ttl_ms
+  return (type(n) == "number" and n >= 0) and n or 4000
+end
 ---@type table<string, { items: string[], at: integer }>
 local list_cache = {}
 
@@ -50,7 +59,7 @@ local list_cache = {}
 local function cached_names(key, fetch, to_name)
   local now = vim.uv.now()
   local entry = list_cache[key]
-  if entry and (now - entry.at) < CACHE_TTL_MS then
+  if entry and (now - entry.at) < cache_ttl_ms() then
     return entry.items
   end
 

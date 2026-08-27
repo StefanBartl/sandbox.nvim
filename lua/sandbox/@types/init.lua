@@ -12,6 +12,8 @@
 ---@field list_size integer|nil width/height of list view splits; nil uses Neovim's default
 ---@field progress_style "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"|nil
 --- indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
+---@field status_cache_ttl_ms integer|nil how long a statusline reading stays fresh, in ms (default 3000)
+---@field completion_cache_ttl_ms integer|nil how long a completion listing stays cached, in ms (default 4000)
 ---@field menu Sandbox.MenuOptions|nil
 ---@field keymaps Sandbox.Keymaps|false|nil list-view keymap overrides (default: nil, all defaults)
 

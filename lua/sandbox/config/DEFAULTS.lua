@@ -10,7 +10,12 @@ return {
   refresh_interval = nil, -- ms between list-view auto-refreshes; nil/0 disables
   list_split = "left", -- window placement for list views
   list_size = nil, -- width/height of list view splits; nil uses Neovim's default
-  progress_style = "auto", -- indicator while pull/push/build run; needs lib.nvim, no-op without it
+  progress_style = "auto",
+  -- How long a statusline reading and a completion listing stay cached, in
+  -- ms. Both trade freshness against how often the engine is asked; raise
+  -- them for a slow daemon, lower them if a stale reading annoys you.
+  status_cache_ttl_ms = 3000,
+  completion_cache_ttl_ms = 4000, -- indicator while pull/push/build run; needs lib.nvim, no-op without it
   -- List-view keymaps. `false` binds none; a table overrides individual
   -- actions per list kind (see Sandbox.Keymaps). Every key keeps its default
   -- unless named here.

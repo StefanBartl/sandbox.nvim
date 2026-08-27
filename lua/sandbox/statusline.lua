@@ -5,7 +5,7 @@
 --- view. Plain Lua string return, no hard dependency on any statusline
 --- plugin -- lua/sandbox/README.md-equivalent soft-dependency philosophy.
 ---@description
---- Result is cached for STATUS_CACHE_TTL_MS so a statusline redrawing many
+--- Result is cached for `status_cache_ttl_ms` so a statusline redrawing many
 --- times a second doesn't shell out to `docker ps`/`podman ps` on every
 --- redraw. Any failure (daemon down, no engine configured) degrades to an
 --- empty string rather than erroring or notifying -- a statusline is not
@@ -16,20 +16,33 @@
 --- background `ps` whose result replaces the cache for the next redraw. It used
 --- to call the engine synchronously, which meant a statusline component froze
 --- Neovim for the length of a `docker ps` (100-500ms, appreciably more under
---- Docker Desktop on Windows) every STATUS_CACHE_TTL_MS. The indicator is
+--- Docker Desktop on Windows) every `status_cache_ttl_ms`. The indicator is
 --- suppressed for this call (`progress = false`): an ambient refresh every few
 --- seconds would otherwise paint a permanent "docker ps" handle.
 ---
 --- Not entirely free: spawning a process is synchronous up to the fork/exec, so
 --- the redraw that triggers a refresh still pays ~10ms on Windows (measured;
 --- the environment build next to it is under 1ms). That is once per
---- STATUS_CACHE_TTL_MS, against 100-500ms for the full round-trip before -- but
+--- the TTL, against 100-500ms for the full round-trip before -- but
 --- it is the reason to raise the TTL rather than lower it if the component ever
 --- feels sticky.
 
 local M = {}
 
-local STATUS_CACHE_TTL_MS = 3000
+---How long a statusline reading stays fresh, in ms.
+---
+---`status_cache_ttl_ms`: the dial between "the statusline is current" and
+---"docker/podman is asked how often". On a slow daemon 3s is already too
+---eager; on a local one it could be tighter.
+---@return integer
+local function ttl_ms()
+  local ok, config = pcall(require, "sandbox.config")
+  if not ok then
+    return 3000
+  end
+  local n = (config.options or {}).status_cache_ttl_ms
+  return (type(n) == "number" and n >= 0) and n or 3000
+end
 ---@type { text: string, at: integer }|nil
 local cache = nil
 
@@ -96,11 +109,11 @@ local function refresh()
 end
 
 --- Ambient "engine (running/total)" summary, e.g. "docker (2/5)".
---- Cached for STATUS_CACHE_TTL_MS; returns "" on any failure and never blocks.
+--- Cached for `status_cache_ttl_ms`; returns "" on any failure and never blocks.
 ---@return string
 function M.status()
   local now = vim.uv.now()
-  if not cache or (now - cache.at) >= STATUS_CACHE_TTL_MS then
+  if not cache or (now - cache.at) >= ttl_ms() then
     refresh()
   end
   -- Stale value on the first redraw after expiry, correct one on the next --
