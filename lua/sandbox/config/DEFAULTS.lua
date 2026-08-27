@@ -14,6 +14,10 @@ return {
   -- How long a statusline reading and a completion listing stay cached, in
   -- ms. Both trade freshness against how often the engine is asked; raise
   -- them for a slow daemon, lower them if a stale reading annoys you.
+  -- How much of an unrecognized adapter error survives into the
+  -- notification. The full text always goes to sandbox.logger; this only
+  -- caps the popup.
+  max_error_length = 200,
   status_cache_ttl_ms = 3000,
   completion_cache_ttl_ms = 4000, -- indicator while pull/push/build run; needs lib.nvim, no-op without it
   -- List-view keymaps. `false` binds none; a table overrides individual

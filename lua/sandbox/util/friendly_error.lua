@@ -6,7 +6,21 @@
 --- capped in length. The full raw text should still be logged separately
 --- via sandbox.logger for postmortem debugging.
 
-local MAX_LEN = 200
+--- How much of an unrecognized error survives into the notification.
+---
+--- `max_error_length`: the cap exists so one popup cannot become a wall of
+--- docker stderr, but it is exactly the long messages where the cut-off part
+--- is the part you needed. The full raw text is still logged via
+--- `sandbox.logger` either way.
+---@return integer
+local function max_len()
+  local ok, config = pcall(require, "sandbox.config")
+  if not ok then
+    return 200
+  end
+  local n = (config.options or {}).max_error_length
+  return (type(n) == "number" and n > 0) and n or 200
+end
 
 local DOCKER_UNREACHABLE = "Docker daemon not reachable - is Docker Desktop running?"
 local PODMAN_UNREACHABLE = "Podman not reachable - is the podman machine/service running?"
@@ -36,8 +50,9 @@ local function first_line(raw_err)
     return "unknown error"
   end
 
-  if #line > MAX_LEN then
-    line = line:sub(1, MAX_LEN) .. "..."
+  local cap = max_len()
+  if #line > cap then
+    line = line:sub(1, cap) .. "..."
   end
 
   return line
