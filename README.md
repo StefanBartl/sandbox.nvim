@@ -119,6 +119,16 @@ For packer.nvim, vim-plug and the full prerequisite list, see
     -- Indicator while pull/push/build/compose/prune run (needs lib.nvim, no-op
     -- without it): "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"
     progress_style = "auto",
+    -- How much of an unrecognized adapter error reaches the notification.
+    -- The full text always goes to sandbox.logger, and a truncated message
+    -- says where to read it.
+    max_error_length = 200,
+    -- How long a statusline reading and a completion listing stay cached.
+    -- Both trade freshness against how often the engine is asked; raise them
+    -- for a slow daemon (Docker Desktop on Windows), lower them if a stale
+    -- reading annoys you.
+    status_cache_ttl_ms = 3000,
+    completion_cache_ttl_ms = 4000,
     -- Right-click context menu on list-view buffers (nvzone/menu, soft
     -- dependency; entries mirror each list's own keymaps). Off automatically
     -- when nvzone/menu isn't installed. See docs/BINDINGS.md.
