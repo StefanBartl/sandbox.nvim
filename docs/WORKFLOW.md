@@ -54,14 +54,14 @@ to `compose up` — you don't need to run both yourself.
 
 ## One engine, but check which one before assuming
 
-On a machine with both Docker and Podman installed, don't assume which one
-sandbox.nvim picked — run `:Sandbox engine get` once per session (or after
-switching projects) to see the active engine and why (session override vs.
-`.sandboxrc` vs. detected default). `:Sandbox engine set podman` only
-affects the current session; a project that always needs a specific engine
-regardless of session state should get a `.sandboxrc` with an `engine=`
-line committed alongside it instead, so nobody on the team has to remember
-to switch manually.
+On a machine with more than one of Docker, Podman and nerdctl installed,
+don't assume which one sandbox.nvim picked — run `:Sandbox engine get` once
+per session (or after switching projects) to see the active engine and why
+(session override vs. `.sandboxrc` vs. detected default). `:Sandbox engine
+set docker|podman|nerdctl` only affects the current session; a project that
+always needs a specific engine regardless of session state should get a
+`.sandboxrc` with an `engine=` line committed alongside it instead, so
+nobody on the team has to remember to switch manually.
 
 ## `registry login` before the first `push`, per registry
 
