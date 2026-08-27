@@ -9,6 +9,7 @@
 --- trigger comes along for free instead of needing separate wiring per
 --- list type. Gated on `config.menu.enable` (default true); a missing
 --- nvzone/menu install degrades to a no-op, never an error.
+local autocmd = require("lib.nvim.bindings.autocmd")
 local contextmenu = require("lib.nvim.contextmenu")
 
 local M = {}
@@ -422,15 +423,16 @@ function M.setup_autorefresh(bufnr, refresh_fn)
     end)
   )
 
-  vim.api.nvim_create_autocmd("BufWipeout", {
+  autocmd.create("BufWipeout", function()
+    if not timer:is_closing() then
+      timer:stop()
+      timer:close()
+    end
+  end, {
+    group = autocmd.group("sandbox_ui"),
     buffer = bufnr,
     once = true,
-    callback = function()
-      if not timer:is_closing() then
-        timer:stop()
-        timer:close()
-      end
-    end,
+    desc = "[sandbox] Stop a list view's refresh timer when its buffer is wiped",
   })
 end
 

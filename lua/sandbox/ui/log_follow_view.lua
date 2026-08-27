@@ -39,11 +39,13 @@ return function(engine, container_id)
     handle.stop()
   end)
 
-  vim.api.nvim_create_autocmd("BufWipeout", {
+  local autocmd = require("lib.nvim.bindings.autocmd")
+  autocmd.create("BufWipeout", function()
+    handle.stop()
+  end, {
+    group = autocmd.group("sandbox_ui"),
     buffer = bufnr,
     once = true,
-    callback = function()
-      handle.stop()
-    end,
+    desc = "[sandbox] Kill the log-follow process when its buffer is wiped",
   })
 end
