@@ -5,8 +5,7 @@
 ---@description
 --- Scope: supports `image`, `build.dockerfile`, and `dockerComposeFile` +
 --- `service`. No devcontainer "features", lifecycle commands
---- (postCreateCommand, ...), or remoteUser support yet -- see
---- docs/ROADMAP.md. Single-container devcontainers get a predictable
+--- (postCreateCommand, ...), or remoteUser support yet. Single-container devcontainers get a predictable
 --- container name (`sandbox-devcontainer-<workspace-dir-basename>`) so
 --- `attach` can find what `build` created without extra bookkeeping.
 

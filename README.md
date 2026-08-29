@@ -297,10 +297,9 @@ Pull Requests and Issues are very welcome!
 
 ## Roadmap
 
-Looking for ways to contribute, or curious what's planned? See
-[`docs/ROADMAP.md`](./docs/ROADMAP.md) for proposed features — more
-container/image actions, volume & network support, compose integration, an
-interactive TUI-style list view, and more.
+Nothing queued right now — every item that was on the list has shipped. See
+[`docs/GENERATED_COMMANDS.md`](./docs/GENERATED_COMMANDS.md) for the full live
+command surface, or open a PR or issue with the next idea.
 
 ---
 

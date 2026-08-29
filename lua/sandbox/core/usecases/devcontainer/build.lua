@@ -7,7 +7,7 @@
 --- Scope: supports `image`, `build.dockerfile`, and `dockerComposeFile` +
 --- `service` (delegated to the ComposeEngine's `up`). No devcontainer
 --- "features", lifecycle commands (postCreateCommand, ...), or remoteUser
---- support yet -- see docs/ROADMAP.md.
+--- support yet.
 
 local run_argv = require("sandbox.util.run_argv")
 
