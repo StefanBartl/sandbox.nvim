@@ -12,12 +12,11 @@
                                                         .nvim
 ```
 
-![CI](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml/badge.svg)
-![status](https://img.shields.io/badge/status-beta-orange.svg)
-![Lazy.nvim compatible](https://img.shields.io/badge/lazy.nvim-supported-success)
-![Neovim](https://img.shields.io/badge/Neovim-0.10+-success.svg)
-![Lua](https://img.shields.io/badge/language-Lua-yellow.svg)
-![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Neovim](https://img.shields.io/badge/Neovim-0.10%2B-57A143?logo=neovim&logoColor=white)](https://neovim.io)
+[![Lua](https://img.shields.io/badge/Lua-5.1%2FLuaJIT-2C2D72?logo=lua&logoColor=white)](https://www.lua.org)
+![Status](https://img.shields.io/badge/status-beta-orange)
+[![CI](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml)
 
 > Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.bindings.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it. [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) is an *optional* dependency — only needed for the picker extension (`:Telescope sandbox ...`), everything else works without it.
 
