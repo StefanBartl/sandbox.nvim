@@ -40,17 +40,6 @@
     ],
     "workspace.useGitIgnore": true,
     "workspace.checkThirdParty": false,
-    "workspace.ignoreDir": [
-        ".dependencies",
-        ".git",
-        ".luarocks",
-        ".lua",
-        ".neotest",
-        "build",
-        "dist",
-        "node_modules",
-        "vendor"
-    ],
     "files.exclude": [
         "**/.git/**",
         "**/node_modules/**",
