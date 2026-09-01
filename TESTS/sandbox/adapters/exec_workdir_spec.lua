@@ -22,7 +22,10 @@ describe("adapters.*.containers.exec_in_container workdir", function()
     end
     -- The adapter opens a split and enters terminal mode; neither is what is
     -- under test, and both are noise in a headless run.
-    vim.cmd = function() end
+    -- `function(...)`, not `function()`: LuaLS carries a stub's signature into
+    -- every other file in the workspace, and a nullary vim.cmd made all 24
+    -- real `vim.cmd("…")` calls in this repo report "expects 0 arguments".
+    vim.cmd = function(...) end
     vim.api.nvim_feedkeys = function() end
   end)
 
