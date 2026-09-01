@@ -71,7 +71,8 @@ local function cached_names(key, fetch, to_name)
   -- cleanly). Silence notify for the duration of the fetch; completion
   -- failures should degrade to "no candidates", not a visible error.
   local saved_notify = vim.notify
-  vim.notify = function() end
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.notify = function(...) end
   local ok, items = pcall(fetch)
   vim.notify = saved_notify
   if not ok or type(items) ~= "table" then
@@ -118,8 +119,11 @@ composer.register_type("CONTAINER_ID", {
     -- one per <Tab>. list_containers' optional on_done is deliberately not
     -- passed here.
     local names = cached_names("containers", function()
-      local core = require("sandbox")
-      return require("sandbox.core.usecases.containers.list_containers")(core.get_engine())
+      local engine = require("sandbox").get_engine()
+      if not engine then
+        return {}
+      end
+      return require("sandbox.core.usecases.containers.list_containers")(engine) or {}
     end, function(c)
       return c.name
     end)
@@ -133,8 +137,11 @@ composer.register_type("IMAGE_ID", {
   end,
   complete = function(arg_lead)
     local names = cached_names("images", function()
-      local core = require("sandbox")
-      return require("sandbox.core.usecases.images.list_images")(core.get_engine())
+      local engine = require("sandbox").get_engine()
+      if not engine then
+        return {}
+      end
+      return require("sandbox.core.usecases.images.list_images")(engine) or {}
     end, function(img)
       return img.repository .. ":" .. img.tag
     end)
@@ -148,8 +155,11 @@ composer.register_type("VOLUME_NAME", {
   end,
   complete = function(arg_lead)
     local names = cached_names("volumes", function()
-      local core = require("sandbox")
-      return require("sandbox.core.usecases.volumes.list_volumes")(core.get_engine())
+      local engine = require("sandbox").get_engine()
+      if not engine then
+        return {}
+      end
+      return require("sandbox.core.usecases.volumes.list_volumes")(engine) or {}
     end, function(v)
       return v.name
     end)
@@ -163,8 +173,11 @@ composer.register_type("NETWORK_NAME", {
   end,
   complete = function(arg_lead)
     local names = cached_names("networks", function()
-      local core = require("sandbox")
-      return require("sandbox.core.usecases.networks.list_networks")(core.get_engine())
+      local engine = require("sandbox").get_engine()
+      if not engine then
+        return {}
+      end
+      return require("sandbox.core.usecases.networks.list_networks")(engine) or {}
     end, function(n)
       return n.name
     end)
@@ -178,7 +191,7 @@ composer.register_type("DISTRO_NAME", {
   end,
   complete = function(arg_lead)
     local names = cached_names("distros", function()
-      return require("sandbox.core.usecases.wsl.list_distros")(require("sandbox.adapters.wsl.engine"))
+      return require("sandbox.core.usecases.wsl.list_distros")(require("sandbox.adapters.wsl.engine")) or {}
     end, function(d)
       return d.name
     end)
@@ -190,7 +203,7 @@ local BUFFER_FLAG = { { name = "buffer", short = "b", bool = true } }
 
 ---@internal
 ---@param ctx table composer Ctx
----@return string[]
+---@return string[]|nil # nil when no command was given -- what the callers act on
 local function command_tail(ctx)
   local out = {}
   if ctx.args.command then

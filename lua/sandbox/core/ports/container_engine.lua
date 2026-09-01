@@ -30,7 +30,7 @@ return {
   --- @param on_line fun(line: string)
   --- @param on_exit? fun(code: integer|nil)
   --- @return table handle with a `:stop()` method
-  follow_logs = function(id, _on_line, _on_exit)
+  follow_logs = function(id, on_line, on_exit)
     error(id .. ": follow_logs not implemented.")
   end,
   exec_in_container = function(id, command)
@@ -117,14 +117,14 @@ return {
   --- @param image_name string
   --- @param on_done fun(ok: boolean, err: string|nil)
   --- @return table handle with a `:stop()` method
-  pull_image = function(image_name, _on_done)
+  pull_image = function(image_name, on_done)
     error(image_name .. ": pull_image not implemented")
   end,
   --- Push an image to a remote registry without blocking the UI thread.
   --- @param image_name string
   --- @param on_done fun(ok: boolean, err: string|nil)
   --- @return table handle with a `:stop()` method
-  push_image = function(image_name, _on_done)
+  push_image = function(image_name, on_done)
     error(image_name .. ": push_image not implemented")
   end,
   --- @param image_id string
@@ -232,7 +232,7 @@ return {
   --- @param password string
   --- @param registry? string defaults to Docker Hub when omitted
   --- @return boolean ok, string|nil err
-  login_registry = function(username, _password, registry)
+  login_registry = function(username, password, registry)
     error("login_registry not implemented. username: " .. username .. " registry: " .. tostring(registry))
   end,
   --- @param registry? string defaults to Docker Hub when omitted

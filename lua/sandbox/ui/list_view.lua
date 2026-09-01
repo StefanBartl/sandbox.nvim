@@ -3,7 +3,6 @@
 --- buffer-local keymaps to act on the container under the cursor
 --- (see `?` inside the buffer, or docs/BINDINGS.md).
 
---- @param containers table[]: List of standardized container objects (id, name, status, image)
 local notify = require("sandbox.notify")
 local list_actions = require("sandbox.ui.list_actions")
 local highlights = require("sandbox.ui.highlights")
@@ -44,14 +43,7 @@ return function(containers, all)
   vim.api.nvim_buf_clear_namespace(bufnr, status_ns, 0, -1)
   for i, container in ipairs(containers) do
     local status_text = container.status or "unknown"
-    vim.api.nvim_buf_add_highlight(
-      bufnr,
-      status_ns,
-      highlights.group_for_status(status_text),
-      i - 1,
-      0,
-      #status_text + 2
-    )
+    vim.hl.range(bufnr, status_ns, highlights.group_for_status(status_text), { i - 1, 0 }, { i - 1, #status_text + 2 })
   end
 
   local container_cmds = require("sandbox.bindings.usrcmds.container_commands")

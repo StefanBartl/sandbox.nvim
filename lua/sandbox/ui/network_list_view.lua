@@ -2,9 +2,9 @@
 --- Display a list of networks in a vertical split buffer, with buffer-local
 --- keymaps to act on the network under the cursor (see `?` inside the buffer).
 
---- @param networks table[]: List of standardized network objects (id, name, driver, scope)
 local notify = require("sandbox.notify")
 local list_actions = require("sandbox.ui.list_actions")
+--- @param networks table[]: List of standardized network objects (id, name, driver, scope)
 return function(networks)
   if type(networks) ~= "table" then
     notify.error("Invalid network list: not a table")

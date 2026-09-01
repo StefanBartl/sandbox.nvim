@@ -8,7 +8,8 @@ local M = {}
 --- @param container_id string: ID or name of the container to inspect
 --- @param on_done? fun(...) Optional: when given, runs asynchronously and
 ---        delivers exactly the values the synchronous form returns.
---- @return table|string[]: Container metadata as a table, or error message as string[]
+--- @return table|string[]|nil: Container metadata as a table, or error message as
+---         string[] -- nil on the async path, where `on_done` receives them instead.
 function M.inspect_container(container_id, on_done)
   local argv = { "docker", "inspect", container_id }
 

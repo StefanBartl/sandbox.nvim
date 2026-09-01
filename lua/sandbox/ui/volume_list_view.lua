@@ -2,9 +2,9 @@
 --- Display a list of volumes in a vertical split buffer, with buffer-local
 --- keymaps to act on the volume under the cursor (see `?` inside the buffer).
 
---- @param volumes table[]: List of standardized volume objects (name, driver, mountpoint)
 local notify = require("sandbox.notify")
 local list_actions = require("sandbox.ui.list_actions")
+--- @param volumes table[]: List of standardized volume objects (name, driver, mountpoint)
 return function(volumes)
   if type(volumes) ~= "table" then
     notify.error("Invalid volume list: not a table")

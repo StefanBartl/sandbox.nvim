@@ -2,9 +2,9 @@
 --- View for listing all Docker images, with buffer-local keymaps to act on
 --- the image under the cursor (see `?` inside the buffer).
 
---- @param images table[]
 local notify = require("sandbox.notify")
 local list_actions = require("sandbox.ui.list_actions")
+--- @param images table[]
 return function(images)
   if type(images) ~= "table" then
     notify.error("Invalid image list: not a table")

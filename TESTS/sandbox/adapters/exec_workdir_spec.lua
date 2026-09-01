@@ -16,6 +16,7 @@ describe("adapters.*.containers.exec_in_container workdir", function()
   before_each(function()
     captured = nil
     real_termopen, real_cmd, real_feedkeys = vim.fn.termopen, vim.cmd, vim.api.nvim_feedkeys
+    ---@diagnostic disable-next-line: duplicate-set-field
     vim.fn.termopen = function(argv)
       captured = argv
       return 0
@@ -26,7 +27,8 @@ describe("adapters.*.containers.exec_in_container workdir", function()
     -- every other file in the workspace, and a nullary vim.cmd made all 24
     -- real `vim.cmd("…")` calls in this repo report "expects 0 arguments".
     vim.cmd = function(...) end
-    vim.api.nvim_feedkeys = function() end
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.api.nvim_feedkeys = function(...) end
   end)
 
   after_each(function()

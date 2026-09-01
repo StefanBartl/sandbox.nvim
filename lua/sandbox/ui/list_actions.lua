@@ -76,8 +76,21 @@ local function actions_from(keys, wrap, mode)
     local existing = actions[name]
     if existing then
       -- Same action, another default key.
-      local list = type(existing.default) == "table" and existing.default or { existing.default }
-      list[#list + 1] = k.lhs
+      -- Both bindings are locals before they are checked: a check on a field
+      -- narrows only the expression it checks, and an `and`/`or` chain does
+      -- not narrow at all.
+      local list = existing.default
+      if type(list) ~= "table" then
+        list = { list }
+      end
+      local lhs = k.lhs
+      if type(lhs) == "table" then
+        for _, one in ipairs(lhs) do
+          list[#list + 1] = one
+        end
+      else
+        list[#list + 1] = lhs
+      end
       existing.default = list
     else
       actions[name] = {
@@ -408,6 +421,12 @@ function M.setup_autorefresh(bufnr, refresh_fn)
   vim.b[bufnr].sandbox_autorefresh_active = true
 
   local timer = vim.uv.new_timer()
+  if not timer then
+    -- Out of libuv handles: the list stays usable, it just does not refresh
+    -- itself. Raising here would take the whole view down with it.
+    vim.b[bufnr].sandbox_autorefresh_active = nil
+    return
+  end
   timer:start(
     interval,
     interval,

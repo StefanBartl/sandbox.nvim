@@ -39,13 +39,19 @@ end
 function M.items(keys, item)
   local out = {}
   for _, k in ipairs(keys) do
+    -- The hint takes one key; the first is the one list_actions binds as the
+    -- default when an action carries several.
+    local hint = k.lhs
+    if type(hint) == "table" then
+      hint = hint[1]
+    end
     local e = contextmenu.entry(k.no_item or item ~= nil, "  " .. capitalize(k.desc), function()
       if k.no_item then
         k.fn()
       else
         k.fn(item)
       end
-    end, k.lhs)
+    end, hint)
     if e then
       out[#out + 1] = e
     end

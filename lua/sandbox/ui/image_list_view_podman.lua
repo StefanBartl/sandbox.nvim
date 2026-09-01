@@ -2,8 +2,8 @@
 --- Render a list of container images in a new buffer, with buffer-local
 --- keymaps to act on the image under the cursor (see `?` inside the buffer).
 
---- @param images table[]
 local list_actions = require("sandbox.ui.list_actions")
+--- @param images table[]
 return function(images)
   local format_bytes = require("lib.lua.strings.format").format_bytes
   local lines = {}
