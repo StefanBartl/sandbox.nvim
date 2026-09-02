@@ -25,3 +25,23 @@ files["TESTS/"] = {
     "pending",
   },
 }
+
+-- Eight "unused argument" warnings, one cause: a parameter list that is the
+-- contract rather than a variable anybody reads. luacheck exits 1 on a
+-- warning, so these have to be scoped off or the whole gate stays red.
+--
+--   * `lua/sandbox/core/ports/` *is* the engine interface. Every body is
+--     `error("... not implemented")`; the names exist so adapters have
+--     something to implement against and so LuaLS shows a signature at each
+--     call site. Deleting them would delete the documentation.
+--   * A stub standing in for a `vim.*` function has to keep the original's
+--     arity. LuaLS carries a stub's signature across the whole workspace: a
+--     nullary `vim.cmd` made all 24 real `vim.cmd("…")` calls in this repo
+--     report "expects 0 arguments". That is what 94193cd fixed, and reverting
+--     it to quiet luacheck would trade one tool's complaint for another's.
+--
+-- Scoped per path rather than set globally, so a genuinely forgotten argument
+-- anywhere else is still reported.
+files["lua/sandbox/core/ports/"] = { unused_args = false }
+files["lua/sandbox/bindings/usrcmds/init.lua"] = { unused_args = false }
+files["TESTS/sandbox/adapters/exec_workdir_spec.lua"] = { unused_args = false }
