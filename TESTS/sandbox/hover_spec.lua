@@ -1,3 +1,9 @@
+-- Test code: when an ask that should have answered comes back nil, this file
+-- must crash on the next line and name it. The nil guards LuaLS asks for
+-- would turn that into a quietly skipped assertion -- the same convention as
+-- TESTS/sandbox/adapters/docker/containers_spec.lua.
+---@diagnostic disable: need-check-nil
+
 --- Covers sandbox.hover: the image reference under the cursor, the gate that
 --- keeps an engine start off the automatic trigger, and the two-call/one-call
 --- split in the lookup.
@@ -195,6 +201,7 @@ describe("sandbox.hover", function()
       calls = { images = 0, containers = 0 }
       local sandbox = require("sandbox")
       saved_get_engine = sandbox.get_engine
+      ---@diagnostic disable-next-line: duplicate-set-field
       sandbox.get_engine = function()
         return {
           list_images = function()
@@ -265,6 +272,7 @@ describe("sandbox.hover", function()
     it("stays silent when the engine cannot answer", function()
       local sandbox = require("sandbox")
       saved_get_engine = sandbox.get_engine
+      ---@diagnostic disable-next-line: duplicate-set-field
       sandbox.get_engine = function()
         return {
           list_images = function()

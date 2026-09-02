@@ -71,7 +71,8 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) picker
   extension (`:Telescope sandbox containers|images|wsl`) as an alternative
   front-end — telescope is not a dependency, only loaded if you opt in
-- ⚡ Automatic engine detection (Podman → Docker → nerdctl), a per-project
+- ⚡ Automatic engine detection (Podman → Docker → nerdctl, skipping any whose
+  daemon does not answer), a per-project
   `.sandboxrc` override, and runtime switching (`:Sandbox engine set`)
 - 🔎 Hover integration: with
   [hover.nvim](https://github.com/StefanBartl/hover.nvim) installed, asking
@@ -117,7 +118,9 @@ For packer.nvim, vim-plug and the full prerequisite list, see
     -- surface, not because any of it has to be written out. `opts = {}` gives
     -- you exactly this.
     --
-    -- Engine: omit it and detection prefers Podman if installed, else Docker.
+    -- Engine: omit it and detection takes the first of Podman, Docker,
+    -- nerdctl whose daemon actually answers. Naming one here skips that
+    -- entirely -- a named engine is an instruction, not a guess.
     engine = "podman", -- or "docker" / "nerdctl"
     confirm_destructive = true, -- ask before remove/prune/kill
     default_shell = "sh", -- used by `container exec` when none is given
@@ -173,10 +176,13 @@ installed and one project specifically needs the other.
 ℹ️ Important:
 You must call `require("sandbox").setup({})` to initialize the plugin's configuration.
 The engine option is optional.
-If omitted, **sandbox.nvim** will automatically:
-    - Prefer **Podman** if installed
-    - Fall back to **Docker** otherwise
-Explicitly setting engine = "podman" or engine = "docker" will override automatic detection.
+If omitted, **sandbox.nvim** picks the first engine that is both installed
+**and** answering, preferring Podman, then Docker, then nerdctl. An installed
+engine whose daemon is down is skipped rather than chosen — see
+[docs/FEATURES/ENGINES.md](docs/FEATURES/ENGINES.md#automatic-engine-detection)
+for why that distinction earns its keep.
+Explicitly setting engine = "podman" or engine = "docker" overrides detection,
+and an engine named that way is used as written without any probing.
 
 ---
 

@@ -50,8 +50,14 @@ function M.cycle()
 end
 
 --- Clear the session-level override, falling back to .sandboxrc/config.
+---
+--- Also forgets the liveness probes. Starting a daemon and then clearing the
+--- override is exactly the sequence someone runs after finding out their
+--- engine was down, and answering that from a cache taken before they fixed
+--- it would be the least helpful moment to be fast.
 function M.reset()
   vim.g.sandbox_engine = nil
+  require("sandbox.engine_utils").forget()
   notify.info("Session engine override cleared; using " .. tostring(require("sandbox").resolve_engine_name()))
 end
 

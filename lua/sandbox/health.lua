@@ -11,7 +11,10 @@ local M = {}
 function M.check()
   health.start("sandbox.nvim healthcheck")
 
-  local engine = config.options.engine
+  -- The *resolved* engine, not the configured default: a session override or
+  -- a project's `.sandboxrc` is what commands actually use, and a healthcheck
+  -- reporting the other one answers a question nobody asked.
+  local engine = require("sandbox").resolve_engine_name()
 
   -- Check if engine is set
   if not engine then
@@ -24,7 +27,7 @@ function M.check()
     health.error("Invalid container engine configured: " .. tostring(engine))
     return
   else
-    health.ok("Container engine configured: " .. engine)
+    health.ok("Container engine in use: " .. engine)
   end
 
   -- Check if engine CLI exists
@@ -32,6 +35,36 @@ function M.check()
     health.ok(engine .. " CLI executable found")
   else
     health.error(engine .. " CLI executable not found in PATH")
+  end
+
+  -- Being on PATH is not being able to answer, and the difference is the
+  -- whole reason this section exists. A stopped Podman VM leaves `podman` on
+  -- PATH and every call failing after ~370 ms; from the outside that looks
+  -- exactly like a plugin that does nothing.
+  if engine_utils.responds(engine) then
+    health.ok(engine .. " answers")
+  else
+    local alternatives = {}
+    for _, name in ipairs(engine_utils.installed()) do
+      if name ~= engine and engine_utils.responds(name) then
+        alternatives[#alternatives + 1] = name
+      end
+    end
+    if #alternatives > 0 then
+      health.error(engine .. " does not answer -- every command will fail", {
+        "These do answer: " .. table.concat(alternatives, ", ") .. ".",
+        "`:Sandbox engine set "
+          .. alternatives[1]
+          .. "` for this session, or "
+          .. '`engine = "'
+          .. alternatives[1]
+          .. '"` in setup to make it permanent.',
+      })
+    else
+      health.error(engine .. " does not answer -- is its daemon running?", {
+        "Start it, then `:Sandbox engine reset` so the answer is asked again.",
+      })
+    end
   end
 
   -- WSL availability check (informational, not an error if absent)

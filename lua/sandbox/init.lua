@@ -34,14 +34,32 @@ end
 --- Resolve the active engine name. Precedence: a runtime session override
 --- set via `:Sandbox engine set docker|podman` (`vim.g.sandbox_engine`) >
 --- a per-project `.sandboxrc` override (see `util/project_config.lua`) >
---- the configured/detected default.
+--- an engine named in `setup` > detection.
+---
+--- **The three overrides are instructions and are obeyed as written.** Only
+--- the last step is a guess, and only that step asks whether the engine can
+--- answer: detection used to pick the first CLI on `PATH`, which on a machine
+--- with Podman Desktop installed but its VM stopped meant every call failed
+--- after ~370 ms while a running Docker engine was never asked. Being
+--- installed is not being able to answer, and `engine_utils.get_live_engine`
+--- is that distinction.
+---
+--- The probe costs one process start per installed engine, once per session
+--- (`engine_utils.forget` clears it). It is paid here rather than in `setup`
+--- so a Neovim start that never touches a container pays nothing.
 --- @return Sandbox.Engine|nil
 function M.resolve_engine_name()
   if vim.g.sandbox_engine then
     return vim.g.sandbox_engine
   end
   local project_engine = require("sandbox.util.project_config").read_engine_override()
-  return project_engine or config.options.engine
+  if project_engine then
+    return project_engine
+  end
+  if config.engine_named then
+    return config.options.engine
+  end
+  return require("sandbox.engine_utils").get_live_engine()
 end
 
 --- Get the active engine implementation

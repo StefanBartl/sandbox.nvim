@@ -9,9 +9,12 @@
   `sandbox.notify`/`sandbox.util.run_argv` fall back to plain
   `vim.notify`/`vim.fn.system` without it, but the plugin as a whole does not
   run.
-- **A container engine on `PATH`** — Podman, Docker or nerdctl. Detection
-  prefers Podman if installed, else Docker; `engine` pins one explicitly, and a
-  `.sandboxrc` with an `engine=` line pins one per repository.
+- **A container engine on `PATH`, with its daemon running** — Podman, Docker
+  or nerdctl. Detection prefers Podman, then Docker, then nerdctl, but skips
+  any whose daemon does not answer: an installed engine with a stopped VM is
+  not a usable one. `engine` pins one explicitly (and is then never
+  second-guessed), and a `.sandboxrc` with an `engine=` line pins one per
+  repository.
 
 Optional:
 
@@ -68,5 +71,7 @@ lua require("sandbox").setup()
 :Sandbox containers
 ```
 
-`:checkhealth sandbox` reports which engines it found and which one detection
-settled on — the first thing to check when a command reports nothing at all.
+`:checkhealth sandbox` reports which engines it found, which one is in use,
+and **whether that one answers** — the first thing to check when a command
+reports nothing at all. An engine that is installed but silent is the case
+that looks most like a broken plugin, so it is called out by name.

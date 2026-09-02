@@ -40,7 +40,11 @@ end
 ---@internal
 ---@return string|nil engine_name, string|nil err
 local function require_engine()
-  local engine_name = require("sandbox.config").options.engine
+  -- `resolve_engine_name`, not `config.options.engine`: the latter is the
+  -- configured/detected default only, so reading it here silently ignored
+  -- both `:Sandbox engine set` and a project's `.sandboxrc` -- every other
+  -- command in this plugin honours them, and these did not.
+  local engine_name = require("sandbox").resolve_engine_name()
   if not engine_name then
     notify.error("No engine configured")
     return nil
