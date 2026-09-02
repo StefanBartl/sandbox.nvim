@@ -73,6 +73,13 @@ Manage your containers (Podman, Docker, and more) directly from Neovim – with 
   front-end — telescope is not a dependency, only loaded if you opt in
 - ⚡ Automatic engine detection (Podman → Docker → nerdctl), a per-project
   `.sandboxrc` override, and runtime switching (`:Sandbox engine set`)
+- 🔎 Hover integration: with
+  [hover.nvim](https://github.com/StefanBartl/hover.nvim) installed, asking
+  for a hover on an image reference in a `Dockerfile` or `compose.yml`
+  reports whether it is pulled, its size, and any containers from it. Engine
+  calls cost hundreds of milliseconds, so this is registered as
+  request-only — never consulted by the automatic trigger. See
+  [docs/FEATURES/HOVER.md](docs/FEATURES/HOVER.md)
 - 🧠 Hexagonal architecture (engine-agnostic, clean ports & adapters)
 - 🚀 Unified support for Docker, Podman, and nerdctl (which also covers containerd)
 - 🩺 Integrated Neovim healthcheck support (`:checkhealth sandbox`)

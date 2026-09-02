@@ -41,6 +41,23 @@ function M.check()
     health.info("WSL not found in PATH – WSL commands not registered (expected on Linux/macOS)")
   end
 
+  -- The hover integration can be absent for three unrelated reasons, and none
+  -- of them says anything at the point of use: the float simply never opens.
+  -- Naming which one is the whole value of reporting it here.
+  if config.options.hover == false then
+    health.info("Hover integration disabled (opts.hover = false)")
+  elseif not pcall(require, "hover.registry") then
+    health.info("hover.nvim not installed – image previews unavailable (optional)")
+  elseif require("sandbox.hover").registered() then
+    health.ok("hover.nvim image preview registered – ask for it with :Hover show")
+  else
+    health.warn(
+      "hover.nvim is installed but does not support request-only contributions, "
+        .. "so the image preview was not registered: an engine call costs "
+        .. "300-750 ms and would stutter the automatic trigger. Update hover.nvim."
+    )
+  end
+
   require("lib.nvim.bindings.usercmd.composer").checkhealth("Sandbox")
 end
 

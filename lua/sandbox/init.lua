@@ -22,6 +22,13 @@ local M = {}
 --- @param opts table|nil: Optional user configuration
 function M.setup(opts)
   config.setup(opts)
+
+  -- Tell hover.nvim what an image reference under the cursor is. Soft: no
+  -- hover.nvim, nothing happens; and nothing is registered against a
+  -- hover.nvim that would ask on every trigger. `hover = false` turns it off.
+  if config.options.hover ~= false then
+    require("sandbox.hover").setup()
+  end
 end
 
 --- Resolve the active engine name. Precedence: a runtime session override

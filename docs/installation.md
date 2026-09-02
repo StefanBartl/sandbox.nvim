@@ -20,6 +20,11 @@ Optional:
   without it.
 - [nvzone/menu](https://github.com/nvzone/menu) — right-click context menu on
   the list-view buffers. Off automatically when it is not installed.
+- [hover.nvim](https://github.com/StefanBartl/hover.nvim) — an image
+  reference under the cursor answers whether it is pulled, its size, and any
+  containers from it. Registered request-only, so it never slows the
+  automatic trigger; `:checkhealth sandbox` says whether it is active. See
+  [docs/FEATURES/HOVER.md](FEATURES/HOVER.md).
 
 ## lazy.nvim
 

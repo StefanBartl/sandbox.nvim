@@ -28,6 +28,9 @@ what `:Sandbox <Tab>` actually offers.
   detection, build/attach.
 - **[WSL.md](WSL.md)** — WSL distro management (Windows-only, registered
   only when `wsl.exe` is reachable).
+- **[HOVER.md](HOVER.md)** — the request-only hover.nvim preview for an
+  image reference under the cursor: pulled or not, size, containers from it,
+  and why an engine start must stay off the automatic trigger.
 - **[UI.md](UI.md)** — the buffer-local list views (keymaps, multi-select,
   auto-refresh, status highlighting), the inspect view, the telescope
   picker extension, and the statusline component.

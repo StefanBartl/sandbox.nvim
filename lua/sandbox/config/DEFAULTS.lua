@@ -11,6 +11,15 @@ return {
   list_split = "left", -- window placement for list views
   list_size = nil, -- width/height of list view splits; nil uses Neovim's default
   progress_style = "auto",
+  -- Register a position preview with hover.nvim, so `:Hover show` on an image
+  -- reference in a Dockerfile or a compose file says whether it is pulled,
+  -- how big it is, and what is running from it.
+  --
+  -- Never on the automatic trigger: an engine start costs 230-490 ms
+  -- measured, so the contribution is registered as `on_request`. Without a
+  -- hover.nvim that honours that flag, nothing is registered at all -- see
+  -- docs/hover.md. A no-op without hover.nvim installed.
+  hover = true,
   -- How long a statusline reading and a completion listing stay cached, in
   -- ms. Both trade freshness against how often the engine is asked; raise
   -- them for a slow daemon, lower them if a stale reading annoys you.
