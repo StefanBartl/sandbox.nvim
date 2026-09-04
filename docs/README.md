@@ -1,0 +1,31 @@
+# sandbox.nvim documentation
+
+What is here, and which question each page answers. [The README](../README.md)
+is the short version of all of it.
+
+## Getting it running
+
+| Page | Answers |
+| --- | --- |
+| [installation.md](installation.md) | What has to be there first — this plugin drives a container engine, so the prerequisites are most of the answer — and a spec per plugin manager |
+
+## Using it
+
+| Page | Answers |
+| --- | --- |
+| [BINDINGS.md](BINDINGS.md) | Everything is one user command; this is that command's full surface, plus the keymaps and autocommands |
+| [GENERATED_COMMANDS.md](GENERATED_COMMANDS.md) | The same command tree as the composer generates it — machine-written, not hand-maintained, so it cannot drift from the source |
+| [WORKFLOW.md](WORKFLOW.md) | The different question: not what each subcommand does, but how containers, images and volumes combine into a way of working |
+
+## Why it is the way it is
+
+| Page | Answers |
+| --- | --- |
+| [FEATURES/](FEATURES/README.md) | Eleven pages, one per area — containers, images, volumes and networks, compose, devcontainers, the registry, the engines it can run on, WSL, the UI, and the hover integration |
+
+## Working on it
+
+| Page | Answers |
+| --- | --- |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | What is expected of a change |
+| [ADD_USECASE.md](ADD_USECASE.md) | How to add a use case — the one extension point with a recipe, walked through end to end |

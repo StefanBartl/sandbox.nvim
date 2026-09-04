@@ -274,6 +274,15 @@ pointed at the same daemon.
 
 ---
 
+## Documentation
+
+Start at [docs/README.md](docs/README.md), which says what is where and which
+question each page answers.
+
+- [Features](docs/FEATURES/README.md) — eleven pages, one per area: containers, images, volumes and networks, compose, devcontainers, the registry, engines, WSL, the UI, and the hover integration.
+- [Bindings](docs/BINDINGS.md) — the single user command's full surface, plus keymaps and autocommands.
+- [Workflow](docs/WORKFLOW.md) — how containers, images and volumes combine into a way of working.
+
 ## Development & Contribution
 
 Clone the repository and either symlink or load it into your Neovim runtime path.
