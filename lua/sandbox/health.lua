@@ -18,13 +18,17 @@ function M.check()
 
   -- Check if engine is set
   if not engine then
-    health.error("No container engine configured (nil)")
+    health.error("No container engine configured (nil)", {
+      'Set engine = "podman" | "docker" | "nerdctl" in setup()',
+    })
     return
   end
 
   -- Validate engine value
   if engine ~= "podman" and engine ~= "docker" and engine ~= "nerdctl" then
-    health.error("Invalid container engine configured: " .. tostring(engine))
+    health.error("Invalid container engine configured: " .. tostring(engine), {
+      'engine must be "podman", "docker" or "nerdctl"',
+    })
     return
   else
     health.ok("Container engine in use: " .. engine)
@@ -34,7 +38,9 @@ function M.check()
   if engine_utils.is_executable(engine) then
     health.ok(engine .. " CLI executable found")
   else
-    health.error(engine .. " CLI executable not found in PATH")
+    health.error(engine .. " CLI executable not found in PATH", {
+      "Install " .. engine .. ", or switch engine to one that is installed",
+    })
   end
 
   -- Being on PATH is not being able to answer, and the difference is the
@@ -87,7 +93,8 @@ function M.check()
     health.warn(
       "hover.nvim is installed but does not support request-only contributions, "
         .. "so the image preview was not registered: an engine call costs "
-        .. "300-750 ms and would stutter the automatic trigger. Update hover.nvim."
+        .. "300-750 ms and would stutter the automatic trigger",
+      { "Update hover.nvim" }
     )
   end
 
