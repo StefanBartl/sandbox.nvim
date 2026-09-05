@@ -552,7 +552,7 @@ sandbox.nvim integrates with Neovim's health-check system: >vim
 <
 Five checks, in order:
 
-  1. The *resolved* engine — the one a command would actually use, session
+  1. The resolved engine — the one a command would actually use, session
      override and `.sandboxrc` included, not the configured default.
   2. Whether its CLI is reachable on `$PATH`.
   3. Whether it ANSWERS. A stopped daemon leaves the binary on `$PATH` and
