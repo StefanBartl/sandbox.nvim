@@ -1,12 +1,11 @@
 # Devcontainer
 
 VS Code-style Dev Containers support under `:Sandbox devcontainer
-<subcommand>` (alias `:Sbx devcontainer ...`). Still marked experimental in
-the README.
+<subcommand>` (alias `:Sbx devcontainer ...`). **Experimental** — see
+[Scope](#scope) below for what it does not cover yet.
 
 ## Devcontainer build/attach
 
-- **Tab:** true
 - **Module:** `sandbox/core/usecases/devcontainer/build.lua`,
   `sandbox/bindings/usrcmds/devcontainer_commands.lua`
 - **Usercmds:** `:Sandbox devcontainer build`, `:Sandbox devcontainer

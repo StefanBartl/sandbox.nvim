@@ -66,8 +66,16 @@ Precedence: session override > `.sandboxrc` > configured/detected default.
 
 ## nerdctl / containerd support
 
-nerdctl is a first-class third adapter alongside Docker and Podman, which
-also covers containerd-backed setups without a separate integration.
+nerdctl is a first-class third adapter alongside Docker and Podman, and it is
+also the answer to "where is the containerd adapter".
+
+There is none, deliberately. containerd is a low-level daemon with no stable
+docker-compatible CLI of its own: `ctr`, its bundled debug tool, is documented
+upstream as unsuitable for scripting or production use, and its command surface
+does not map onto the docker/podman-shaped ports this plugin declares. nerdctl
+exists specifically to *be* the docker-compatible CLI for containerd — same
+JSON `--format`, same compose support — so a containerd adapter would be the
+nerdctl adapter again, pointed at the same daemon.
 - **Module:** `sandbox/adapters/nerdctl/`
 
 ## Integrated healthcheck
@@ -75,6 +83,8 @@ also covers containerd-backed setups without a separate integration.
 - **Module:** `health.lua`
 - **Usercmds:** `:checkhealth sandbox`
 
-`:checkhealth sandbox` reports which engine CLI(s) were found, which one is
-active and why, and whether `lib.nvim` (required) and telescope.nvim
-(optional) are present.
+`:checkhealth sandbox` reports the *resolved* engine — the one a command would
+actually use, session override and `.sandboxrc` included — whether its CLI is
+on `PATH`, and whether it answers, naming an engine that does when it does not.
+It also reports WSL availability and the state of the hover.nvim integration.
+Every line it can print is in [../health.md](../health.md).

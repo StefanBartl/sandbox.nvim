@@ -100,7 +100,8 @@ job running against a closed buffer.
 `exec` opens an interactive shell inside a running container (defaults to
 `opts.default_shell` if none given); `exec-once` runs a single command
 non-interactively and shows its output.
-### Working directory (2026-08-24)
+
+### Working directory
 
 `workdir=<path>` becomes the engine's `-w`, so a command runs where it
 belongs instead of at the image's default directory:
@@ -110,9 +111,9 @@ belongs instead of at the image's default directory:
 :Sandbox container exec-once web workdir=/srv ls -la
 ```
 
-Closes the flag/option audit's entry. `workdir=` rather than a positional:
-every token after the id is part of the command that runs *inside* the
-container, so a positional could not be told apart from the command itself.
+`workdir=` rather than a positional: every token after the id is part of the
+command that runs *inside* the container, so a positional could not be told
+apart from the command itself.
 
 The flag is inserted **before** the container id in argv. After it, the
 engine would hand `-w` to the command running inside the container instead of

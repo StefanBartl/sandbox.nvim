@@ -10,6 +10,8 @@ return {
   refresh_interval = nil, -- ms between list-view auto-refreshes; nil/0 disables
   list_split = "left", -- window placement for list views
   list_size = nil, -- width/height of list view splits; nil uses Neovim's default
+  -- Indicator while pull/push/build/compose/prune run; needs lib.nvim, and is
+  -- a silent no-op without it.
   progress_style = "auto",
   -- Register a position preview with hover.nvim, so `:Hover show` on an image
   -- reference in a Dockerfile or a compose file says whether it is pulled,
@@ -18,17 +20,17 @@ return {
   -- Never on the automatic trigger: an engine start costs 230-490 ms
   -- measured, so the contribution is registered as `on_request`. Without a
   -- hover.nvim that honours that flag, nothing is registered at all -- see
-  -- docs/hover.md. A no-op without hover.nvim installed.
+  -- docs/FEATURES/HOVER.md. A no-op without hover.nvim installed.
   hover = true,
-  -- How long a statusline reading and a completion listing stay cached, in
-  -- ms. Both trade freshness against how often the engine is asked; raise
-  -- them for a slow daemon, lower them if a stale reading annoys you.
   -- How much of an unrecognized adapter error survives into the
   -- notification. The full text always goes to sandbox.logger; this only
   -- caps the popup.
   max_error_length = 200,
+  -- How long a statusline reading and a completion listing stay cached, in
+  -- ms. Both trade freshness against how often the engine is asked; raise
+  -- them for a slow daemon, lower them if a stale reading annoys you.
   status_cache_ttl_ms = 3000,
-  completion_cache_ttl_ms = 4000, -- indicator while pull/push/build run; needs lib.nvim, no-op without it
+  completion_cache_ttl_ms = 4000,
   -- List-view keymaps. `false` binds none; a table overrides individual
   -- actions per list kind (see Sandbox.Keymaps). Every key keeps its default
   -- unless named here.

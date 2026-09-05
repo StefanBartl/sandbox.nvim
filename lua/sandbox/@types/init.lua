@@ -10,9 +10,9 @@
 ---@field refresh_interval integer|nil ms between auto-refreshes of list views; nil/0 disables (default nil)
 ---@field list_split "above"|"below"|"left"|"right"|nil window placement for list views (default "left")
 ---@field list_size integer|nil width/height of list view splits; nil uses Neovim's default
+--- indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
 ---@field progress_style "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"|nil
 ---@field hover boolean|nil On-request hover.nvim preview for image refs (default true; no-op without it)
---- indicator for long-running argv (pull/push/build); needs lib.nvim, no-op without it (default "auto")
 --- How much of an unrecognized adapter error reaches the notification
 --- (default 200). The full text always goes to sandbox.logger, and a
 --- truncated message says where to read it.

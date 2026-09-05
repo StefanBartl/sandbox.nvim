@@ -18,7 +18,7 @@ FROM nginx:1.27-alpine
 ┌ nginx:1.27-alpine ──────────────┐
 │ not pulled                      │
 │                                 │
-│ `:Sandbox images pull` fetches  │
+│ `:Sandbox image pull` fetches   │
 │ it.                             │
 └─────────────────────────────────┘
 ```

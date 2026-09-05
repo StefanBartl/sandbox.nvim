@@ -120,7 +120,7 @@ get one line wrong and these actions do not come back.
 
 ## `:Sandbox docs generate` after touching the command tree
 
-If you're contributing a new usecase (see `docs/ADD_USECASE.md`), the last
+If you're contributing a new usecase (see [`add_usecase.md`](add_usecase.md)), the last
 step before opening a PR is `:Sandbox docs generate` to regenerate
 `docs/GENERATED_COMMANDS.md` from the live route table, then diff it
 against the hand-maintained `docs/BINDINGS.md` you just edited. This is the

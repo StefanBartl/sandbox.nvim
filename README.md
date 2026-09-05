@@ -18,224 +18,122 @@
 ![Status](https://img.shields.io/badge/status-alpha-red)
 [![CI](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml)
 
-> Requires [lib.nvim](https://github.com/StefanBartl/lib.nvim) — the user-command layer (`:Sandbox`/`:Sbx`, built on `lib.nvim.bindings.usercmd.composer`) and the buffer/window views under `lua/sandbox/ui/` both depend on it directly. `sandbox.notify`/`sandbox.util.run_argv` fall back to plain `vim.notify`/`vim.fn.system` if it's somehow missing, but the plugin as a whole does not run without it. [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) is an *optional* dependency — only needed for the picker extension (`:Telescope sandbox ...`), everything else works without it.
-
 > 💡 Pairs well with [reposcope.nvim](https://github.com/StefanBartl/reposcope.nvim):
 > reposcope clones a repository into a directory, and sandbox picks up the
 > `compose.yml` / `.devcontainer/` that repository declares from the cwd or an
 > ancestor — so `up` and `devcontainer attach` work in the checkout you just
 > made without configuring a path anywhere.
 
-Manage your containers (Podman, Docker, and more) directly from Neovim – with clean architecture, pluggable backends, and a TUI-native experience.
+Manage Podman, Docker and nerdctl containers from inside Neovim.
+
+Containers, images, volumes, networks, compose projects, registry auth,
+devcontainers and (on Windows) WSL distros all hang off one command tree,
+`:Sandbox`, with `<Tab>` completion that resolves live against the running
+engine. The engine is chosen by asking which one *answers*, not which one is
+installed — a stopped Podman VM looks exactly like a broken plugin otherwise.
+Underneath it is ports and adapters: every operation is declared once and
+fulfilled three times, so adding an engine does not touch the command layer.
 
 ---
 
 - [Features](#features)
-- [Installation](#installation)
-  - [lazy.nvim](#lazynvim)
-- [Health Check Support](#health-check-support)
-- [Usage](#usage)
-- [Supported Engines](#supported-engines)
-- [Development & Contribution](#development--contribution)
-  - [File Layout](#file-layout)
-- [Roadmap](#roadmap)
-- [Disclaimer](#disclaimer)
-- [Feedback](#feedback)
+- [Quickstart](#quickstart)
+- [List views](#list-views)
+- [Statusline](#statusline)
+- [Supported engines](#supported-engines)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
 ## Features
 
-- ✅ Full container lifecycle: list, start/stop/kill/restart, pause/unpause,
-  rename, remove/prune, inspect, `cp`, an interactive `run` wizard, one-shot
-  `stats`/`top`, log viewing — including live-following logs (`logs -f`) —
-  and `exec`/`exec-once` to open an interactive shell or run a one-off
-  command inside a container
-- ✅ Images: list, pull/push (async, non-blocking), tag, build, save/load,
-  history, inspect, remove/prune
-- ✅ Volumes and networks: list, create, remove/prune, inspect (plus
-  connect/disconnect for networks)
-- ✅ Compose: `up`/`down`/`restart`/`ps`/`logs` for the `docker-compose.yml`/
-  `compose.yml`/`podman-compose.yml` detected in cwd or an ancestor
-- ✅ Registry auth: `login`/`logout`, with the password piped via stdin
-  (never argv)
-- ✅ WSL distro management: list, start/stop/exec, set-default, set-version,
-  export/import, shutdown-all
-- 🧪 Devcontainer support (`:Sandbox devcontainer build`/`attach`): detects
-  `.devcontainer/devcontainer.json`, builds/pulls its image, and runs it
-  with the workspace mounted — single-container and `dockerComposeFile`
-  shapes only, no features/lifecycle-commands/remoteUser yet
-- 🖱️ Buffer-local keymaps in every list view (start/stop/inspect/logs/... on
-  the entry under the cursor, plus Visual-mode multi-select for bulk
-  actions) and an optional
+- **Containers** — list, start/stop/kill/restart, pause/unpause, rename,
+  remove/prune, inspect, `cp`, an interactive `run` wizard, one-shot
+  `stats`/`top`, logs including live-following, and `exec`/`exec-once` for a
+  shell or a one-off command inside a container
+- **Images** — list, pull/push (async), tag, build, save/load, history,
+  inspect, remove/prune
+- **Volumes and networks** — list, create, remove/prune, inspect, plus
+  network connect/disconnect
+- **Compose** — `up`/`down`/`restart`/`ps`/`logs` against the compose file
+  detected in cwd or an ancestor
+- **Registry** — `login`/`logout`, password piped over stdin, never argv
+- **WSL** — distro list, start/stop/exec, set-default, set-version,
+  export/import, shutdown-all (Windows only, registered only when `wsl.exe`
+  is reachable)
+- 🧪 **Devcontainers** — `.devcontainer/devcontainer.json` detection,
+  build and attach; single-container and `dockerComposeFile` shapes only
+- **List views** — buffer-local keymaps on every list, Visual-mode
+  multi-select for bulk actions, and an optional
   [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) picker
-  extension (`:Telescope sandbox containers|images|wsl`) as an alternative
-  front-end — telescope is not a dependency, only loaded if you opt in
-- ⚡ Automatic engine detection (Podman → Docker → nerdctl, skipping any whose
-  daemon does not answer), a per-project
-  `.sandboxrc` override, and runtime switching (`:Sandbox engine set`)
-- 🔎 Hover integration: with
-  [hover.nvim](https://github.com/StefanBartl/hover.nvim) installed, asking
-  for a hover on an image reference in a `Dockerfile` or `compose.yml`
-  reports whether it is pulled, its size, and any containers from it. Engine
-  calls cost hundreds of milliseconds, so this is registered as
-  request-only — never consulted by the automatic trigger. See
-  [docs/FEATURES/HOVER.md](docs/FEATURES/HOVER.md)
-- 🧠 Hexagonal architecture (engine-agnostic, clean ports & adapters)
-- 🚀 Unified support for Docker, Podman, and nerdctl (which also covers containerd)
-- 🩺 Integrated Neovim healthcheck support (`:checkhealth sandbox`)
-- ⌨️ `:Sandbox` (alias `:Sbx`) with `container`/`image`/`volume`/`network`/
-  `compose`/`engine`/`registry`/`docs`/`wsl` subcommand trees and `<Tab>`
-  completion (built on [lib.nvim](https://github.com/StefanBartl/lib.nvim)'s
-  `usercmd.composer` — a required dependency)
-- 🔥 Plugin-manager friendly (Lazy.nvim, Packer, etc.)
+  as an alternative front end
+- **Engine handling** — automatic Podman → Docker → nerdctl detection that
+  skips any whose daemon does not answer, a per-project `.sandboxrc`, and
+  runtime switching
+- **Hover previews** — with [hover.nvim](https://github.com/StefanBartl/hover.nvim)
+  installed, an image reference in a `Dockerfile` or `compose.yml` reports
+  whether it is pulled, its size, and any containers from it
+- **`:checkhealth sandbox`** — which engine, why that one, and whether it
+  answers
+
+One page per area, with the reasoning behind each:
+[docs/FEATURES/README.md](docs/FEATURES/README.md).
 
 ---
 
-## Installation
+## Quickstart
 
-For packer.nvim, vim-plug and the full prerequisite list, see
-[docs/installation.md](docs/installation.md).
+Requires Neovim **0.10+**, [lib.nvim](https://github.com/StefanBartl/lib.nvim),
+and a container engine on `PATH` **with its daemon running**.
 
-**When to use which:**
-
-| Variant | Startup impact | Commands available | When to use |
-|---|---|---|---|
-| **`lazy = false`** | Loads immediately | Right from the start | Small plugin, want instant availability |
-| **`event = "VimEnter"`** | After UI init | After editor UI ready | **Recommended** — minimal startup impact, commands ready right after startup |
-| **`cmd = { ... }`** | Deferred | Only when a listed command is first run | Large config, many plugins, rarely-used commands |
-
-### lazy.nvim
-
-*Load after UI init (recommended):*
 ```lua
 {
   "StefanBartl/sandbox.nvim",
   dependencies = { "StefanBartl/lib.nvim" },
   event = "VimEnter",
-  opts = {
-    -- Every value below is already the default -- shown so you can see the
-    -- surface, not because any of it has to be written out. `opts = {}` gives
-    -- you exactly this.
-    --
-    -- Engine: omit it and detection takes the first of Podman, Docker,
-    -- nerdctl whose daemon actually answers. Naming one here skips that
-    -- entirely -- a named engine is an instruction, not a guess.
-    engine = "podman", -- or "docker" / "nerdctl"
-    confirm_destructive = true, -- ask before remove/prune/kill
-    default_shell = "sh", -- used by `container exec` when none is given
-    refresh_interval = nil, -- ms between list-view auto-refreshes; nil/0 disables
-    list_split = "left", -- "above" | "below" | "left" | "right"
-    list_size = nil, -- split width/height; nil uses Neovim's default
-    -- Indicator while pull/push/build/compose/prune run (needs lib.nvim, no-op
-    -- without it): "auto"|"notify"|"statusline"|"fidget"|"float"|"kit"
-    progress_style = "auto",
-    -- How much of an unrecognized adapter error reaches the notification.
-    -- The full text always goes to sandbox.logger, and a truncated message
-    -- says where to read it.
-    max_error_length = 200,
-    -- How long a statusline reading and a completion listing stay cached.
-    -- Both trade freshness against how often the engine is asked; raise them
-    -- for a slow daemon (Docker Desktop on Windows), lower them if a stale
-    -- reading annoys you.
-    status_cache_ttl_ms = 3000,
-    completion_cache_ttl_ms = 4000,
-    -- Right-click context menu on list-view buffers (nvzone/menu, soft
-    -- dependency; entries mirror each list's own keymaps). Off automatically
-    -- when nvzone/menu isn't installed. See docs/BINDINGS.md.
-    menu = { enable = true },
-  },
-}
-```
-
-*Per-project engine override:* drop a `.sandboxrc` file with an `engine=docker`
-or `engine=podman` line in a repo's root to pin that repo to a specific engine
-regardless of the global/detected default — useful when a machine has both
-installed and one project specifically needs the other.
-
-*Load at startup (eager):*
-```lua
-{
-  "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim" },
-  lazy = false,
   opts = {},
 }
 ```
 
-*Load on first use of a command:*
-```lua
-{
-  "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim" },
-  cmd = { "Sandbox", "Sbx" },
-  opts = {},
-}
-```
+`opts` is passed to `require("sandbox").setup()`, which has to run for anything
+to register. `opts = {}` is a complete configuration: omit `engine` and the
+first of Podman, Docker, nerdctl that answers is used.
 
-ℹ️ Important:
-You must call `require("sandbox").setup({})` to initialize the plugin's configuration.
-The engine option is optional.
-If omitted, **sandbox.nvim** picks the first engine that is both installed
-**and** answering, preferring Podman, then Docker, then nerdctl. An installed
-engine whose daemon is down is skipped rather than chosen — see
-[docs/FEATURES/ENGINES.md](docs/FEATURES/ENGINES.md#automatic-engine-detection)
-for why that distinction earns its keep.
-Explicitly setting engine = "podman" or engine = "docker" overrides detection,
-and an engine named that way is used as written without any probing.
-
----
-
-## Health Check Support
-
-**sandbox.nvim** integrates with Neovim's `:checkhealth` system to diagnose common issues.
-
-To run the health check, simply execute:
+Then:
 
 ```vim
+:Sandbox container list
 :checkhealth sandbox
 ```
 
-The plugin will verify:
+Other plugin managers, the three load triggers and the full prerequisite list
+are in [docs/installation.md](docs/installation.md); every option in
+[docs/configuration.md](docs/configuration.md).
 
-- Whether the selected container engine (`podman` or `docker`) is correctly configured
-- Whether the corresponding CLI executable is available in your `PATH`
-
-This helps you quickly identify misconfigurations or missing dependencies.
-
-If an unsupported engine is set, or if the CLI binary is missing, clear error messages will be displayed.
-
----
-
-## Usage
-
-See [`/docs/BINDINGS.md`](./docs/BINDINGS.md) for the full list of user commands (container, image, terminal-buffer and WSL variants), or run `:help sandbox` inside Neovim for the same reference as `:help`-native vimdoc.
+`lib.nvim` is required, not optional: the `:Sandbox`/`:Sbx` command layer is
+built on its `usercmd.composer` and the views under `lua/sandbox/ui/` use its
+window kit directly. telescope.nvim, [nvzone/menu](https://github.com/nvzone/menu)
+and hover.nvim are optional and each degrade to nothing when absent.
 
 ---
 
-## Statusline
+## List views
 
-`require("sandbox.statusline").status()` returns an ambient
-`"engine (running/total)"` summary (e.g. `"docker (2/5)"`), cached for 3s so a
-statusline redrawing many times a second doesn't shell out on every call. It
-degrades to `""` on any failure (daemon down, no engine configured) rather
-than erroring. Plain string return with no hard dependency on any statusline
-plugin — wire it into lualine:
+`:Sandbox container|image|volume|network list` opens a read-only scratch
+buffer where the entry under the cursor is the argument — `s`/`x`/`X`/`r` to
+start/stop/kill/restart, `l`/`L` for logs, `e` for a shell, `<CR>` to inspect,
+`D` to remove. Select several lines in Visual mode and the same key applies to
+all of them, with one confirmation that names what it is about to remove.
 
-```lua
-require("lualine").setup({
-  sections = { lualine_x = { require("sandbox.statusline").lualine_component } },
-})
-```
+`?` lists what is bound in the buffer you are in, `E` cycles the engine
+without leaving it, `f` narrows the list across every field of an entry, and
+`q` closes. Every key is remappable — see
+[docs/BINDINGS.md](docs/BINDINGS.md#keymaps).
 
-or the native statusline: `set statusline+=%{v:lua.require('sandbox.statusline').status()}`.
-
----
-
-## Telescope extension
-
-An alternative, fuzzy-search front-end to the list-view buffer-local keymaps
-— optional, only loaded if you opt in:
+If you would rather stay in a fuzzy finder, the picker extension is the same
+action set through telescope:
 
 ```lua
 require("telescope").load_extension("sandbox")
@@ -249,28 +147,38 @@ require("telescope").load_extension("sandbox")
 
 ---
 
-## Supported Engines
+## Statusline
+
+`require("sandbox.statusline").status()` returns an ambient
+`"engine (running/total)"` summary (e.g. `"docker (2/5)"`), cached per
+`status_cache_ttl_ms` so a statusline redrawing many times a second does not
+shell out on every call. It degrades to `""` on any failure — daemon down, no
+engine configured — rather than erroring, and has no hard dependency on any
+statusline plugin:
+
+```lua
+require("lualine").setup({
+  sections = { lualine_x = { require("sandbox.statusline").lualine_component } },
+})
+```
+
+Or natively: `set statusline+=%{v:lua.require('sandbox.statusline').status()}`.
+
+---
+
+## Supported engines
 
 | Engine | Status | Notes |
-|--------|--------|-------|
-| **Podman** | ✅ Supported and stable | |
-| **Docker** | ✅ Supported and stable | |
-| **nerdctl** | ✅ Supported and stable | Also covers **containerd** — see below |
+|---|---|---|
+| **Podman** | Supported and stable | |
+| **Docker** | Supported and stable | |
+| **nerdctl** | Supported and stable | Also covers **containerd** |
 
-Each engine is implemented through clean ports & adapters, fully pluggable.
-Pick one at `setup({ engine = "docker" })`/`"podman"`/`"nerdctl"`, override it
-per-project via `.sandboxrc`, or switch mid-session with
-`:Sandbox engine set docker|podman|nerdctl`.
-
-**On containerd:** there's no separate containerd adapter. containerd
-is a low-level daemon with no stable, docker-compatible CLI of its own —
-`ctr`, its bundled debug tool, is explicitly documented upstream as
-unsuitable for scripting/production use and has a command surface that
-doesn't map onto this plugin's docker/podman-shaped ports. `nerdctl` exists
-specifically to be *the* docker-compatible CLI for containerd (same JSON
-`--format`, compose support, etc.), so the nerdctl adapter above already
-covers containerd — a separate adapter would just be nerdctl again
-pointed at the same daemon.
+Pick one with `setup({ engine = "docker" })`, override it per project with a
+`.sandboxrc`, or switch mid-session with `:Sandbox engine set`. There is no
+separate containerd adapter, and
+[docs/FEATURES/ENGINES.md](docs/FEATURES/ENGINES.md#nerdctl--containerd-support)
+explains why nerdctl already is one.
 
 ---
 
@@ -279,73 +187,32 @@ pointed at the same daemon.
 Start at [docs/README.md](docs/README.md), which says what is where and which
 question each page answers.
 
-- [Features](docs/FEATURES/README.md) — eleven pages, one per area: containers, images, volumes and networks, compose, devcontainers, the registry, engines, WSL, the UI, and the hover integration.
-- [Bindings](docs/BINDINGS.md) — the single user command's full surface, plus keymaps and autocommands.
-- [Workflow](docs/WORKFLOW.md) — how containers, images and volumes combine into a way of working.
+- [Features](docs/FEATURES/README.md) — ten pages, one per area, with the
+  reasoning behind each design decision.
+- [Installation](docs/installation.md) — prerequisites, plugin managers, load
+  triggers.
+- [Configuration](docs/configuration.md) — every `setup()` option and its
+  default.
+- [Bindings](docs/BINDINGS.md) — the command tree's full surface, plus keymaps
+  and autocommands.
+- [Workflow](docs/WORKFLOW.md) — how the pieces combine into a way of working.
+- [Health check](docs/health.md) — every line `:checkhealth sandbox` can print.
 
-## Development & Contribution
-
-Clone the repository and either symlink or load it into your Neovim runtime path.
-
-See [`docs/CONTRIBUTING.md`](./docs/CONTRIBUTING.md) and [`docs/ADD_USECASE.md`](./docs/ADD_USECASE.md) for guidelines.
-
-### File Layout
-- Engine adapters: `lua/sandbox/adapters/<engine>/`
-- Use cases: `lua/sandbox/core/usecases/`
-- User commands: `lua/sandbox/bindings/usrcmds/` (registered via `lib.nvim.bindings.usercmd.composer`; `plugin/commands.lua` calls `.setup()`)
-- UI views: `lua/sandbox/ui/`
-
-### Tests
-
-`TESTS/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
-busted-style suite; adapters are tested against a faked `run_argv` instead of
-a real docker/podman/nerdctl/wsl binary. See [`TESTS/README.md`](./tests/README.md)
-for how to run it locally. [GitHub Actions](./.github/workflows/ci.yml) runs
-`luacheck` and the full test suite on every push/PR to `main`.
-
-### Checking docs for drift
-
-[`docs/BINDINGS.md`](./docs/BINDINGS.md) is hand-maintained (it carries prose,
-keymap tables, and config notes a route table can't express), so it can drift
-from the actual command set as routes are added or renamed. Run
-`:Sandbox docs generate` to regenerate
-[`docs/GENERATED_COMMANDS.md`](./docs/GENERATED_COMMANDS.md) — a mechanical,
-always-accurate dump of every registered route (via
-`lib.nvim.bindings.usercmd.composer`'s `document()`) — and diff it against
-`docs/BINDINGS.md` when adding/changing a command.
-
-Pull Requests and Issues are very welcome!
+`:help sandbox` is the same reference as native vimdoc.
 
 ---
 
-## Roadmap
+## Contributing
 
-Nothing queued right now — every item that was on the list has shipped. See
-[`docs/GENERATED_COMMANDS.md`](./docs/GENERATED_COMMANDS.md) for the full live
-command surface, or open a PR or issue with the next idea.
+Clone the repository and either symlink it or add it to your runtime path.
+[docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) has the ground rules and the
+project layout; [docs/add_usecase.md](docs/add_usecase.md) walks a single
+operation from port to command route to spec.
 
----
-
-## Disclaimer
-
-ℹ️ This plugin is under active development – some features are planned or experimental.
-Expect changes in upcoming releases.
-
----
-
-## Feedback
-
-Your feedback is very welcome!
-
-Please use the [GitHub issue tracker](https://github.com/StefanBartl/sandbox.nvim/issues) to:
-- Report bugs
-- Suggest new features
-- Ask questions about usage
-- Share thoughts on UI or functionality
-
-For general discussion, feel free to open a [GitHub Discussion](https://github.com/StefanBartl/sandbox.nvim/discussions).
-
-If you find this plugin helpful, consider giving it a ⭐ on GitHub — it helps others discover the project.
+Bugs, feature ideas and questions are welcome in the
+[issue tracker](https://github.com/StefanBartl/sandbox.nvim/issues); anything
+more open-ended in [Discussions](https://github.com/StefanBartl/sandbox.nvim/discussions).
+Pull requests very welcome.
 
 ---
 

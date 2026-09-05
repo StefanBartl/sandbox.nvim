@@ -30,7 +30,7 @@ nvim --headless --noplugin -u TESTS/minimal_init.lua \
 
 - One spec file per adapter/module, mirroring `lua/sandbox/...`'s path
   under `TESTS/sandbox/...`.
-- `require("tests.sandbox.helpers.fake_run_argv")` to fake the shell-out
+- `require("TESTS.sandbox.helpers.fake_run_argv")` to fake the shell-out
   layer; see `TESTS/sandbox/adapters/docker/containers_spec.lua` for the
   pattern (`install()` a fake, `reload()` the module under test so it
   re-requires `run_argv` and picks up the fake, assert on `state.calls`).

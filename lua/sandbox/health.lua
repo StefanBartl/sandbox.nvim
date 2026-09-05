@@ -69,9 +69,9 @@ function M.check()
 
   -- WSL availability check (informational, not an error if absent)
   if engine_utils.is_executable("wsl") then
-    health.ok("WSL executable found – WslList/WslStart/WslStop/WslExec commands available")
+    health.ok("WSL executable found – the `:Sandbox wsl` subcommands are registered")
   else
-    health.info("WSL not found in PATH – WSL commands not registered (expected on Linux/macOS)")
+    health.info("WSL not found in PATH – `:Sandbox wsl` not registered (expected on Linux/macOS)")
   end
 
   -- The hover integration can be absent for three unrelated reasons, and none
