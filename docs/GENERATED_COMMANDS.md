@@ -14,22 +14,22 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sandbox compose restart` | Restart the compose project detected in cwd |
 | `:Sandbox compose up` | Start the compose project detected in cwd (detached) |
 | `:Sandbox container cp {src} {dest}` | Copy a file/directory between the host and a container (either side may be <id>:<path>) |
-| `:Sandbox container exec {id:CONTAINER_ID} [{shell}]` | Open a shell session inside a running container |
-| `:Sandbox container exec-once {id:CONTAINER_ID} [{command}]` | Run a one-off command inside a container (non-interactive) |
+| `:Sandbox container exec {id:CONTAINER_ID} [{shell}] [workdir=<value>]` | Open a shell session inside a running container  [workdir=<path>] |
+| `:Sandbox container exec-once {id:CONTAINER_ID} [{command}] [workdir=<value>]` | Run a one-off command inside a container (non-interactive)  [workdir=<path>] |
 | `:Sandbox container inspect {id:CONTAINER_ID}` | Inspect detailed information about a container |
-| `:Sandbox container kill {id:CONTAINER_ID} [--buffer|-b]` | Force kill a container (--buffer: stream to a terminal buffer) |
+| `:Sandbox container kill {id:CONTAINER_ID} [--buffer\|-b]` | Force kill a container (--buffer: stream to a terminal buffer) |
 | `:Sandbox container list` | List all containers |
 | `:Sandbox container logs {id:CONTAINER_ID}` | Show logs of a container |
 | `:Sandbox container logs-follow {id:CONTAINER_ID}` | Stream a container's logs live (press q in the buffer to stop) |
 | `:Sandbox container pause {id:CONTAINER_ID}` | Pause a running container's processes |
-| `:Sandbox container prune [--buffer|-b]` | Remove all stopped containers (--buffer: stream to a terminal buffer) |
-| `:Sandbox container remove {id:CONTAINER_ID} [--buffer|-b]` | Remove a stopped container (--buffer: stream to a terminal buffer) |
+| `:Sandbox container prune [--buffer\|-b]` | Remove all stopped containers (--buffer: stream to a terminal buffer) |
+| `:Sandbox container remove {id:CONTAINER_ID} [--buffer\|-b]` | Remove a stopped container (--buffer: stream to a terminal buffer) |
 | `:Sandbox container rename {id:CONTAINER_ID} {new_name}` | Rename a container |
-| `:Sandbox container restart {id:CONTAINER_ID} [--buffer|-b]` | Restart a container (--buffer: stream to a terminal buffer) |
+| `:Sandbox container restart {id:CONTAINER_ID} [--buffer\|-b]` | Restart a container (--buffer: stream to a terminal buffer) |
 | `:Sandbox container run` | Interactively create and start a new container (prompts for image, name, ports, volumes, env) |
-| `:Sandbox container start {id:CONTAINER_ID} [--buffer|-b]` | Start a stopped container (--buffer: stream to a terminal buffer) |
+| `:Sandbox container start {id:CONTAINER_ID} [--buffer\|-b]` | Start a stopped container (--buffer: stream to a terminal buffer) |
 | `:Sandbox container stats {id:CONTAINER_ID}` | Show a one-shot resource usage snapshot of a container |
-| `:Sandbox container stop {id:CONTAINER_ID} [--buffer|-b]` | Stop a running container (--buffer: stream to a terminal buffer) |
+| `:Sandbox container stop {id:CONTAINER_ID} [--buffer\|-b]` | Stop a running container (--buffer: stream to a terminal buffer) |
 | `:Sandbox container top {id:CONTAINER_ID}` | List the processes running inside a container |
 | `:Sandbox container unpause {id:CONTAINER_ID}` | Resume a paused container's processes |
 | `:Sandbox devcontainer attach` | Open a shell in the running devcontainer for the project in cwd |
@@ -43,8 +43,8 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sandbox image inspect {image:IMAGE_ID}` | Inspect detailed information about an image |
 | `:Sandbox image list` | List all local images |
 | `:Sandbox image load {path}` | Load (import) an image from a tarball on disk |
-| `:Sandbox image prune [--buffer|-b]` | Remove all dangling images (--buffer: stream to a terminal buffer) |
-| `:Sandbox image pull {name} [--buffer|-b]` | Pull an image (--buffer: stream to a terminal buffer) |
+| `:Sandbox image prune [--buffer\|-b]` | Remove all dangling images (--buffer: stream to a terminal buffer) |
+| `:Sandbox image pull {name} [--buffer\|-b]` | Pull an image (--buffer: stream to a terminal buffer) |
 | `:Sandbox image push {name}` | Push an image to a remote registry |
 | `:Sandbox image remove {id:IMAGE_ID}` | Remove a local image |
 | `:Sandbox image save {image:IMAGE_ID} {path}` | Save (export) an image to a tarball on disk |
@@ -85,22 +85,22 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sbx compose restart` | Restart the compose project detected in cwd |
 | `:Sbx compose up` | Start the compose project detected in cwd (detached) |
 | `:Sbx container cp {src} {dest}` | Copy a file/directory between the host and a container (either side may be <id>:<path>) |
-| `:Sbx container exec {id:CONTAINER_ID} [{shell}]` | Open a shell session inside a running container |
-| `:Sbx container exec-once {id:CONTAINER_ID} [{command}]` | Run a one-off command inside a container (non-interactive) |
+| `:Sbx container exec {id:CONTAINER_ID} [{shell}] [workdir=<value>]` | Open a shell session inside a running container  [workdir=<path>] |
+| `:Sbx container exec-once {id:CONTAINER_ID} [{command}] [workdir=<value>]` | Run a one-off command inside a container (non-interactive)  [workdir=<path>] |
 | `:Sbx container inspect {id:CONTAINER_ID}` | Inspect detailed information about a container |
-| `:Sbx container kill {id:CONTAINER_ID} [--buffer|-b]` | Force kill a container (--buffer: stream to a terminal buffer) |
+| `:Sbx container kill {id:CONTAINER_ID} [--buffer\|-b]` | Force kill a container (--buffer: stream to a terminal buffer) |
 | `:Sbx container list` | List all containers |
 | `:Sbx container logs {id:CONTAINER_ID}` | Show logs of a container |
 | `:Sbx container logs-follow {id:CONTAINER_ID}` | Stream a container's logs live (press q in the buffer to stop) |
 | `:Sbx container pause {id:CONTAINER_ID}` | Pause a running container's processes |
-| `:Sbx container prune [--buffer|-b]` | Remove all stopped containers (--buffer: stream to a terminal buffer) |
-| `:Sbx container remove {id:CONTAINER_ID} [--buffer|-b]` | Remove a stopped container (--buffer: stream to a terminal buffer) |
+| `:Sbx container prune [--buffer\|-b]` | Remove all stopped containers (--buffer: stream to a terminal buffer) |
+| `:Sbx container remove {id:CONTAINER_ID} [--buffer\|-b]` | Remove a stopped container (--buffer: stream to a terminal buffer) |
 | `:Sbx container rename {id:CONTAINER_ID} {new_name}` | Rename a container |
-| `:Sbx container restart {id:CONTAINER_ID} [--buffer|-b]` | Restart a container (--buffer: stream to a terminal buffer) |
+| `:Sbx container restart {id:CONTAINER_ID} [--buffer\|-b]` | Restart a container (--buffer: stream to a terminal buffer) |
 | `:Sbx container run` | Interactively create and start a new container (prompts for image, name, ports, volumes, env) |
-| `:Sbx container start {id:CONTAINER_ID} [--buffer|-b]` | Start a stopped container (--buffer: stream to a terminal buffer) |
+| `:Sbx container start {id:CONTAINER_ID} [--buffer\|-b]` | Start a stopped container (--buffer: stream to a terminal buffer) |
 | `:Sbx container stats {id:CONTAINER_ID}` | Show a one-shot resource usage snapshot of a container |
-| `:Sbx container stop {id:CONTAINER_ID} [--buffer|-b]` | Stop a running container (--buffer: stream to a terminal buffer) |
+| `:Sbx container stop {id:CONTAINER_ID} [--buffer\|-b]` | Stop a running container (--buffer: stream to a terminal buffer) |
 | `:Sbx container top {id:CONTAINER_ID}` | List the processes running inside a container |
 | `:Sbx container unpause {id:CONTAINER_ID}` | Resume a paused container's processes |
 | `:Sbx devcontainer attach` | Open a shell in the running devcontainer for the project in cwd |
@@ -114,8 +114,8 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sbx image inspect {image:IMAGE_ID}` | Inspect detailed information about an image |
 | `:Sbx image list` | List all local images |
 | `:Sbx image load {path}` | Load (import) an image from a tarball on disk |
-| `:Sbx image prune [--buffer|-b]` | Remove all dangling images (--buffer: stream to a terminal buffer) |
-| `:Sbx image pull {name} [--buffer|-b]` | Pull an image (--buffer: stream to a terminal buffer) |
+| `:Sbx image prune [--buffer\|-b]` | Remove all dangling images (--buffer: stream to a terminal buffer) |
+| `:Sbx image pull {name} [--buffer\|-b]` | Pull an image (--buffer: stream to a terminal buffer) |
 | `:Sbx image push {name}` | Push an image to a remote registry |
 | `:Sbx image remove {id:IMAGE_ID}` | Remove a local image |
 | `:Sbx image save {image:IMAGE_ID} {path}` | Save (export) an image to a tarball on disk |
