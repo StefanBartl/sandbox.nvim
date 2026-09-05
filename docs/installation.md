@@ -31,8 +31,16 @@ Optional:
 
 ## lazy.nvim
 
-See the table under [Installation](../README.md#installation) in the README for
-which load trigger to pick. The recommended form:
+Three load triggers make sense for a plugin this size. They differ only in
+*when* `setup()` runs:
+
+| Trigger | Startup impact | Commands available | When to use |
+|---|---|---|---|
+| `event = "VimEnter"` | After UI init | Right after startup | **Recommended** — minimal startup cost, nothing to remember |
+| `lazy = false` | Loads immediately | From the start | You want it up before the UI is |
+| `cmd = { "Sandbox", "Sbx" }` | Deferred | Only once a listed command is first run | Large config, many plugins, and you reach for containers rarely |
+
+Recommended:
 
 ```lua
 {
@@ -42,6 +50,32 @@ which load trigger to pick. The recommended form:
   opts = {},
 }
 ```
+
+Eager:
+
+```lua
+{
+  "StefanBartl/sandbox.nvim",
+  dependencies = { "StefanBartl/lib.nvim" },
+  lazy = false,
+  opts = {},
+}
+```
+
+On first use of a command:
+
+```lua
+{
+  "StefanBartl/sandbox.nvim",
+  dependencies = { "StefanBartl/lib.nvim" },
+  cmd = { "Sandbox", "Sbx" },
+  opts = {},
+}
+```
+
+`opts` is passed to `require("sandbox").setup()`, which has to run for anything
+to register — `opts = {}` is enough, and every option it accepts is in
+[configuration.md](configuration.md).
 
 ## packer.nvim
 
@@ -71,7 +105,8 @@ lua require("sandbox").setup()
 :Sandbox containers
 ```
 
-`:checkhealth sandbox` reports which engines it found, which one is in use,
-and **whether that one answers** — the first thing to check when a command
-reports nothing at all. An engine that is installed but silent is the case
-that looks most like a broken plugin, so it is called out by name.
+`:checkhealth sandbox` reports which engine is in use, why that one, and
+**whether it answers** — the first thing to check when a command reports
+nothing at all. An engine that is installed but silent is the case that looks
+most like a broken plugin, so it is called out by name. Every line it can
+print is explained in [health.md](health.md).

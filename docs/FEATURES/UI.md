@@ -17,7 +17,7 @@ per-resource keymap tables. `opts.list_split` controls window placement
 - **Config:** `opts.list_split` (default `"left"`), `opts.list_size`
   (default `nil`, uses Neovim's default)
 
-## Engine switch and filter from a list view (2026-08-24)
+## Engine switch and filter from a list view
 
 Two buffer-local keys wired centrally in `list_actions.set_keymaps`, so every
 list view gets them:
@@ -42,7 +42,7 @@ unfiltered set, so a second filter widens rather than compounding.
 `f` is offered only where the view supplies a `filter` callback, since
 narrowing means re-rendering and only the view knows how.
 
-Also since 2026-08-24: a **bulk destructive confirmation names its items**
+A **bulk destructive confirmation names its items**
 (capped at ten, with an "… and N more" tail). It used to read "Remove 5
 containers?" and stop there — the one question a bulk confirmation must not
 leave open, given a Visual selection is easy to get a line wrong.
@@ -93,13 +93,31 @@ diverging command surface.
 - **Module:** `sandbox/telescope/picker.lua`,
   `sandbox/telescope/{containers,images,wsl}.lua`
 
-## Statusline component
+## Progress indicator
 
-An indicator surfaced while long-running operations (pull/push/build/
-compose/prune) are in flight, styled per `opts.progress_style`. Backed by
-`lib.nvim` when present; a no-op without it.
+Surfaced while a long-running operation (pull/push/build/compose/prune) is in
+flight, styled per `opts.progress_style`. Backed by `lib.nvim` when present; a
+no-op without it. `"statusline"` draws nothing itself and instead publishes the
+text for your own statusline to read.
 - **Config:** `opts.progress_style` (default `"auto"`; one of
   `"auto"|"notify"|"statusline"|"fidget"|"float"|"kit"`)
+
+## Statusline component
+
+A different thing from the indicator above, and unrelated to it:
+`require("sandbox.statusline").status()` returns an ambient
+`"engine (running/total)"` summary string — `"docker (2/5)"` — for a statusline
+to show continuously.
+
+It is called on every redraw, so it never blocks: it hands back the cached
+text immediately and, once that text is older than `opts.status_cache_ttl_ms`,
+kicks off a background refresh whose result lands in the cache for the next
+redraw. Any failure — daemon down, no engine configured — becomes `""` rather
+than an error. A plain string with no hard dependency on any statusline plugin;
+`lualine_component` is an alias of `status`, there so a lualine section can
+name it directly.
+- **Module:** `sandbox/statusline.lua` (`M.status`, `M.lualine_component`)
+- **Config:** `opts.status_cache_ttl_ms` (default `3000`)
 
 ## Status highlighting
 

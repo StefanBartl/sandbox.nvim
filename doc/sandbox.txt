@@ -37,7 +37,7 @@ Architecture is hexagonal (ports & adapters): a `ContainerEngine`/
 Podman, or nerdctl adapter implements it by shelling out to the matching
 CLI. Adding a new engine or a new operation means adding an adapter/port
 method, not touching the command layer. See
-https://github.com/StefanBartl/sandbox.nvim/blob/main/docs/ADD_USECASE.md
+https://github.com/StefanBartl/sandbox.nvim/blob/main/docs/add_usecase.md
 if you want to contribute one.
 
 ==============================================================================
@@ -48,10 +48,17 @@ Requirements                                             *sandbox-requirements*
   `:Sandbox`/`:Sbx` command tree is built on `lib.nvim.bindings.usercmd.composer`,
   and the buffer/window views under `lua/sandbox/ui/` depend on
   `lib.nvim.window` directly. The plugin does not run without it.
-- At least one of: podman, docker, or nerdctl on `$PATH`.
+- At least one of: podman, docker, or nerdctl on `$PATH`, WITH ITS DAEMON
+  RUNNING. Being on `$PATH` says an engine is installed; it says nothing
+  about a daemon being up, and detection skips one that does not answer.
+  See |sandbox-health|.
 - (Optional) telescope.nvim — only needed for the `:Telescope sandbox`
-  picker extension, see |sandbox-commands-devcontainer| sibling section
-  below on keymaps. Everything else works without it.
+  picker extension, an alternative front end to the list views described
+  under |sandbox-keymaps|. Everything else works without it.
+- (Optional) nvzone/menu — the right-click context menu on list-view
+  buffers, see |sandbox-config-menu|.
+- (Optional) hover.nvim — image previews under the cursor, see
+  |sandbox-config-hover|.
 - (Optional, Windows only) `wsl.exe` on `$PATH` — enables the `wsl`
   sub-namespace; it is simply absent everywhere else.
 
@@ -74,7 +81,8 @@ lazy.nvim, loaded after the UI is ready (recommended): >lua
     }
 <
 If `engine` is omitted, sandbox.nvim auto-detects in this order: Podman,
-then Docker, then nerdctl (whichever is first found on `$PATH`).
+then Docker, then nerdctl — the first that is on `$PATH` *and answers*.
+An engine you name is an instruction and is never probed.
 
 ==============================================================================
 Configuration                                           *sandbox-configuration*
@@ -144,6 +152,57 @@ progress_style ~
     `<Esc>`-ed to abort the command (`SIGTERM`), same as the handle's own
     `stop()`.
 
+                                                     *sandbox-config-hover*
+hover ~
+    Type: `boolean`  Default: `true`
+    Register the request-only image preview with hover.nvim: `:Hover show`
+    on an image reference in a Dockerfile or compose file reports whether
+    it is pulled, its size, and any containers from it. Never fires on
+    hover.nvim's automatic trigger — an engine call costs 300-750 ms. A
+    no-op when hover.nvim is not installed.
+
+                                          *sandbox-config-max_error_length*
+max_error_length ~
+    Type: `integer`  Default: `200`
+    How much of an unrecognized adapter error reaches the notification.
+    The full text always goes to `sandbox.logger`, and the truncated
+    message says where to read it.
+
+                                       *sandbox-config-status_cache_ttl_ms*
+                                   *sandbox-config-completion_cache_ttl_ms*
+status_cache_ttl_ms ~
+completion_cache_ttl_ms ~
+    Type: `integer`  Defaults: `3000` and `4000`
+    How long a statusline reading (|sandbox-statusline|) and a `<Tab>`
+    completion listing stay cached. Both trade freshness against how often
+    the engine is asked: raise them for a slow daemon, lower them if a
+    stale reading annoys you.
+
+                                                      *sandbox-config-menu*
+menu ~
+    Type: `{ enable: boolean }`  Default: `{ enable = true }`
+    Bind `<RightMouse>` on list-view buffers to a context menu mirroring
+    that buffer's own keymaps, via nvzone/menu (a soft dependency). Off by
+    itself when nvzone/menu is not installed; `enable = false` drops the
+    trigger entirely.
+
+                                                   *sandbox-config-keymaps*
+keymaps ~
+    Type: `table|false|nil`  Default: `nil`
+    Per-list overrides of the buffer-local keys in |sandbox-keymaps|.
+    `nil` keeps every default, `false` binds none. Each entry is
+    `action = lhs`, where an lhs may be one key, a list of keys, or
+    `false` to drop that action; action names are the descriptions the
+    views declare, slugified ("logs (follow)" is `logs_follow`). A name
+    matching nothing is reported, not silently ignored. >lua
+    require("sandbox").setup({
+      keymaps = {
+        list       = { engine = false },
+        containers = { inspect = "o", remove = false },
+        inspect    = { close = "<Esc>" },
+      },
+    })
+<
 Per-project engine override: drop a `.sandboxrc` file with a single
 `engine=docker` (or `podman`/`nerdctl`) line in a repository's root to pin
 that repository to a specific engine regardless of the global default —
@@ -181,10 +240,15 @@ registered.
     logs-follow {id}                         Stream a container's logs live
                                              (`logs -f`); press `q` in the
                                              buffer to stop following.
-    exec {id} [shell]                        Open an interactive shell
+    exec {id} [shell] [workdir=<path>]       Open an interactive shell
                                              inside a container.
-    exec-once {id} [command...]              Run a one-off command and show
-                                             its output (non-interactive).
+    exec-once {id} [workdir=<path>]          Run a one-off command and show
+              [command...]                   its output (non-interactive).
+                                             `workdir=` becomes the
+                                             engine's `-w`, and goes before
+                                             the command: every token after
+                                             it belongs to what runs inside
+                                             the container.
     start {id} [--buffer|-b]                 Start a container.
     stop {id} [--buffer|-b]                  Stop a container.
     kill {id} [--buffer|-b]                  Force kill a container.
@@ -401,6 +465,18 @@ act on the entry under the cursor without retyping its id/name into a new
 `:Sandbox` command. Press `?` inside any list buffer for a live reminder
 of its keymaps; `q` closes it.
 
+Four keys every list view shares: `q` closes it, `?` lists what is
+actually bound in that buffer, `E` cycles docker -> podman -> nerdctl for
+the session and re-renders, and `f` narrows the list — matching across
+every field of an entry, not just the rendered text, so `f redis` finds the
+container running that image. `f` is bound only where the view supplies a
+filter callback; the container list has it.
+
+Every key below is remappable via |sandbox-config-keymaps|. With
+telescope.nvim installed and `require("telescope").load_extension("sandbox")`
+called, `:Telescope sandbox containers|images|wsl` offers the same action
+set through a fuzzy finder instead.
+
 Container list (`sandbox.nvim://container-list`): ~
     <CR> / i    inspect            n    rename (prompts)
     s           start              D    remove (confirm)
@@ -456,8 +532,8 @@ Statusline                                                 *sandbox-statusline*
 
 `require("sandbox.statusline").status()` returns an ambient
 `"engine (running/total)"` summary string (e.g. `"docker (2/5)"`), cached
-for 3 seconds so a statusline redrawing several times a second doesn't
-shell out on every call. It degrades to `""` on any failure (daemon down,
+for |sandbox-config-status_cache_ttl_ms| so a statusline redrawing several
+times a second doesn't shell out on every call. It degrades to `""` on any failure (daemon down,
 no engine configured) instead of erroring — plain string return with no
 hard dependency on any statusline plugin.
 
@@ -474,17 +550,32 @@ Health                                                           *sandbox-health
 sandbox.nvim integrates with Neovim's health-check system: >vim
     :checkhealth sandbox
 <
-This verifies that the configured engine (`podman`/`docker`/`nerdctl`) is
-valid and that the matching CLI executable is reachable on `$PATH`. If an
-unsupported engine is configured, or the CLI binary is missing, a clear
-actionable error is shown.
+Five checks, in order:
+
+  1. The *resolved* engine — the one a command would actually use, session
+     override and `.sandboxrc` included, not the configured default.
+  2. Whether its CLI is reachable on `$PATH`.
+  3. Whether it ANSWERS. A stopped daemon leaves the binary on `$PATH` and
+     every call failing; when another installed engine does answer, the
+     check names it and says how to switch.
+  4. WSL availability (informational — its absence is expected off
+     Windows, and explains a missing `:Sandbox wsl`).
+  5. The state of the hover.nvim integration: disabled, not installed,
+     registered, or installed-but-too-old to honour a request-only
+     contribution.
+
+Then `lib.nvim`'s composer checks the registered `:Sandbox` routes.
+
+Every line it can print is spelled out in
+https://github.com/StefanBartl/sandbox.nvim/blob/main/docs/health.md
 
 ==============================================================================
 About                                                             *sandbox-about*
 
 Repository:  https://github.com/StefanBartl/sandbox.nvim
 Issues:      https://github.com/StefanBartl/sandbox.nvim/issues
-License, contribution guide, and architecture notes live in the repo's
-`docs/` directory (`CONTRIBUTING.md`, `ADD_USECASE.md`).
+Contribution guide and architecture notes live in the repo's `docs/`
+directory (`README.md` indexes it; `CONTRIBUTING.md` and `add_usecase.md`
+are the two for contributors). `LICENSE` is in the repository root.
 
 vim:tw=78:ts=8:noet:ft=help:norl:

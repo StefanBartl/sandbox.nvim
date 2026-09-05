@@ -8,6 +8,8 @@ is the short version of all of it.
 | Page | Answers |
 | --- | --- |
 | [installation.md](installation.md) | What has to be there first — this plugin drives a container engine, so the prerequisites are most of the answer — and a spec per plugin manager |
+| [configuration.md](configuration.md) | Every `setup()` option, its default, and what it trades against |
+| [health.md](health.md) | Every line `:checkhealth sandbox` can print, and what to do about each |
 
 ## Using it
 
@@ -21,11 +23,12 @@ is the short version of all of it.
 
 | Page | Answers |
 | --- | --- |
-| [FEATURES/](FEATURES/README.md) | Eleven pages, one per area — containers, images, volumes and networks, compose, devcontainers, the registry, the engines it can run on, WSL, the UI, and the hover integration |
+| [FEATURES/](FEATURES/README.md) | Ten pages, one per area — containers, images, volumes and networks, compose, devcontainers, the registry, the engines it can run on, WSL, the UI, and the hover integration |
 
 ## Working on it
 
 | Page | Answers |
 | --- | --- |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | What is expected of a change |
-| [ADD_USECASE.md](ADD_USECASE.md) | How to add a use case — the one extension point with a recipe, walked through end to end |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | What is expected of a change, and where each layer lives |
+| [add_usecase.md](add_usecase.md) | How to add an operation — the one extension point with a recipe, walked from port to route to spec |
+| [../TESTS/README.md](../TESTS/README.md) | Running the suite locally, and the shape of a new spec |

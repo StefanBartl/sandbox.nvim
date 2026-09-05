@@ -162,7 +162,7 @@ local function content_for(name, tag, result)
   local reference = name .. ":" .. tag
   if not result.image then
     return {
-      lines = { "not pulled", "", "`:Sandbox images pull` fetches it." },
+      lines = { "not pulled", "", "`:Sandbox image pull` fetches it." },
       title = reference,
     }
   end

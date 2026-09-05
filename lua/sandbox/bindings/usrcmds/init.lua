@@ -1,8 +1,9 @@
 ---@module 'sandbox.bindings.usrcmds'
 ---@brief Registers :Sandbox (and its short alias :Sbx) -- a single
---- lib.nvim.bindings.usercmd.composer verb with three sub-namespaces (container,
---- image, and -- when wsl.exe is reachable -- wsl), e.g. `:Sandbox container
---- list` / `:Sbx image pull <name>`. Replaces the earlier three independent
+--- lib.nvim.bindings.usercmd.composer verb with ten sub-namespaces (container,
+--- image, volume, network, compose, engine, registry, docs, devcontainer, and
+--- -- when wsl.exe is reachable -- wsl), e.g. `:Sandbox container list` /
+--- `:Sbx image pull <name>`. Replaces the earlier three independent
 --- verbs (:Container/:Image/:Wsl): those names were too generic and
 --- collided conceptually with unrelated plugins (e.g. an image/png viewer
 --- claiming :Image), so every subcommand now hangs off one shared,

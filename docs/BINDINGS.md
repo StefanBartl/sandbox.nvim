@@ -44,6 +44,13 @@ scrollable terminal buffer instead of collapsing it into a `vim.notify`
 summary — useful for verbose operations (start/stop/prune). Example:
 `:Sandbox container start web --buffer`, `:Sbx container prune -b`.
 
+`workdir=` is written **before** the command on `exec-once`, unlike in
+[`GENERATED_COMMANDS.md`](./GENERATED_COMMANDS.md), which prints every `kv`
+token last because that is the order the route declares. Both parse, but every
+token after the command is part of what runs inside the container, so putting
+`workdir=` at the end invites it being read as an argument to that command.
+This is the deliberate difference to keep when diffing the two files.
+
 ## `:Sandbox image <subcommand>` (alias: `:Sbx image ...`)
 
 | Subcommand | Args | Description |
@@ -102,7 +109,7 @@ id/name argument — there is exactly one project per detected file.
 Switch the active engine for the rest of this Neovim session instead of only
 at `setup({})` time — useful on a machine with both Docker and Podman
 installed. Precedence: session override (`engine set`) > per-project
-`.sandboxrc` (see the Configuration section of the README) > configured/
+`.sandboxrc` (see [configuration.md](configuration.md)) > configured/
 detected default.
 
 | Subcommand | Args | Description |
@@ -189,7 +196,7 @@ mode), then press the same key you'd use on a single line to apply it to
 every selected item — `s`/`x`/`X`/`D` (start/stop/kill/remove) in the
 container list, `D` (remove) elsewhere. Destructive bulk actions confirm
 once for the whole batch instead of once per item — **and the confirmation
-names them** (2026-08-24): it used to read "Remove 5 containers?" and stop
+names them**: an earlier version read "Remove 5 containers?" and stopped
 there, which is the one question a bulk confirmation must not leave open,
 since a Visual selection is easy to get a line wrong and the answer is
 irreversible. Capped at ten with an "… and N more" tail, because a prompt
@@ -208,7 +215,7 @@ though the image is not in the rendered line. An empty query restores the
 full list, and filtering always starts from the unfiltered set, so a second
 filter widens instead of compounding.
 
-**Every one of these keys is configurable** (2026-08-26). They are declared
+**Every one of these keys is configurable.** They are declared
 as named actions through
 [`lib.nvim.bindings.keymap`](https://github.com/StefanBartl/lib.nvim), and
 the name is the description slugified — "logs (follow)" is `logs_follow`:
@@ -299,9 +306,9 @@ exist purely for cleanup, scoped to a single scratch buffer each rather
 than persisting globally:
 
 - `ui/list_actions.lua`: stops and closes a list view's `refresh_interval`
-  timer (see the README's Configuration section) when its buffer is
-  wiped, so auto-refresh doesn't keep a `luv` timer running against a
-  buffer that no longer exists.
+  `refresh_interval` timer (see [configuration.md](configuration.md)) when
+  its buffer is wiped, so auto-refresh doesn't keep a `luv` timer running
+  against a buffer that no longer exists.
 - `ui/log_follow_view.lua`: stops the `logs -f` job when a
   `container logs-follow` buffer is wiped, so following doesn't keep a
   background job running after the buffer is gone.
