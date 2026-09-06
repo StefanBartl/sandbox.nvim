@@ -51,6 +51,7 @@ jobs:
         with:
           repository: StefanBartl/lib.nvim
           path: lib.nvim
+          ref: ci-verified
 
       - uses: rhysd/action-setup-vim@v1
         with:
