@@ -1,5 +1,5 @@
 ---@module 'sandbox.adapters.podman.containers.start_container'
---- Start a specific container
+--- Podman Adapter: Function to start a container
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,5 +1,5 @@
 ---@module 'sandbox.adapters.podman.containers.kill_container'
---- Kill a specific container
+--- Podman Adapter: Function to kill a container
 
 local M = {}
 

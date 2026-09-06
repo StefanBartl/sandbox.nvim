@@ -8,6 +8,7 @@ local M = {}
 ---
 --- @param container_id string: ID or name of the container
 --- @param command string[]|nil: Optional command to execute inside the container (default is { "sh" })
+--- @param workdir string?: Working directory inside the container (`-w`)
 function M.exec_in_container(container_id, command, workdir)
   command = command or { "sh" }
 
