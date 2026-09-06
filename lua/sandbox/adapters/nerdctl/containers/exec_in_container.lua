@@ -22,7 +22,14 @@ function M.exec_in_container(container_id, command, workdir)
 
   vim.cmd("vnew")
   local buf = vim.api.nvim_get_current_buf()
-  vim.fn.termopen(args)
+  -- `jobstart({ term = true })` replaces the deprecated `termopen`, but only
+  -- exists from 0.11; older supported versions fall back to the old call.
+  if vim.fn.has("nvim-0.11") == 1 then
+    vim.fn.jobstart(args, { term = true })
+  else
+    ---@diagnostic disable-next-line: deprecated
+    vim.fn.termopen(args)
+  end
   vim.api.nvim_buf_set_name(buf, "sandbox.nvim://exec/" .. container_id)
   vim.bo[buf].bufhidden = "wipe"
 

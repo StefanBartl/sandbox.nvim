@@ -1,8 +1,10 @@
 -- Working directory (`-w`) on `exec_in_container`, across all three engines.
 --
 -- `exec_in_container` spawns a terminal rather than going through `run_argv`,
--- so the shared `fake_run_argv` helper does not see it — `vim.fn.termopen` is
--- what has to be captured here.
+-- so the shared `fake_run_argv` helper does not see it — the adapter picks
+-- `vim.fn.jobstart(argv, { term = true })` on nvim-0.11+ and falls back to
+-- the deprecated `vim.fn.termopen` below that (DEP-02), so both are stubbed
+-- and whichever one the running nvim takes is what gets captured here.
 --
 -- The property worth pinning is argv *order*: `-w` has to sit before the
 -- container id. After it, the flag would be handed to the command running
@@ -10,14 +12,20 @@
 -- looks like the command's own error rather than ours.
 
 describe("adapters.*.containers.exec_in_container workdir", function()
-  local real_termopen, real_cmd, real_feedkeys
+  local real_termopen, real_jobstart, real_cmd, real_feedkeys
   local captured
 
   before_each(function()
     captured = nil
-    real_termopen, real_cmd, real_feedkeys = vim.fn.termopen, vim.cmd, vim.api.nvim_feedkeys
+    real_termopen, real_jobstart, real_cmd, real_feedkeys =
+      vim.fn.termopen, vim.fn.jobstart, vim.cmd, vim.api.nvim_feedkeys
     ---@diagnostic disable-next-line: duplicate-set-field
     vim.fn.termopen = function(argv)
+      captured = argv
+      return 0
+    end
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.fn.jobstart = function(argv)
       captured = argv
       return 0
     end
@@ -32,7 +40,8 @@ describe("adapters.*.containers.exec_in_container workdir", function()
   end)
 
   after_each(function()
-    vim.fn.termopen, vim.cmd, vim.api.nvim_feedkeys = real_termopen, real_cmd, real_feedkeys
+    vim.fn.termopen, vim.fn.jobstart, vim.cmd, vim.api.nvim_feedkeys =
+      real_termopen, real_jobstart, real_cmd, real_feedkeys
   end)
 
   local ENGINES = { "docker", "podman", "nerdctl" }

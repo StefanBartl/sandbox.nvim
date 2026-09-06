@@ -23,7 +23,14 @@ function M.exec_in_distro(name, command)
   vim.cmd("vnew")
   local buf = vim.api.nvim_get_current_buf()
   api.nvim_buf_set_name(buf, "sandbox.nvim://wsl/" .. name)
-  vim.fn.termopen(args)
+  -- `jobstart({ term = true })` replaces the deprecated `termopen`, but only
+  -- exists from 0.11; older supported versions fall back to the old call.
+  if vim.fn.has("nvim-0.11") == 1 then
+    vim.fn.jobstart(args, { term = true })
+  else
+    ---@diagnostic disable-next-line: deprecated
+    vim.fn.termopen(args)
+  end
   vim.bo[buf].bufhidden = "wipe"
   api.nvim_set_current_buf(buf)
   api.nvim_feedkeys(vim.api.nvim_replace_termcodes("i", true, false, true), "n", true)
