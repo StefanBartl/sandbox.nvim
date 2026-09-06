@@ -9,32 +9,64 @@ local M = {}
 --- @param on_exit? fun(code: integer|nil)
 --- @return table handle with a `:stop()` method
 function M.follow_logs(container_id, on_line, on_exit)
-  local buffered = ""
+  -- stdout and stderr are two independent byte streams; `vim.system` invokes
+  -- their callbacks separately as each pipe has data, in whatever order the
+  -- OS delivers them. A single shared buffer here would splice a stdout
+  -- chunk that has not seen its newline yet with an unrelated stderr chunk
+  -- that arrives first -- e.g. stdout emits "foo" (no newline), then stderr
+  -- emits "bar\n": a shared buffer turns that into one line "foobar" that
+  -- never existed in either stream. Each stream gets its own trailing-partial
+  -- buffer so a line is only ever completed by more of the *same* stream.
+  local function make_stream_buffer()
+    local buffered = ""
+    return {
+      feed = function(data)
+        buffered = buffered .. data
+        local chunks = vim.split(buffered, "\n", { plain = true })
+        buffered = table.remove(chunks) or ""
+        return chunks
+      end,
+      flush = function()
+        local last = buffered
+        buffered = ""
+        return last
+      end,
+    }
+  end
 
-  local function on_output(_, data)
-    if not data then
-      return
-    end
-    buffered = buffered .. data
-    local chunks = vim.split(buffered, "\n", { plain = true })
-    buffered = table.remove(chunks) or ""
-    if #chunks > 0 then
-      vim.schedule(function()
-        for _, line in ipairs(chunks) do
-          on_line(line)
-        end
-      end)
+  local stdout_buf = make_stream_buffer()
+  local stderr_buf = make_stream_buffer()
+
+  local function make_on_output(stream_buf)
+    return function(_, data)
+      if not data then
+        return
+      end
+      local chunks = stream_buf.feed(data)
+      if #chunks > 0 then
+        vim.schedule(function()
+          for _, line in ipairs(chunks) do
+            on_line(line)
+          end
+        end)
+      end
     end
   end
 
   local job = vim.system(
     { "podman", "logs", "-f", container_id },
-    { stdout = on_output, stderr = on_output },
+    { stdout = make_on_output(stdout_buf), stderr = make_on_output(stderr_buf) },
     function(obj)
-      if buffered ~= "" then
-        local last = buffered
+      local leftover_out = stdout_buf.flush()
+      local leftover_err = stderr_buf.flush()
+      if leftover_out ~= "" or leftover_err ~= "" then
         vim.schedule(function()
-          on_line(last)
+          if leftover_out ~= "" then
+            on_line(leftover_out)
+          end
+          if leftover_err ~= "" then
+            on_line(leftover_err)
+          end
         end)
       end
       if on_exit then
