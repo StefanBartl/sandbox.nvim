@@ -306,7 +306,7 @@ exist purely for cleanup, scoped to a single scratch buffer each rather
 than persisting globally:
 
 - `ui/list_actions.lua`: stops and closes a list view's `refresh_interval`
-  `refresh_interval` timer (see [configuration.md](configuration.md)) when
+  timer (see [configuration.md](configuration.md)) when
   its buffer is wiped, so auto-refresh doesn't keep a `luv` timer running
   against a buffer that no longer exists.
 - `ui/log_follow_view.lua`: stops the `logs -f` job when a
