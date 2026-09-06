@@ -3,7 +3,7 @@
 --- (lualine, heirline, or the native statusline via `%{v:lua...}`), for
 --- people who want to know "is anything running" without opening a list
 --- view. Plain Lua string return, no hard dependency on any statusline
---- plugin -- lua/sandbox/README.md-equivalent soft-dependency philosophy.
+--- plugin -- the same soft-dependency philosophy as the rest of sandbox.nvim.
 ---@description
 --- Result is cached for `status_cache_ttl_ms` so a statusline redrawing many
 --- times a second doesn't shell out to `docker ps`/`podman ps` on every

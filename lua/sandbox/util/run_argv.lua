@@ -1,7 +1,7 @@
 ---@module 'sandbox.util.run_argv'
 --- Argv runner: uses lib.nvim's cross.run_argv when lib.nvim is installed,
 --- falls back to plain vim.fn.system otherwise (lib.nvim stays an optional
---- dependency, matching containers/notify.lua's convention).
+--- dependency, matching sandbox.notify's convention).
 
 local ok, lib_run_argv = pcall(require, "lib.nvim.cross.run_argv")
 -- Optional dependency, same convention as lib_run_argv above: a completed

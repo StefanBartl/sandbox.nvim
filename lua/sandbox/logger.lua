@@ -2,7 +2,7 @@
 --- Structured diagnostics logger: uses lib.nvim's logger when installed
 --- (in-memory ring + JSONL file sink, inspectable via :LibLogger show),
 --- falls back to a no-op otherwise (lib.nvim stays an optional dependency,
---- matching containers/notify.lua's convention).
+--- matching sandbox.notify's convention).
 ---
 --- notify_level is "off": this module never surfaces messages to the user by
 --- itself. sandbox.notify owns all user-facing text; this one only records

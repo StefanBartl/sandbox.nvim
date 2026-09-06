@@ -10,8 +10,8 @@
 --- unambiguous prefix instead.
 ---@description
 --- Breaking change, no compat aliases for the old :Container/:Image/:Wsl
---- verb names. The 7 "*Buffer" terminal-output variants
---- (ContainerStartBuffer, ImagePullBuffer, ...) remain folded into a
+--- verb names. The former "*Buffer" terminal-output variants
+--- (ContainerStartBuffer, ImagePullBuffer, ...) are folded into a
 --- `--buffer`/`-b` flag on their base subcommand, e.g.
 --- `:Sandbox container start <id> --buffer`.
 ---
