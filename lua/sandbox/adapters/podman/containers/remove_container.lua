@@ -1,5 +1,5 @@
 ---@module 'sandbox.adapters.podman.containers.remove_container'
---- Remove a specific container
+--- Podman Adapter: Function to remove a container
 
 local M = {}
 

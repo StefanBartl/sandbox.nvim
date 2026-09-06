@@ -1,12 +1,12 @@
 ---@module 'sandbox.adapters.nerdctl.engine'
 --- Nerdctl Adapter Aggregator
 ---
---- Combines container and image adapters into a full implementation of the
---- ContainerEngine port. Merges the sub-aggregators wholesale (rather than
---- re-listing every field by hand) so a new container/image method only has
---- to be added to containers_engine.lua/images_engine.lua to be reachable
---- through sandbox.get_engine() -- a hand-copied field list silently drops
---- new methods the moment someone forgets to update it here too.
+--- Merges the resource sub-aggregators (containers, images, volumes,
+--- networks, registry) wholesale into a full implementation of the
+--- ContainerEngine port, rather than re-listing every field by hand -- a
+--- new method only has to be added to the matching *_engine.lua to be
+--- reachable through sandbox.get_engine(); a hand-copied field list would
+--- silently drop it the moment someone forgot to update this file too.
 
 local containers = require("sandbox.adapters.nerdctl.containers_engine")
 local images = require("sandbox.adapters.nerdctl.images_engine")

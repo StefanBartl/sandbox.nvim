@@ -1,9 +1,15 @@
+-- Podman Adapter: Function to inspect a container
+
 local run_argv = require("sandbox.util.run_argv")
 
 local M = {}
 
+--- Inspect a specific container and return its detailed metadata
+--- @param container_id string: ID or name of the container to inspect
 --- @param on_done? fun(...) Optional: when given, runs asynchronously and
 ---        delivers exactly the values the synchronous form returns.
+--- @return table|string[]|nil: Container metadata as a table, or error message as
+---         string[] -- nil on the async path, where `on_done` receives them instead.
 function M.inspect_container(container_id, on_done)
   local argv = { "podman", "inspect", container_id }
 
