@@ -30,7 +30,14 @@ local function open_term_buffer(name, cmd)
   vim.cmd("vnew")
   local buf = vim.api.nvim_get_current_buf()
   vim.api.nvim_buf_set_name(buf, name)
-  vim.fn.termopen(cmd)
+  -- `jobstart({ term = true })` replaces the deprecated `termopen`, but only
+  -- exists from 0.11; older supported versions fall back to the old call.
+  if vim.fn.has("nvim-0.11") == 1 then
+    vim.fn.jobstart(cmd, { term = true })
+  else
+    ---@diagnostic disable-next-line: deprecated
+    vim.fn.termopen(cmd)
+  end
   vim.bo[buf].bufhidden = "wipe"
   vim.api.nvim_set_current_buf(buf)
   -- Enter terminal insert mode so output is visible immediately
