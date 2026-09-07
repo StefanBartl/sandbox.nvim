@@ -101,7 +101,7 @@ contribution is registered `on_request`. See
 
 | Key | Type | Default | What it does |
 |---|---|---|---|
-| `status_cache_ttl_ms` | `integer` | `3000` | How long a statusline reading stays fresh |
+| `status_cache_ttl_ms` | `integer` | `3000` | How long a statusline reading stays fresh — see [statusline.md](statusline.md), and raise it rather than lower it if the component feels sticky |
 | `completion_cache_ttl_ms` | `integer` | `4000` | How long a `<Tab>` completion listing stays cached |
 
 Both trade freshness against how often the engine is asked. Raise them for a

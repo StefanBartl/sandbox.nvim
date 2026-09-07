@@ -18,6 +18,7 @@ is the short version of all of it.
 | [BINDINGS.md](BINDINGS.md) | Everything is one user command; this is that command's full surface, plus the keymaps and autocommands |
 | [GENERATED_COMMANDS.md](GENERATED_COMMANDS.md) | The same command tree as the composer generates it — machine-written, not hand-maintained, so it cannot drift from the source |
 | [WORKFLOW.md](WORKFLOW.md) | The different question: not what each subcommand does, but how containers, images and volumes combine into a way of working |
+| [statusline.md](statusline.md) | The ambient `engine (running/total)` summary: how to wire it into lualine, heirline or the native statusline, and why its refresh is deliberately one redraw behind |
 
 ## Why it is the way it is
 
