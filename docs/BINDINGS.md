@@ -299,6 +299,21 @@ folded, indented `vim.inspect`-style Lua table (`foldmethod=indent`,
 starting at `foldlevel=1`) instead of a flat dump — use `za`/`zo`/`zc` to
 toggle sections. `q` closes the buffer.
 
+### Telescope picker
+
+`require("telescope").load_extension("sandbox")` registers the same action
+set as the list-view buffers, through a fuzzy finder instead of a
+buffer-local keymap table:
+
+```vim
+:Telescope sandbox containers   " <CR> inspect, <C-s> start, <C-x> stop, <C-r> restart, <C-l> logs, <C-d> remove
+:Telescope sandbox images       " <CR> inspect, <C-h> history, <C-d> remove
+:Telescope sandbox wsl          " <CR> exec, <C-s> start, <C-x> stop, <C-d> set default
+```
+
+See [FEATURES/UI.md](FEATURES/UI.md#telescope-picker-extension) for how the
+picker relates to the list views it mirrors.
+
 ## Autocmds
 
 No global augroup — but two buffer-local, one-shot `BufWipeout` autocmds
