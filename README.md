@@ -46,7 +46,7 @@ each page answers.
 - [Generated commands](docs/GENERATED_COMMANDS.md) — the same tree as the composer generates it: machine-written, so it cannot drift from the source.
 - [Workflow](docs/WORKFLOW.md) — how containers, images and volumes combine into a way of working.
 - [Statusline](docs/statusline.md) — the ambient summary, its cache, and how to wire it into lualine or the native statusline.
-- [Integrations](docs/FEATURES/UI.md#right-click-context-menu-nvzonemenu) — the right-click context menu and the Telescope picker extension.
+- [Integrations](docs/integrations.md) — the right-click context menu and the Telescope picker extension.
 
 **Why it is the way it is**
 
