@@ -20,6 +20,7 @@ is the short version of all of it.
 | [GENERATED_COMMANDS.md](GENERATED_COMMANDS.md) | The same command tree as the composer generates it — machine-written, not hand-maintained, so it cannot drift from the source |
 | [WORKFLOW.md](WORKFLOW.md) | The different question: not what each subcommand does, but how containers, images and volumes combine into a way of working |
 | [statusline.md](statusline.md) | The ambient `engine (running/total)` summary: how to wire it into lualine, heirline or the native statusline, and why its refresh is deliberately one redraw behind |
+| [integrations.md](integrations.md) | The right-click context menu (nvzone/menu) and the Telescope picker extension — what each is, and that neither is a hard dependency |
 
 ## Why it is the way it is
 

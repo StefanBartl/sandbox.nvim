@@ -311,7 +311,7 @@ buffer-local keymap table:
 :Telescope sandbox wsl          " <CR> exec, <C-s> start, <C-x> stop, <C-d> set default
 ```
 
-See [FEATURES/UI.md](FEATURES/UI.md#telescope-picker-extension) for how the
+See [integrations.md](integrations.md#telescope-picker-extension) for how the
 picker relates to the list views it mirrors.
 
 ## Autocmds
