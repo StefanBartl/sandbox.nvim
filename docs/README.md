@@ -8,6 +8,7 @@ is the short version of all of it.
 | Page | Answers |
 | --- | --- |
 | [installation.md](installation.md) | What has to be there first — this plugin drives a container engine, so the prerequisites are most of the answer — and a spec per plugin manager |
+| [quickstart.md](quickstart.md) | The first thing to run after installing |
 | [configuration.md](configuration.md) | Every `setup()` option, its default, and what it trades against |
 | [health.md](health.md) | Every line `:checkhealth sandbox` can print, and what to do about each |
 
@@ -25,6 +26,7 @@ is the short version of all of it.
 | Page | Answers |
 | --- | --- |
 | [FEATURES/](FEATURES/README.md) | Ten pages, one per area — containers, images, volumes and networks, compose, devcontainers, the registry, the engines it can run on, WSL, the UI, and the hover integration |
+| [around-it.md](around-it.md) | How this plugin's scope relates to reposcope.nvim, hover.nvim and dap.nvim |
 
 ## Working on it
 

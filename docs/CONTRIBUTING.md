@@ -1,8 +1,12 @@
 # Contributing to sandbox.nvim
 
 Thank you for your interest! Bugs, ideas and questions are welcome in the
-[issue tracker](https://github.com/StefanBartl/sandbox.nvim/issues); pull
+[issue tracker](https://github.com/StefanBartl/sandbox.nvim/issues), and
+anything more open-ended fits a
+[discussion](https://github.com/StefanBartl/sandbox.nvim/discussions); pull
 requests very welcome.
+
+Clone the repository and either symlink it or add it to your runtime path.
 
 ## Ground rules
 
