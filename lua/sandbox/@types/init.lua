@@ -47,7 +47,7 @@
 ---@field logs? table<string, string|string[]|false>|false
 
 ---Opt-out for the list-view right-click context menu
----(sandbox.integrations.menu, lib.nvim.contextmenu). sandbox.nvim ships no
+---(sandbox.integrations.menu, ui.contextmenu). sandbox.nvim ships no
 ---nvzone/menu dependency itself; this only gates whether the trigger is
 ---bound and whether entries are returned.
 ---@class Sandbox.MenuOptions

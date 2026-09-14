@@ -7,13 +7,13 @@ describe("util.confirm", function()
         fake_kit.last_opts = opts
       end,
     }
-    package.loaded["lib.nvim.ui.kit"] = fake_kit
+    package.loaded["ui.kit"] = fake_kit
     package.loaded["sandbox.util.confirm"] = nil
     package.loaded["sandbox.config"] = nil
   end)
 
   after_each(function()
-    package.loaded["lib.nvim.ui.kit"] = nil
+    package.loaded["ui.kit"] = nil
   end)
 
   it("routes through kit.confirm with the given question", function()

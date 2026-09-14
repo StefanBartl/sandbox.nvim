@@ -21,7 +21,7 @@ function M.login(registry)
     return
   end
 
-  local kit = require("lib.nvim.ui.kit")
+  local kit = require("ui.kit")
 
   kit.input({
     title = "Registry username: ",

@@ -93,14 +93,14 @@ describe("list_actions.bulk_confirm_then", function()
 
   after_each(function()
     require("sandbox.config").options.confirm_destructive = orig_confirm_destructive
-    package.loaded["lib.nvim.ui.kit"] = nil
+    package.loaded["ui.kit"] = nil
   end)
 
   it("prompts once for the whole batch, then restores confirm_destructive", function()
     require("sandbox.config").options.confirm_destructive = true
 
     local prompts = 0
-    package.loaded["lib.nvim.ui.kit"] = {
+    package.loaded["ui.kit"] = {
       confirm = function(opts)
         prompts = prompts + 1
         opts.on_answer(true)
@@ -129,7 +129,7 @@ describe("list_actions.bulk_confirm_then", function()
     require("sandbox.config").options.confirm_destructive = false
 
     local prompts = 0
-    package.loaded["lib.nvim.ui.kit"] = {
+    package.loaded["ui.kit"] = {
       confirm = function(opts)
         prompts = prompts + 1
         opts.on_answer(true)

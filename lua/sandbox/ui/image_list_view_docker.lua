@@ -67,7 +67,7 @@ return function(images)
       lhs = "t",
       desc = "tag",
       fn = function(img)
-        require("lib.nvim.ui.kit").input({
+        require("ui.kit").input({
           title = "Tag " .. ref(img) .. " as: ",
           on_submit = function(target)
             if target and target ~= "" then

@@ -17,5 +17,6 @@ how large it is, and which containers came from it. See
 running code somewhere that is not your machine.
 
 All of the above are soft: without them everything else works unchanged.
-[lib.nvim](https://github.com/StefanBartl/lib.nvim) and a container engine
+[lib.nvim](https://github.com/StefanBartl/lib.nvim),
+[ui.nvim](https://github.com/StefanBartl/ui.nvim) and a container engine
 are the real dependencies — see [installation.md](installation.md#prerequisites).

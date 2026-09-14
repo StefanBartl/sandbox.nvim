@@ -25,7 +25,7 @@ describe("bindings.usrcmds.registry_commands.login", function()
     -- and fires the matching callback immediately. registry_commands.lua
     -- calls kit.input twice in sequence (username, then nested password), so
     -- one shared queue -- popped in call order -- covers both fields.
-    package.loaded["lib.nvim.ui.kit"] = {
+    package.loaded["ui.kit"] = {
       input = function(opts)
         local item = table.remove(queue, 1)
         if item.cancel then
@@ -43,7 +43,7 @@ describe("bindings.usrcmds.registry_commands.login", function()
   end)
 
   after_each(function()
-    package.loaded["lib.nvim.ui.kit"] = nil
+    package.loaded["ui.kit"] = nil
     package.loaded["sandbox.notify"] = nil
     package.loaded["sandbox.core.usecases.registry.login"] = nil
     package.loaded["sandbox.bindings.usrcmds.registry_commands"] = nil
@@ -74,7 +74,7 @@ describe("bindings.usrcmds.registry_commands.login", function()
       return true
     end
     local seen_opts = {}
-    package.loaded["lib.nvim.ui.kit"] = {
+    package.loaded["ui.kit"] = {
       input = function(opts)
         table.insert(seen_opts, opts)
         local item = table.remove(queue, 1)

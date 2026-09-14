@@ -8,12 +8,14 @@ these.
 
 ## Running locally
 
-Point `PLENARY_PATH` and `LIB_NVIM_PATH` at wherever those two plugins live
-in your own setup (e.g. your plugin manager's install dir), then:
+Point `PLENARY_PATH`, `LIB_NVIM_PATH` and `UI_NVIM_PATH` at wherever those
+three plugins live in your own setup (e.g. your plugin manager's install
+dir), then:
 
 ```bash
 PLENARY_PATH=/path/to/plenary.nvim \
 LIB_NVIM_PATH=/path/to/lib.nvim \
+UI_NVIM_PATH=/path/to/ui.nvim \
 nvim --headless --noplugin -u TESTS/minimal_init.lua \
   -c "PlenaryBustedDirectory TESTS/sandbox { minimal_init = 'TESTS/minimal_init.lua' }"
 ```
@@ -21,7 +23,7 @@ nvim --headless --noplugin -u TESTS/minimal_init.lua \
 A single file:
 
 ```bash
-PLENARY_PATH=... LIB_NVIM_PATH=... \
+PLENARY_PATH=... LIB_NVIM_PATH=... UI_NVIM_PATH=... \
 nvim --headless --noplugin -u TESTS/minimal_init.lua \
   -c "PlenaryBustedFile TESTS/sandbox/adapters/docker/containers_spec.lua"
 ```

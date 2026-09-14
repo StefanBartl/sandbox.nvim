@@ -10,7 +10,7 @@
 --- list type. Gated on `config.menu.enable` (default true); a missing
 --- nvzone/menu install degrades to a no-op, never an error.
 local autocmd = require("lib.nvim.bindings.autocmd")
-local contextmenu = require("lib.nvim.contextmenu")
+local contextmenu = require("ui.contextmenu")
 
 local M = {}
 
@@ -234,7 +234,7 @@ function M.set_keymaps(bufnr, keys, items, header_offset, opts)
       desc = "filter this list",
       opts = { nowait = true, silent = true },
       rhs = function()
-        require("lib.nvim.ui.kit").input({
+        require("ui.kit").input({
           title = "filter: ",
           on_submit = function(query)
             opts.filter(vim.trim(query or ""))

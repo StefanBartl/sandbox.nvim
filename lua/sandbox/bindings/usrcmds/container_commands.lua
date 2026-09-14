@@ -408,7 +408,7 @@ function M.run()
   -- the only observable difference from the old chained-kit.input version is
   -- that an empty Image now gets caught after all five fields are asked
   -- rather than immediately.
-  local kit = require("lib.nvim.ui.kit")
+  local kit = require("ui.kit")
 
   kit.form({
     fields = {
