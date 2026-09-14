@@ -10,7 +10,7 @@ describe("bindings.usrcmds.container_commands.run", function()
     -- Mirrors kit.form's real step-through-fields/required-abort contract
     -- (lib.nvim's lua/lib/nvim/ui/kit/form.lua) so these specs exercise the
     -- same field-order/cancel semantics container_commands.lua relies on.
-    package.loaded["lib.nvim.ui.kit"] = {
+    package.loaded["ui.kit"] = {
       form = function(opts)
         local fields = opts.fields or {}
         local values = {}
@@ -43,7 +43,7 @@ describe("bindings.usrcmds.container_commands.run", function()
   end)
 
   after_each(function()
-    package.loaded["lib.nvim.ui.kit"] = nil
+    package.loaded["ui.kit"] = nil
     package.loaded["sandbox.core.usecases.containers.run_container"] = nil
     package.loaded["sandbox.bindings.usrcmds.container_commands"] = nil
   end)

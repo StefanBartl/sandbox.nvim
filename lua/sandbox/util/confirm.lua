@@ -2,7 +2,7 @@
 --- Confirmation gate for destructive actions (remove/prune/kill), skippable
 --- via config.confirm_destructive = false.
 
-local kit = require("lib.nvim.ui.kit")
+local kit = require("ui.kit")
 
 local M = {}
 

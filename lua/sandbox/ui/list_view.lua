@@ -115,7 +115,7 @@ return function(containers, all)
         lhs = "n",
         desc = "rename",
         fn = function(c)
-          require("lib.nvim.ui.kit").input({
+          require("ui.kit").input({
             title = "New name for " .. (c.name or c.id) .. ": ",
             on_submit = function(new_name)
               if new_name and new_name ~= "" then

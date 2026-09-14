@@ -9,6 +9,13 @@
   `sandbox.notify`/`sandbox.util.run_argv` fall back to plain
   `vim.notify`/`vim.fn.system` without it, but the plugin as a whole does not
   run.
+- [`ui.nvim`](https://github.com/StefanBartl/ui.nvim) — **required**.
+  `ui.contextmenu`/`ui.kit` (the right-click menu's item builders and
+  renderer, plus `kit.input()`'s scripted prompts) are `require()`d
+  unconditionally by `lua/sandbox/integrations/menu.lua` and
+  `lua/sandbox/ui/list_actions.lua`. [nvzone/menu](https://github.com/nvzone/menu)
+  below is a separate, genuinely optional choice of *renderer* for that
+  menu — `ui.kit.menu` draws it either way.
 - **A container engine on `PATH`, with its daemon running** — Podman, Docker
   or nerdctl. Detection prefers Podman, then Docker, then nerdctl, but skips
   any whose daemon does not answer: an installed engine with a stopped VM is
@@ -21,8 +28,10 @@ Optional:
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) — only for
   the picker extension (`:Telescope sandbox ...`). Everything else works
   without it.
-- [nvzone/menu](https://github.com/nvzone/menu) — right-click context menu on
-  the list-view buffers. Off automatically when it is not installed.
+- [nvzone/menu](https://github.com/nvzone/menu) — preferred renderer for the
+  right-click context menu on the list-view buffers; `ui.kit.menu` draws it
+  otherwise, so the menu itself is not optional (see `ui.nvim` above), only
+  this specific look.
 - [hover.nvim](https://github.com/StefanBartl/hover.nvim) — an image
   reference under the cursor answers whether it is pulled, its size, and any
   containers from it. Registered request-only, so it never slows the
@@ -45,7 +54,7 @@ Recommended:
 ```lua
 {
   "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim" },
+  dependencies = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" },
   event = "VimEnter",
   opts = {},
 }
@@ -56,7 +65,7 @@ Eager:
 ```lua
 {
   "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim" },
+  dependencies = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" },
   lazy = false,
   opts = {},
 }
@@ -67,7 +76,7 @@ On first use of a command:
 ```lua
 {
   "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim" },
+  dependencies = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" },
   cmd = { "Sandbox", "Sbx" },
   opts = {},
 }
@@ -82,7 +91,7 @@ to register — `opts = {}` is enough, and every option it accepts is in
 ```lua
 use {
   "StefanBartl/sandbox.nvim",
-  requires = { "StefanBartl/lib.nvim" }, -- required
+  requires = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" }, -- both required
   config = function()
     require("sandbox").setup()
   end,
@@ -93,6 +102,7 @@ use {
 
 ```vim
 Plug 'StefanBartl/lib.nvim' " required
+Plug 'StefanBartl/ui.nvim' " required
 Plug 'StefanBartl/sandbox.nvim'
 
 lua require("sandbox").setup()

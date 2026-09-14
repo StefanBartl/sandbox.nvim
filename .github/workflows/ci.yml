@@ -53,6 +53,11 @@ jobs:
           path: lib.nvim
           ref: ci-verified
 
+      - uses: actions/checkout@v5
+        with:
+          repository: StefanBartl/ui.nvim
+          path: ui.nvim
+
       - uses: rhysd/action-setup-vim@v1
         with:
           neovim: true
@@ -62,6 +67,7 @@ jobs:
         env:
           PLENARY_PATH: ${{ github.workspace }}/plenary.nvim
           LIB_NVIM_PATH: ${{ github.workspace }}/lib.nvim
+          UI_NVIM_PATH: ${{ github.workspace }}/ui.nvim
         run: |
           nvim --headless --noplugin -u TESTS/minimal_init.lua \
             -c "PlenaryBustedDirectory TESTS/sandbox { minimal_init = 'TESTS/minimal_init.lua', sequential = true }"

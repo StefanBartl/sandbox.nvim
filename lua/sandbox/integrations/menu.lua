@@ -19,7 +19,7 @@
 --- true) happens in `list_actions.lua`, not here: this module has no
 --- config access of its own by design, so it stays a pure builder.
 
-local contextmenu = require("lib.nvim.contextmenu")
+local contextmenu = require("ui.contextmenu")
 
 local M = {}
 
@@ -35,7 +35,7 @@ end
 --- `item` (the row under the cursor, or nil when the cursor isn't on one).
 ---@param keys Sandbox.ListActions.Keymap[]
 ---@param item table|nil
----@return Lib.ContextMenu.Item[]
+---@return Ui.ContextMenu.Item[]
 function M.items(keys, item)
   local out = {}
   for _, k in ipairs(keys) do
@@ -65,7 +65,7 @@ end
 ---@param label string
 ---@param keys Sandbox.ListActions.Keymap[]
 ---@param item table|nil
----@return Lib.ContextMenu.Item|nil
+---@return Ui.ContextMenu.Item|nil
 function M.submenu(label, keys, item)
   return contextmenu.submenu(label, M.items(keys, item))
 end
