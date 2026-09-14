@@ -8,7 +8,7 @@ describe("bindings.usrcmds.container_commands.run", function()
       end,
     }
     -- Mirrors kit.form's real step-through-fields/required-abort contract
-    -- (lib.nvim's lua/lib/nvim/ui/kit/form.lua) so these specs exercise the
+    -- (ui.nvim's lua/ui/kit/form.lua) so these specs exercise the
     -- same field-order/cancel semantics container_commands.lua relies on.
     package.loaded["ui.kit"] = {
       form = function(opts)

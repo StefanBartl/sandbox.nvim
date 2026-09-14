@@ -20,8 +20,8 @@ describe("bindings.usrcmds.registry_commands.login", function()
       error = record("error"),
       info = record("info"),
     }
-    -- Mirrors kit.input's real on_submit/on_cancel contract (lib.nvim's
-    -- lua/lib/nvim/ui/kit/input.lua): each call pops the next queued answer
+    -- Mirrors kit.input's real on_submit/on_cancel contract (ui.nvim's
+    -- lua/ui/kit/input.lua): each call pops the next queued answer
     -- and fires the matching callback immediately. registry_commands.lua
     -- calls kit.input twice in sequence (username, then nested password), so
     -- one shared queue -- popped in call order -- covers both fields.
