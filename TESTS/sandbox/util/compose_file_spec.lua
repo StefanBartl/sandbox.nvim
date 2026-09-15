@@ -51,6 +51,21 @@ describe("compose_file.services", function()
     assert.are.same({ "only" }, services)
   end)
 
+  it("errors clearly when 'services:' is a list rather than a map", function()
+    -- Not valid compose syntax, but valid YAML -- `pairs()` over a list
+    -- yields integer indices, which must not be handed back as if they
+    -- were service names ("1", "2", ...).
+    local services, err = services_for(table.concat({
+      "services:",
+      "  - web",
+      "  - db",
+    }, "\n"))
+
+    assert.is_nil(services)
+    assert.is_not_nil(err)
+    assert.is_not_nil(err and err:find("list", 1, true))
+  end)
+
   it("errors clearly when there is no 'services:' key", function()
     local services, err = services_for("version: '3'\n")
 
