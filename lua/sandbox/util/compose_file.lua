@@ -52,6 +52,13 @@ function M.services(path)
   if type(services) ~= "table" then
     return nil, "no 'services:' key found"
   end
+  if vim.islist(services) then
+    -- A real compose file's `services:` is a map (service name -> config);
+    -- a list here is malformed input. Reject it rather than iterating it
+    -- with `pairs` below, which would silently hand back stringified
+    -- array indices ("1", "2", ...) as if they were service names.
+    return nil, "'services:' is a list, not a map of service name -> config"
+  end
 
   ---@type string[]
   local names = {}
