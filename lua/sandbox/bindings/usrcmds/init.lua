@@ -704,6 +704,14 @@ local function compose_routes()
     },
 
     {
+      path = { "compose", "services" },
+      desc = "List services declared in the compose file (static, no engine call)",
+      run = function(_ctx)
+        compose_cmds.services()
+      end,
+    },
+
+    {
       path = { "compose", "logs" },
       desc = "Show logs for the compose project detected in cwd",
       run = function(_ctx)

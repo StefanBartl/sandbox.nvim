@@ -109,6 +109,30 @@ function M.ps()
   view(lines, "compose-ps")
 end
 
+--- List the services *declared* in the detected compose file -- a static
+--- read of the YAML itself, no engine call. Complements `ps`, which asks
+--- the engine what is actually running right now; this works even when
+--- the project has never been brought up, or the engine is not installed.
+function M.services()
+  local file = require_file()
+  if not file then
+    return
+  end
+
+  local names, err = compose_file.services(file)
+  if not names then
+    notify.error("Failed to read services from compose file: " .. tostring(err), { file = file, err = err })
+    return
+  end
+  if #names == 0 then
+    notify.warn("No services declared in " .. file)
+    return
+  end
+
+  local view = require("sandbox.ui.log_view")
+  view(names, "compose-services")
+end
+
 --- Show logs for the detected compose project
 function M.logs()
   local file = require_file()
