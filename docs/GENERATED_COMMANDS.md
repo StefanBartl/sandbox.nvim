@@ -12,6 +12,7 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sandbox compose logs` | Show logs for the compose project detected in cwd |
 | `:Sandbox compose ps` | List services in the compose project detected in cwd |
 | `:Sandbox compose restart` | Restart the compose project detected in cwd |
+| `:Sandbox compose services` | List services declared in the compose file (static, no engine call) |
 | `:Sandbox compose up` | Start the compose project detected in cwd (detached) |
 | `:Sandbox container cp {src} {dest}` | Copy a file/directory between the host and a container (either side may be <id>:<path>) |
 | `:Sandbox container exec {id:CONTAINER_ID} [{shell}] [workdir=<value>]` | Open a shell session inside a running container  [workdir=<path>] |
@@ -83,6 +84,7 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sbx compose logs` | Show logs for the compose project detected in cwd |
 | `:Sbx compose ps` | List services in the compose project detected in cwd |
 | `:Sbx compose restart` | Restart the compose project detected in cwd |
+| `:Sbx compose services` | List services declared in the compose file (static, no engine call) |
 | `:Sbx compose up` | Start the compose project detected in cwd (detached) |
 | `:Sbx container cp {src} {dest}` | Copy a file/directory between the host and a container (either side may be <id>:<path>) |
 | `:Sbx container exec {id:CONTAINER_ID} [{shell}] [workdir=<value>]` | Open a shell session inside a running container  [workdir=<path>] |
