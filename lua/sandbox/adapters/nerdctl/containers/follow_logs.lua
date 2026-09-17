@@ -1,6 +1,8 @@
 ---@module 'sandbox.adapters.nerdctl.containers.follow_logs'
 --- Nerdctl Adapter: Stream a container's logs live (`nerdctl logs -f <id>`)
 
+local line_stream = require("sandbox.util.line_stream")
+
 local M = {}
 
 --- Stream logs for a container until stopped or the process exits.
@@ -17,25 +19,8 @@ function M.follow_logs(container_id, on_line, on_exit)
   -- emits "bar\n": a shared buffer turns that into one line "foobar" that
   -- never existed in either stream. Each stream gets its own trailing-partial
   -- buffer so a line is only ever completed by more of the *same* stream.
-  local function make_stream_buffer()
-    local buffered = ""
-    return {
-      feed = function(data)
-        buffered = buffered .. data
-        local chunks = vim.split(buffered, "\n", { plain = true })
-        buffered = table.remove(chunks) or ""
-        return chunks
-      end,
-      flush = function()
-        local last = buffered
-        buffered = ""
-        return last
-      end,
-    }
-  end
-
-  local stdout_buf = make_stream_buffer()
-  local stderr_buf = make_stream_buffer()
+  local stdout_buf = line_stream.new()
+  local stderr_buf = line_stream.new()
 
   local function make_on_output(stream_buf)
     return function(_, data)
