@@ -48,6 +48,33 @@ end
 local ok_progress, progress_mod = pcall(require, "lib.nvim.progress")
 
 ---@internal
+--- Normalize CRLF to LF in captured output, so the async path hands callers
+--- exactly what the blocking one does.
+---
+--- `run_blocking_captured` gets this for free from `vim.system`'s
+--- `text = true`, but that option only covers the stdout/stderr `vim.system`
+--- captures itself. `run_async_captured` collects through a *function*
+--- handler instead, and those chunks arrive raw whether `text` is set or not
+--- (measured on Windows: `text = true` plus a function handler still yields
+--- "alpha\r\nbeta\r\n"). Adding `text = true` to the async spawn options
+--- would look like the fix and do nothing.
+---
+--- Without this, the same command parsed by the same adapter carries a
+--- trailing CR on every line on Windows when the caller passed `on_done` and
+--- not when it did not. The JSON-formatted adapters shrug it off -- a decoder
+--- ignores trailing whitespace -- but `get_logs`, `top_container` and
+--- `stats_container` split this output into lines and display them verbatim.
+---
+--- Applied to the joined output rather than per chunk on purpose: a CRLF pair
+--- can straddle a chunk boundary, so a per-chunk substitution would miss
+--- exactly the pairs that got split.
+--- @param out string
+--- @return string
+local function normalize_eol(out)
+  return (out:gsub("\r\n", "\n"))
+end
+
+---@internal
 --- Label a progress handle by the operation rather than the full argv: the
 --- image reference is often a long registry URL that would push the useful
 --- part ("docker pull") out of a statusline. `{"docker","pull","nginx"}`
@@ -139,7 +166,7 @@ function M.run_async_captured(cmd, on_done, opts)
           progress:finish(progress_label(cmd) .. " failed (exit " .. tostring(obj.code) .. ")")
         end
       end
-      on_done(obj.code == 0, table.concat(chunks), obj.code)
+      on_done(obj.code == 0, normalize_eol(table.concat(chunks)), obj.code)
     end)
   end)
 

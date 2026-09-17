@@ -81,6 +81,15 @@ string, and never a shell. Prefer `run_argv`: it is what the test suite fakes
 testable without a container engine installed, and it is where the completed
 spawn environment and the progress indicator are wired in.
 
+Both `run_argv` entry points hand back the same bytes for the same command,
+line endings included — an adapter can share one parser between its blocking
+and its `on_done` path without the two disagreeing on Windows. That is not
+free: `vim.system`'s `text = true` normalizes CRLF only for the stdout it
+captures itself, and `run_async_captured` collects through a function handler,
+which that option does not cover. It normalizes the joined output instead
+(`normalize_eol` in `util/run_argv.lua`). If you ever shell out past
+`run_argv`, you own that yourself.
+
 Then export it from the aggregator, which maps port names to module functions:
 
 **File:** `lua/sandbox/adapters/podman/containers_engine.lua`
