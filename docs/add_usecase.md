@@ -90,6 +90,14 @@ which that option does not cover. It normalizes the joined output instead
 (`normalize_eol` in `util/run_argv.lua`). If you ever shell out past
 `run_argv`, you own that yourself.
 
+A command you *stream* rather than capture does go past it — `follow_logs`
+calls `vim.system` directly, because it needs each line as it arrives. Use
+`util/line_stream.lua` for that: it holds back the trailing partial so a line
+split across two chunks is not cut in half, and strips the same CR
+`normalize_eol` does. Give each stream its own instance; a shared one would
+let a stdout chunk that has not seen its newline yet be completed by whatever
+stderr delivers first, producing a line that existed in neither.
+
 Then export it from the aggregator, which maps port names to module functions:
 
 **File:** `lua/sandbox/adapters/podman/containers_engine.lua`
