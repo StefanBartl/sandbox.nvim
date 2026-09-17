@@ -42,9 +42,12 @@ the repository so every step can be compared with the real thing.
 `TESTS/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 busted-style suite. Adapters run against a faked `run_argv` instead of a real
 docker/podman/nerdctl/wsl binary, so no engine has to be installed.
-[`TESTS/README.md`](../TESTS/README.md) has the invocation.
-[GitHub Actions](../.github/workflows/ci.yml) runs `luacheck` and the full
-suite on every push and PR to `main`.
+[`TESTS/README.md`](../TESTS/README.md) has the invocation, plus a coverage
+section: what is covered, which defects are pinned as regression assertions
+rather than fixed, and what is deliberately left out.
+[GitHub Actions](../.github/workflows/ci.yml) runs `stylua --check .`,
+`luacheck lua TESTS` and the full suite on every push and PR to `main` —
+`TESTS/` is part of both lint gates, not only of the test job.
 
 ## Checking the docs for drift
 

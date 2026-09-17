@@ -176,3 +176,192 @@ describe("sandbox.engine_utils", function()
     end)
   end)
 end)
+
+-- The remaining branches, added in the 2026-09 coverage round: the
+-- empty-machine fallback, the probe's own failure modes, and the part of the
+-- memoization that is a trade-off rather than a win -- a `false` is remembered
+-- just as long as a `true`.
+describe("sandbox.engine_utils, the edges", function()
+  local real_system
+
+  before_each(function()
+    real_system = vim.system
+    package.loaded["sandbox.engine_utils"] = nil
+    package.loaded["sandbox.notify"] = nil
+  end)
+
+  after_each(function()
+    vim.system = real_system
+    package.loaded["sandbox.engine_utils"] = nil
+    package.loaded["sandbox.notify"] = nil
+  end)
+
+  --- @return table utils, table notices
+  local function with_notify()
+    local notices = {}
+    package.loaded["sandbox.notify"] = {
+      info = function(msg)
+        notices[#notices + 1] = { level = "info", msg = msg }
+      end,
+      warn = function(msg)
+        notices[#notices + 1] = { level = "warn", msg = msg }
+      end,
+      error = function(msg)
+        notices[#notices + 1] = { level = "error", msg = msg }
+      end,
+    }
+    local utils = require("sandbox.engine_utils")
+    return utils, notices
+  end
+
+  it("names a machine with no engine at all, and still answers with one", function()
+    local utils, notices = with_notify()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return false
+    end
+
+    -- Returning nil here would make every caller's `engines[name]` lookup
+    -- report "Invalid engine: nil" instead of the real problem.
+    assert.are.equal("docker", utils.get_engine())
+    assert.are.equal("error", notices[1].level)
+    assert.is_truthy(notices[1].msg:find("No supported container engine", 1, true))
+  end)
+
+  it("get_live_engine on an empty machine reports once and falls back", function()
+    local utils, notices = with_notify()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return false
+    end
+
+    assert.are.equal("docker", utils.get_live_engine())
+    assert.are.equal(1, #notices)
+  end)
+
+  it("gives the probe a timeout, because a hung daemon must not take Neovim with it", function()
+    local utils = with_notify()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return true
+    end
+    local waited_with
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.system = function()
+      ---@diagnostic disable-next-line: return-type-mismatch
+      return {
+        wait = function(_, timeout)
+          waited_with = timeout
+          return { code = 0 }
+        end,
+      }
+    end
+
+    utils.responds("docker")
+
+    assert.are.equal(3000, waited_with)
+  end)
+
+  it("counts a probe that raises as silence rather than letting it escape", function()
+    local utils = with_notify()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return true
+    end
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.system = function()
+      error("spawn failed: EACCES")
+    end
+
+    assert.is_false(utils.responds("docker"))
+  end)
+
+  it("counts a probe that answers with nothing as silence", function()
+    local utils = with_notify()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return true
+    end
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.system = function()
+      ---@diagnostic disable-next-line: return-type-mismatch
+      return {
+        wait = function()
+          return nil
+        end,
+      }
+    end
+
+    assert.is_false(utils.responds("docker"))
+  end)
+
+  it("does not probe an uninstalled engine, and remembers that too", function()
+    local utils = with_notify()
+    local probes = 0
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return false
+    end
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.system = function()
+      probes = probes + 1
+      ---@diagnostic disable-next-line: return-type-mismatch
+      return {
+        wait = function()
+          return { code = 0 }
+        end,
+      }
+    end
+
+    assert.is_false(utils.responds("docker"))
+    assert.is_false(utils.responds("docker"))
+    assert.are.equal(0, probes)
+  end)
+
+  it("remembers a NO for the session -- starting the daemon afterwards needs `engine reset`", function()
+    -- The deliberate half of the memoization, pinned because it is the half a
+    -- user notices: the probe costs a process start, so a negative answer is
+    -- cached exactly like a positive one, and `:Sandbox engine reset` (which
+    -- calls `forget`) is the documented way out.
+    local utils = with_notify()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    utils.is_executable = function()
+      return true
+    end
+    local daemon_up = false
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.system = function()
+      ---@diagnostic disable-next-line: return-type-mismatch
+      return {
+        wait = function()
+          return { code = daemon_up and 0 or 125 }
+        end,
+      }
+    end
+
+    assert.is_false(utils.responds("podman"))
+
+    daemon_up = true
+    assert.is_false(utils.responds("podman"), "the cached NO is the point")
+
+    utils.forget()
+    assert.is_true(utils.responds("podman"))
+  end)
+
+  it("asks lib.nvim's memoized executable check, not vim.fn.executable directly", function()
+    local utils = with_notify()
+    local asked = {}
+    package.loaded["lib.nvim.core"] = {
+      has_exec = function(cmd)
+        asked[#asked + 1] = cmd
+        return cmd == "docker"
+      end,
+    }
+
+    assert.is_true(utils.is_executable("docker"))
+    assert.is_false(utils.is_executable("podman"))
+    assert.are.same({ "docker", "podman" }, asked)
+
+    package.loaded["lib.nvim.core"] = nil
+  end)
+end)
