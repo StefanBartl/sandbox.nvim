@@ -1,7 +1,7 @@
 ---@module 'sandbox.adapters.nerdctl.containers.follow_logs'
 --- Nerdctl Adapter: Stream a container's logs live (`nerdctl logs -f <id>`)
 
-local line_stream = require("sandbox.util.line_stream")
+local lines = require("lib.nvim.system.lines")
 
 local M = {}
 
@@ -19,8 +19,8 @@ function M.follow_logs(container_id, on_line, on_exit)
   -- emits "bar\n": a shared buffer turns that into one line "foobar" that
   -- never existed in either stream. Each stream gets its own trailing-partial
   -- buffer so a line is only ever completed by more of the *same* stream.
-  local stdout_buf = line_stream.new()
-  local stderr_buf = line_stream.new()
+  local stdout_buf = lines.collector()
+  local stderr_buf = lines.collector()
 
   local function make_on_output(stream_buf)
     return function(_, data)
@@ -44,12 +44,12 @@ function M.follow_logs(container_id, on_line, on_exit)
     function(obj)
       local leftover_out = stdout_buf.flush()
       local leftover_err = stderr_buf.flush()
-      if leftover_out ~= "" or leftover_err ~= "" then
+      if leftover_out or leftover_err then
         vim.schedule(function()
-          if leftover_out ~= "" then
+          if leftover_out then
             on_line(leftover_out)
           end
-          if leftover_err ~= "" then
+          if leftover_err then
             on_line(leftover_err)
           end
         end)
