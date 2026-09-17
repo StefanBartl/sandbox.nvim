@@ -92,11 +92,12 @@ which that option does not cover. It normalizes the joined output instead
 
 A command you *stream* rather than capture does go past it — `follow_logs`
 calls `vim.system` directly, because it needs each line as it arrives. Use
-`util/line_stream.lua` for that: it holds back the trailing partial so a line
-split across two chunks is not cut in half, and strips the same CR
-`normalize_eol` does. Give each stream its own instance; a shared one would
-let a stdout chunk that has not seen its newline yet be completed by whatever
-stderr delivers first, producing a line that existed in neither.
+`require("lib.nvim.system.lines").collector()` for that: it holds back the
+trailing partial so a line split across two chunks is not cut in half, and
+strips the same CR `normalize_eol` does. Give each stream its own collector; a
+shared one would let a stdout chunk that has not seen its newline yet be
+completed by whatever stderr delivers first, producing a line that existed in
+neither. Its `flush()` reports "nothing buffered" as nil, not `""`.
 
 Then export it from the aggregator, which maps port names to module functions:
 
