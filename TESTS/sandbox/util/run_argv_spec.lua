@@ -40,6 +40,31 @@ describe("util.run_argv", function()
     assert.is_not_nil(done_output:find("hello", 1, true))
   end)
 
+  --- Both paths have to hand callers the same bytes, or an adapter that
+  --- parses the output gets different data depending on whether its caller
+  --- passed `on_done`. The blocking path gets LF endings from `vim.system`'s
+  --- `text = true`; the async path collects through a function handler, which
+  --- `text` does not cover, so it normalizes the joined output itself.
+  ---
+  --- Driven with an explicit CRLF payload rather than relying on the host
+  --- being Windows, so the case is exercised on every platform.
+  it("run_async_captured normalizes CRLF, like the blocking path", function()
+    local crlf_cmd = vim.fn.has("win32") == 1 and { "cmd", "/c", "echo one& echo two" }
+      or { "printf", "one\r\ntwo\r\n" }
+
+    local done_output
+    run_argv.run_async_captured(crlf_cmd, function(_, output)
+      done_output = output
+    end)
+    vim.wait(2000, function()
+      return done_output ~= nil
+    end, 10)
+
+    assert.is_not_nil(done_output)
+    assert.is_nil(done_output:find("\r\n", 1, true))
+    assert.are.same({ "one", "two" }, vim.split(vim.trim(done_output), "\n", { plain = true }))
+  end)
+
   --- The progress indicator is a soft dependency, so these only assert
   --- anything when lib.nvim is actually on the rtp (LIB_NVIM_PATH set). The
   --- "statusline" style is what makes this testable at all: it is headless and
