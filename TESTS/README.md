@@ -25,8 +25,32 @@ A single file:
 ```bash
 PLENARY_PATH=... LIB_NVIM_PATH=... UI_NVIM_PATH=... \
 nvim --headless --noplugin -u TESTS/minimal_init.lua \
-  -c "PlenaryBustedFile TESTS/sandbox/adapters/docker/containers_spec.lua"
+  -c "lua require('plenary.busted').run('TESTS/sandbox/util/run_argv_spec.lua')"
 ```
+
+Or a subdirectory:
+
+```bash
+PLENARY_PATH=... LIB_NVIM_PATH=... UI_NVIM_PATH=... \
+nvim --headless --noplugin -u TESTS/minimal_init.lua \
+  -c "PlenaryBustedDirectory TESTS/sandbox/util { minimal_init = 'TESTS/minimal_init.lua' }"
+```
+
+**Not `PlenaryBustedFile`**, even though it looks like the obvious counterpart
+to `PlenaryBustedDirectory`. It spawns a child Neovim to run the file — like
+the directory command does — but it takes no options, so it has no
+`minimal_init` to pass on. The child therefore starts *without* `-u` and loads
+your full personal config instead of `TESTS/minimal_init.lua`, which means
+`PLENARY_PATH`/`LIB_NVIM_PATH`/`UI_NVIM_PATH` are never prepended and the spec
+runs against whatever versions your plugin manager happens to have installed.
+The `-u TESTS/minimal_init.lua` on the outer command only configures the
+parent, which does nothing but spawn.
+
+That fails quietly and asymmetrically: a spec can go red under
+`PlenaryBustedFile` and green in CI (or the reverse) without anything being
+wrong with the spec. `TESTS/sandbox/util/run_argv_spec.lua`'s progress-indicator
+case does exactly that. The two forms above run the spec against the same
+environment CI uses.
 
 ## Writing a new spec
 
