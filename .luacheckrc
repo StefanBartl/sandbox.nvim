@@ -45,3 +45,9 @@ files["TESTS/"] = {
 files["lua/sandbox/core/ports/"] = { unused_args = false }
 files["lua/sandbox/bindings/usrcmds/init.lua"] = { unused_args = false }
 files["TESTS/sandbox/adapters/exec_workdir_spec.lua"] = { unused_args = false }
+-- Same reason as exec_workdir_spec above, in the specs added by the 2026-09
+-- coverage round: both stub `vim.cmd` / `vim.api.nvim_feedkeys` /
+-- `vim.api.nvim_set_current_buf` while exercising the terminal-spawning paths,
+-- and a stub that drops the arity would be the LuaLS problem 94193cd fixed.
+files["TESTS/sandbox/adapters/argv_matrix_spec.lua"] = { unused_args = false }
+files["TESTS/sandbox/bindings/usrcmds/commands_spec.lua"] = { unused_args = false }

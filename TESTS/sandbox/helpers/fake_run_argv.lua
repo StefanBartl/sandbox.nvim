@@ -76,4 +76,21 @@ function M.reload(names)
   end
 end
 
+--- Drop every cached module whose name starts with `prefix`.
+---
+--- For the aggregators: `adapters/<engine>/engine.lua` merges its
+--- sub-aggregators at load time, and each of those binds its leaf modules'
+--- functions into a table right there -- so re-requiring only the top file
+--- would hand back the functions that closed over the *real* `run_argv`.
+--- Purging the whole subtree is what makes a fake installed afterwards
+--- reach a call made through `engine.list_containers(...)`.
+---@param prefix string e.g. "sandbox.adapters.docker."
+function M.reload_prefix(prefix)
+  for name in pairs(package.loaded) do
+    if type(name) == "string" and name:sub(1, #prefix) == prefix then
+      package.loaded[name] = nil
+    end
+  end
+end
+
 return M
