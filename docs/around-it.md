@@ -16,6 +16,13 @@ how large it is, and which containers came from it. See
 **[dap.nvim](https://github.com/StefanBartl/dap.nvim)** is the other half of
 running code somewhere that is not your machine.
 
+**[ui.nvim](https://github.com/StefanBartl/ui.nvim)** shows
+`require("sandbox.statusline").status()` — `docker (2/5)` — as an ambient
+segment of its statusline, through a thin adapter that reads the string and
+adds nothing; the engine polling, its cache and its rate limit all stay
+here, see [statusline.md](statusline.md). ui.nvim is also what draws this
+plugin's context menu, which is why it is a hard dependency below.
+
 All of the above are soft: without them everything else works unchanged.
 [lib.nvim](https://github.com/StefanBartl/lib.nvim),
 [ui.nvim](https://github.com/StefanBartl/ui.nvim) and a container engine
