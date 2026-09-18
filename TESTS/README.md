@@ -92,6 +92,7 @@ that *would* have been spawned.
 | `vim.system` | `containers/follow_logs`, `engine_utils.responds`' liveness probe | `vim.system` replaced per spec |
 | `ui.kit` prompts | `container run`, `registry login`, the `f` filter, rename | `package.loaded["ui.kit"]` doubles |
 | `vim.health` | `health.check` | replaced *before* `sandbox.health` is required |
+| `telescope.pickers`/`finders`/`config`/`actions`/`actions.state` | `telescope/picker.lua`'s `build()` | `package.loaded[...]` doubles, same idea as the `ui.kit` row above |
 
 The one exception, stated rather than hidden: `TESTS/sandbox/util/run_argv_spec.lua`
 runs the real runner against a trivial command (that runner is the module under
@@ -167,6 +168,21 @@ stopped both by `q` and by the buffer being wiped another way.
 `integrations/menu_spec.lua` covers the context-menu builder against the real
 `ui.contextmenu`.
 
+**The telescope.nvim front-end** — `telescope/telescope_spec.lua` covers
+`telescope/picker.lua`'s `build()` against doubled `telescope.pickers`/
+`finders`/`config`/`actions`/`actions.state` (the finder's `entry_maker`, the
+default `<CR>` replacing `select_default`, every extra key wired through
+`map()`, and that the prompt is closed before any of them fire — or not fired
+at all with nothing selected), then `containers.lua`/`images.lua`/`wsl.lua`
+against a doubled `sandbox.telescope.picker` (the no-engine and usecase-failure
+early-outs, the row formatting including podman's Names-at-the-last-colon
+split and the docker `<none>` ref fallback, and every key wired to the right
+`container_commands`/`image_commands`/`wsl_commands` call with the right
+ref). `telescope._extensions.sandbox` is covered against a doubled
+`telescope.register_extension`. None of this touches a real telescope.nvim —
+see the seam table above — so it costs nothing towards the "no CI checkout"
+reason the front-end used to be skipped entirely for.
+
 ### Pinned defects
 
 Marked `BUG:` in the test name, asserted as they behave *today* so a fix breaks
@@ -209,9 +225,12 @@ unreachable, because its only caller checks first.
 - **`lua/@types/wsl.lua`, `lua/sandbox/@types/init.lua`** — `---@meta`
   annotations, no runtime code.
 - **`lua/sandbox/telescope/*.lua` and `lua/telescope/_extensions/sandbox.lua`**
-  — they hard-require `telescope.nvim`, which is neither a dependency of this
-  plugin nor a CI checkout (only plenary, lib.nvim and ui.nvim are). What they
-  wrap — `core.usecases.*` and the command modules — is covered directly.
+  no longer belong here — see "The telescope.nvim front-end" above. Only the
+  actual rendering of a picker (`pickers.new({}, ...):find()`) stays
+  untested, on the same basis as every other real-UI seam in this suite: it
+  needs telescope.nvim actually drawing something, which is neither a
+  dependency of this plugin nor a CI checkout (only plenary, lib.nvim and
+  ui.nvim are).
 - **`plugin/commands.lua`, `plugin/health.lua`** — a one-line load guard and a
   `runtime`/`helptags` shim; neither is sourced under
   `-u TESTS/minimal_init.lua` anyway.
