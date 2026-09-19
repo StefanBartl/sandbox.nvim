@@ -793,6 +793,21 @@ describe("ui.list_actions.window_opts", function()
     end
   end)
 
+  -- `math.floor(math.huge) == math.huge`, so positive infinity slipped past
+  -- the original `size ~= math.floor(size)` / `size <= 0` guard undetected
+  -- -- and still raised at `nvim_win_set_width`/`_height` exactly like the
+  -- non-integral floats above ("Number is not integral"), confirmed via the
+  -- same headless repro. `-math.huge` was already caught by `size <= 0`.
+  it("degrades a positive-infinity size to nil too, not just non-integral floats", function()
+    local list_actions = configure("left", math.huge)
+    assert.is_nil(list_actions.window_opts().size)
+  end)
+
+  it("degrades a negative-infinity size to nil", function()
+    local list_actions = configure("left", -math.huge)
+    assert.is_nil(list_actions.window_opts().size)
+  end)
+
   it("leaves size nil when unset", function()
     local list_actions = configure("left", nil)
     assert.is_nil(list_actions.window_opts().size)

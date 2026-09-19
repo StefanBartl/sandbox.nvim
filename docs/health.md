@@ -49,6 +49,18 @@ nothing.
 | `ERROR <name> does not answer -- every command will fail` | Another engine does answer, and the check names it. `:Sandbox engine set <that one>` for this session, or put it in `setup()` to make it permanent |
 | `ERROR <name> does not answer -- is its daemon running?` | Nothing answers. Start the daemon, then `:Sandbox engine reset` so the answer is asked again |
 
+## Unknown config keys
+
+`setup()` rejects any key it does not recognize (ERR-50) — checked against the
+full nested key set by dotted path — before the merge into defaults, instead
+of letting it sit in the active config as a dead field while the option you
+meant to set silently keeps its default. Reported here since `setup()` runs
+long before `:checkhealth` and a rejected key otherwise leaves no trace.
+
+| Report | Meaning |
+|---|---|
+| `WARN sandbox.setup(): unknown option '<key>'` | That key was ignored; check for a typo. A close match, if any, is suggested |
+
 ## refresh_interval
 
 An invalid `refresh_interval` degrades to its default (auto-refresh off)
@@ -59,6 +71,18 @@ which config key was responsible.
 | Report | Meaning |
 |---|---|
 | `WARN refresh_interval is not a number (<value>)` | List-view auto-refresh is disabled until it is set to a number of milliseconds, or removed |
+
+## list_size
+
+Same shape of problem as `refresh_interval`, for the list-view split's
+width/height: an invalid `list_size` degrades to Neovim's own default split
+size (via `ui.list_actions.window_opts()`) rather than raising out of
+`nvim_win_set_width`/`nvim_win_set_height`, which throw on a non-number or a
+non-integral float instead of degrading on their own.
+
+| Report | Meaning |
+|---|---|
+| `WARN list_size is not a positive integer (<value>)` | The list-view split uses Neovim's default size until it is set to a positive integer, or removed |
 
 ## WSL
 

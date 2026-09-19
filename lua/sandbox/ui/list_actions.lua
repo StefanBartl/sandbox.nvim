@@ -445,11 +445,19 @@ end
 --- Every list-view module shares this rather than re-deriving it seven
 --- times over, the same reasoning as `setup_autorefresh` below being here
 --- rather than duplicated per view.
+---
+--- `size == math.huge` needs its own clause: `math.floor(math.huge)` is
+--- `math.huge` itself (IEEE-754 says infinity is its own floor), so it
+--- passes the `size ~= math.floor(size)` non-integral check and is positive,
+--- so it passes `size <= 0` too -- yet `nvim_win_set_width`/`_height` reject
+--- it exactly like a non-integral float ("Number is not integral"),
+--- confirmed via the same headless repro. `-math.huge` needs no separate
+--- clause; `size <= 0` already catches it.
 ---@return { split: any, size: integer|nil }
 function M.window_opts()
   local opts = require("sandbox.config").options
   local size = opts.list_size
-  if type(size) ~= "number" or size ~= math.floor(size) or size <= 0 then
+  if type(size) ~= "number" or size ~= math.floor(size) or size <= 0 or size == math.huge then
     size = nil
   end
   return { split = opts.list_split, size = size }

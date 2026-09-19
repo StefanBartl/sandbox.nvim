@@ -8,6 +8,11 @@ The authoritative list is
 [`lua/sandbox/config/DEFAULTS.lua`](../lua/sandbox/config/DEFAULTS.lua); this
 page says what each key is *for*.
 
+An unknown key (a typo like `lits_size`, or a misspelled `menu.enalbe`) is
+rejected before it is merged in, instead of sitting in the active config as an
+inert field while the option you meant to set silently keeps its default —
+see [health.md](health.md#unknown-config-keys) for how that is reported.
+
 ## Engine
 
 | Key | Type | Default | What it does |

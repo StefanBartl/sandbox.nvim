@@ -138,4 +138,105 @@ describe("sandbox.config", function()
     assert.is_false(config.options.keymaps)
     assert.is_false(config.options.confirm_destructive)
   end)
+
+  describe("ERR-50: unknown config keys", function()
+    it("rejects an unknown top-level key instead of keeping it as a dead field", function()
+      local config = fresh("docker")
+
+      config.setup({ nonexistent_option = 5 })
+
+      assert.is_nil(config.options.nonexistent_option)
+      assert.are.equal(1, #config.issues)
+      assert.is_not_nil(config.issues[1]:find("nonexistent_option", 1, true))
+    end)
+
+    it("hints the nearest known key for a close-but-wrong name", function()
+      local config = fresh("docker")
+
+      config.setup({ lits_size = 50 })
+
+      assert.is_nil(config.options.lits_size)
+      assert.is_not_nil(config.issues[1]:find("did you mean 'list_size'", 1, true), config.issues[1])
+    end)
+
+    it("checks nested keys by full dotted path, siblings still apply", function()
+      local config = fresh("docker")
+
+      config.setup({ menu = { enalbe = false } })
+
+      assert.is_nil(config.options.menu.enalbe)
+      -- the real key keeps its default: the typo did not survive to override it
+      assert.is_true(config.options.menu.enable)
+      assert.are.equal(1, #config.issues)
+      assert.is_not_nil(config.issues[1]:find("menu.enalbe", 1, true), config.issues[1])
+    end)
+
+    it("rejects a non-table value for a table-shaped section instead of replacing it wholesale", function()
+      local config = fresh("docker")
+
+      config.setup({ menu = "off" })
+
+      assert.is_true(config.options.menu.enable, "must keep the section's real default")
+      assert.are.equal(1, #config.issues)
+      assert.is_not_nil(config.issues[1]:find("'menu' must be a table", 1, true), config.issues[1])
+    end)
+
+    -- The whole point of hand-authoring KNOWN from @types/init.lua instead of
+    -- deriving it from `pairs(DEFAULTS)`: these four keys all default to
+    -- `nil` in DEFAULTS.lua, so a Lua table literal never creates a key for
+    -- them there, and `pairs(DEFAULTS)` never sees them. A validator built
+    -- from that alone would misreport every one of them as unknown the
+    -- moment a user actually set it -- confirmed here does not happen.
+    it("does not flag a nil-defaulting key as unknown when the user sets it", function()
+      local config = fresh("docker")
+
+      config.setup({
+        engine = "podman",
+        refresh_interval = 2000,
+        list_size = 50,
+        keymaps = { containers = { start = "S" } },
+      })
+
+      assert.are.equal(0, #config.issues)
+      assert.are.equal("podman", config.options.engine)
+      assert.are.equal(2000, config.options.refresh_interval)
+      assert.are.equal(50, config.options.list_size)
+      assert.are.equal("S", config.options.keymaps.containers.start)
+    end)
+
+    -- `keymaps.<kind>` is keyed by arbitrary action names (slugified view
+    -- descriptions), not a fixed schema this validator knows -- those are
+    -- validated by `lib.nvim.bindings.keymap`'s registry instead. This
+    -- validator must leave the whole sub-tree alone rather than trying (and
+    -- failing) to check it.
+    it("does not recurse into keymaps looking for unknown action names", function()
+      local config = fresh("docker")
+
+      config.setup({ keymaps = { containers = { totally_made_up_action = "X" } } })
+
+      assert.are.equal(0, #config.issues)
+      assert.are.equal("X", config.options.keymaps.containers.totally_made_up_action)
+    end)
+
+    it("resets issues to empty on a later, clean call", function()
+      local config = fresh("docker")
+
+      config.setup({ nonexistent_option = 5 })
+      assert.are.equal(1, #config.issues)
+
+      config.setup({ default_shell = "bash" })
+
+      assert.are.equal(0, #config.issues)
+    end)
+
+    it("treats a non-table opts the same as no opts, without throwing", function()
+      local config = fresh("docker")
+
+      local ok = pcall(config.setup, "not-a-table")
+
+      assert.is_true(ok)
+      assert.are.equal(0, #config.issues)
+      assert.are.equal("sh", config.options.default_shell)
+    end)
+  end)
 end)
