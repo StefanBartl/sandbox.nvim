@@ -412,7 +412,7 @@ end
 ---@param refresh_fn function
 function M.setup_autorefresh(bufnr, refresh_fn)
   local interval = require("sandbox.config").options.refresh_interval
-  if not interval or interval <= 0 then
+  if type(interval) ~= "number" or interval <= 0 then
     return
   end
   if vim.b[bufnr].sandbox_autorefresh_active then
