@@ -3,12 +3,13 @@
 --- so a key on the line under the cursor can act on that item directly
 --- instead of re-typing `:Sandbox <kind> <action> <id>` by hand.
 ---
---- Also binds a `<RightMouse>` context menu (nvzone/menu, soft dependency;
+--- Also binds a `<RightMouse>` context menu (ui.contextmenu, via ui.nvim;
 --- entries from sandbox.integrations.menu) mirroring these same keymaps —
 --- every list view calls `M.set_keymaps` to bind its rows, so the menu
 --- trigger comes along for free instead of needing separate wiring per
---- list type. Gated on `config.menu.enable` (default true); a missing
---- nvzone/menu install degrades to a no-op, never an error.
+--- list type. Gated on `config.menu.enable` (default true); nvzone/menu
+--- is only a renderer preference there, not an on/off switch — absent,
+--- the menu still renders, via ui.kit.menu.
 local autocmd = require("lib.nvim.bindings.autocmd")
 local contextmenu = require("ui.contextmenu")
 
