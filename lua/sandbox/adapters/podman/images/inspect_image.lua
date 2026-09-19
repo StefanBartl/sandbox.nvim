@@ -1,4 +1,5 @@
--- Podman Adapter: Function to inspect an image
+---@module 'sandbox.adapters.podman.images.inspect_image'
+--- Podman Adapter: Function to inspect an image
 
 local run_argv = require("sandbox.util.run_argv")
 

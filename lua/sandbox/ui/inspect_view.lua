@@ -1,3 +1,4 @@
+---@module 'sandbox.ui.inspect_view'
 --- Render inspected metadata as a folded, indented Lua-table view (via
 --- `vim.inspect`) instead of a flat dump, so large nested structures
 --- (mounts, network settings, ...) can be collapsed to scan the shape

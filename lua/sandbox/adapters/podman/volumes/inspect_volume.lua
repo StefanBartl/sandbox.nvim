@@ -1,4 +1,5 @@
--- Podman Adapter: Function to inspect a volume
+---@module 'sandbox.adapters.podman.volumes.inspect_volume'
+--- Podman Adapter: Function to inspect a volume
 
 local run_argv = require("sandbox.util.run_argv")
 

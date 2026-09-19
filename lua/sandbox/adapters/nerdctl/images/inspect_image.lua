@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to inspect an image
+---@module 'sandbox.adapters.nerdctl.images.inspect_image'
+--- Nerdctl Adapter: Function to inspect an image
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to inspect a container
+---@module 'sandbox.adapters.nerdctl.containers.inspect_container'
+--- Nerdctl Adapter: Function to inspect a container
 
 local run_argv = require("sandbox.util.run_argv")
 
