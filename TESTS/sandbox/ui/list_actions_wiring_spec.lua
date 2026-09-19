@@ -671,6 +671,42 @@ describe("ui.list_actions.setup_autorefresh", function()
     assert.are.equal(seen, refreshed, "the timer kept running after the window closed")
   end)
 
+  -- PERF-82: the idempotency guard must have a real stop() counterpart.
+  -- Closing the *window* (not wiping the buffer) used to stop the timer but
+  -- leave `sandbox_autorefresh_active` set -- open_named_scratch reuses the
+  -- buffer by name, so every later render of that list kind returned early
+  -- and never armed a timer again for the rest of the session.
+  it("clears the idempotency flag when it self-stops, so a later render can re-arm it", function()
+    local list_actions = configure(20)
+    local bufnr = buffer_with({ "one" })
+    local refreshed = 0
+
+    list_actions.setup_autorefresh(bufnr, function()
+      refreshed = refreshed + 1
+    end)
+    vim.wait(200, function()
+      return refreshed >= 1
+    end)
+
+    vim.api.nvim_win_close(vim.fn.bufwinid(bufnr), true)
+    vim.wait(60) -- let the timer notice the window is gone and self-stop
+
+    assert.is_nil(vim.b[bufnr].sandbox_autorefresh_active, "the flag must be cleared, not just the timer")
+
+    -- Reused buffer shown in a fresh window, the way open_named_scratch
+    -- would on the next `:Sandbox container list`.
+    vim.api.nvim_open_win(bufnr, true, { relative = "editor", width = 40, height = 10, row = 0, col = 0 })
+    local refreshed_again = 0
+    list_actions.setup_autorefresh(bufnr, function()
+      refreshed_again = refreshed_again + 1
+    end)
+    vim.wait(200, function()
+      return refreshed_again >= 1
+    end)
+
+    assert.is_true(refreshed_again >= 1, "auto-refresh must be re-armable, not dead for the rest of the session")
+  end)
+
   it("survives its buffer being wiped -- the timer is closed, not left dangling", function()
     local list_actions = configure(20)
     local bufnr = buffer_with({ "one" })
