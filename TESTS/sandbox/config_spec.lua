@@ -91,14 +91,28 @@ describe("sandbox.config", function()
     assert.are.equal(200, config.options.max_error_length)
   end)
 
-  it("is cumulative: a second setup() adds to the first rather than resetting", function()
+  -- LUA-87: a second call must not accumulate onto whatever the first call
+  -- already wrote into `M.options` -- that includes the auto-detected
+  -- `engine`, and accumulating it corrupts `engine_named` (see the test
+  -- below). Each call starts from a fresh copy of the defaults instead.
+  it("resets to defaults on a second call rather than accumulating", function()
     local config = fresh("docker")
 
     config.setup({ default_shell = "bash" })
     config.setup({ max_error_length = 50 })
 
-    assert.are.equal("bash", config.options.default_shell)
+    assert.are.equal("sh", config.options.default_shell, "must not survive from the first call")
     assert.are.equal(50, config.options.max_error_length)
+  end)
+
+  it("does not let a previous call's detected engine masquerade as named on a later call", function()
+    local config = fresh("nerdctl")
+
+    config.setup({})
+    config.setup({})
+
+    assert.are.equal("nerdctl", config.options.engine)
+    assert.is_false(config.engine_named, "neither call named an engine, so this must stay a guess")
   end)
 
   it("never writes through to the DEFAULTS module", function()

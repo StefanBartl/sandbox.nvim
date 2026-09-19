@@ -20,9 +20,16 @@ M.options = vim.deepcopy(defaults)
 M.engine_named = false
 
 --- Setup configuration with user options
+---
+--- Merges into a fresh copy of the defaults, not into the live `M.options` --
+--- otherwise a second call accumulates onto whatever the first call already
+--- wrote, including the auto-detected `engine` below. That corrupts
+--- `engine_named`: the second call would see `options.engine` already
+--- filled in from the *first* call's detection and record it as named, even
+--- though this call's own `opts` never named one.
 --- @param opts Sandbox.Config.Options|nil: Optional user configuration
 function M.setup(opts)
-  M.options = vim.tbl_deep_extend("force", M.options, opts or {})
+  M.options = vim.tbl_deep_extend("force", vim.deepcopy(defaults), opts or {})
   M.engine_named = M.options.engine ~= nil
 
   -- If no engine is explicitly set, detect automatically.
