@@ -99,6 +99,15 @@ function M.check()
     end
   end
 
+  -- ERR-50: an unknown config key (a typo like `lits_size`, or a misspelled
+  -- `menu.enalbe`) is dropped in `sandbox.config.sanitize` before the merge,
+  -- rather than sitting in `M.options` as a dead field -- surfaced here
+  -- since `setup()` runs long before `:checkhealth` does and nothing at the
+  -- point of use could otherwise say a key was rejected at all.
+  for _, issue in ipairs(config.issues) do
+    health.warn("sandbox.setup(): " .. issue)
+  end
+
   -- ERR-22: an invalid single config value must degrade to its default
   -- (setup_autorefresh treats a non-number the same as the nil default: no
   -- timer armed) rather than aborting the whole plugin -- and be surfaced
@@ -119,8 +128,17 @@ function M.check()
   -- `nvim_win_set_height` with a value they raise on. Surfaced here for the
   -- same reason as refresh_interval above: the degrade site has no way to
   -- say which config key it silently ignored.
+  --
+  -- Mirrors `window_opts()`'s predicate exactly, including its
+  -- `size == math.huge` clause -- `math.floor(math.huge) == math.huge`, so
+  -- positive infinity is otherwise indistinguishable from a genuine positive
+  -- integer to this check, yet still raises at the nvim_win_set_width/height
+  -- call `window_opts()` guards.
   local list_size = config.options.list_size
-  if list_size ~= nil and (type(list_size) ~= "number" or list_size ~= math.floor(list_size) or list_size <= 0) then
+  if
+    list_size ~= nil
+    and (type(list_size) ~= "number" or list_size ~= math.floor(list_size) or list_size <= 0 or list_size == math.huge)
+  then
     health.warn(
       "list_size is not a positive integer (" .. vim.inspect(list_size) .. ") -- using Neovim's default split size",
       { "Set list_size to a positive integer (width for left/right, height for above/below), or remove it" }

@@ -238,6 +238,31 @@ describe("sandbox.health", function()
     assert.is_nil(find("error", "WSL"))
   end)
 
+  -- ERR-50: an unknown config key is dropped by `sandbox.config`'s sanitizer
+  -- before the merge (see config_spec.lua for that part); this only covers
+  -- that the healthcheck surfaces what was dropped, since `setup()` runs
+  -- long before `:checkhealth` and the rejected key does not otherwise
+  -- survive anywhere for a later reader to see.
+  it("warns about each unknown config key setup() had to reject", function()
+    local health =
+      load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+    require("sandbox.config").issues = { "unknown option 'lits_size' (did you mean 'list_size'?)" }
+
+    health.check()
+
+    assert.is_not_nil(find("warn", "unknown option 'lits_size'"))
+  end)
+
+  it("says nothing when the last setup() call had no issues", function()
+    local health =
+      load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+    require("sandbox.config").issues = {}
+
+    health.check()
+
+    assert.is_nil(find("warn", "unknown option"))
+  end)
+
   -- ERR-22: an invalid refresh_interval degrades to its default (auto-refresh
   -- off) rather than aborting the plugin, and that degradation must be
   -- visible here -- setup_autorefresh itself has no other way to say which
@@ -268,7 +293,7 @@ describe("sandbox.health", function()
   -- `ui.list_actions.window_opts` and its own spec for the degrade itself;
   -- this only covers that the healthcheck names the responsible key.
   it("warns about a list_size that is not a positive integer", function()
-    for _, value in ipairs({ "wide", 3.7, -5, 0 }) do
+    for _, value in ipairs({ "wide", 3.7, -5, 0, math.huge, -math.huge }) do
       local health =
         load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
       require("sandbox.config").options.list_size = value
