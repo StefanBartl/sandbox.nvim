@@ -39,11 +39,18 @@ return function(containers, all)
     { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
   )
 
+  -- `vim.hl` is the 0.11 rename of `vim.highlight`; README.md/installation.md
+  -- advertise Neovim 0.10+, so the older name has to stay reachable on the
+  -- documented minimum instead of indexing a nil `vim.hl`.
+  local hl_range = (vim.hl and vim.hl.range) or (vim.highlight and vim.highlight.range)
+
   highlights.ensure_defined()
   vim.api.nvim_buf_clear_namespace(bufnr, status_ns, 0, -1)
-  for i, container in ipairs(containers) do
-    local status_text = container.status or "unknown"
-    vim.hl.range(bufnr, status_ns, highlights.group_for_status(status_text), { i - 1, 0 }, { i - 1, #status_text + 2 })
+  if hl_range then
+    for i, container in ipairs(containers) do
+      local status_text = container.status or "unknown"
+      hl_range(bufnr, status_ns, highlights.group_for_status(status_text), { i - 1, 0 }, { i - 1, #status_text + 2 })
+    end
   end
 
   local container_cmds = require("sandbox.bindings.usrcmds.container_commands")

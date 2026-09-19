@@ -275,6 +275,31 @@ describe("ui list views", function()
     }, groups)
   end)
 
+  -- ERR-02: `vim.hl` only exists from Neovim 0.11 (the rename of
+  -- `vim.highlight`), while README.md/installation.md advertise 0.10+. On
+  -- the documented minimum, indexing a nil `vim.hl` throws inside the
+  -- render loop -- pinned here by simulating that Neovim with `vim.hl = nil`
+  -- rather than by actually running an old Neovim.
+  it("falls back to vim.highlight.range when vim.hl is absent (pre-0.11)", function()
+    local saved_hl = vim.hl
+    vim.hl = nil
+
+    local ok = pcall(function()
+      local ns = vim.api.nvim_create_namespace("sandbox_container_status")
+      require("sandbox.ui.list_view")({
+        { id = "a", name = "up", status = "running" },
+      })
+
+      local bufnr = vim.api.nvim_get_current_buf()
+      local marks = vim.api.nvim_buf_get_extmarks(bufnr, ns, 0, -1, { details = true })
+      assert.are.equal(1, #marks)
+      assert.are.equal("SandboxStatusRunning", marks[1][4].hl_group)
+    end)
+
+    vim.hl = saved_hl
+    assert.is_true(ok, "must not throw with vim.hl absent")
+  end)
+
   it("the podman image view formats sizes and splits repo:tag at the last colon", function()
     require("sandbox.ui.image_list_view_podman")({
       { Id = "abcdef123456789", Names = { "registry.example.com:5000/team/app:1.0" }, Size = 1536 },
