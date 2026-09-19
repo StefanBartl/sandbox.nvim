@@ -43,7 +43,7 @@ local function ttl_ms()
   local n = (config.options or {}).status_cache_ttl_ms
   return (type(n) == "number" and n >= 0) and n or 3000
 end
----@type { text: string, at: integer }|nil
+---@type { text: string, at: integer, engine: string|nil }|nil
 local cache = nil
 
 ---@internal
@@ -80,13 +80,13 @@ local function refresh()
   local sandbox = require("sandbox")
   local engine_name = sandbox.resolve_engine_name()
   if not engine_name then
-    cache = { text = "", at = vim.uv.now() }
+    cache = { text = "", at = vim.uv.now(), engine = engine_name }
     return
   end
 
   local engine = sandbox.get_engine()
   if not engine then
-    cache = { text = "", at = vim.uv.now() }
+    cache = { text = "", at = vim.uv.now(), engine = engine_name }
     return
   end
 
@@ -99,12 +99,13 @@ local function refresh()
     cache = {
       text = containers and format_summary(engine_name, containers) or engine_name,
       at = vim.uv.now(),
+      engine = engine_name,
     }
   end, { progress = false })
 
   if not ok_call then
     refreshing = false
-    cache = { text = engine_name, at = vim.uv.now() }
+    cache = { text = engine_name, at = vim.uv.now(), engine = engine_name }
   end
 end
 
@@ -113,7 +114,15 @@ end
 ---@return string
 function M.status()
   local now = vim.uv.now()
-  if not cache or (now - cache.at) >= ttl_ms() then
+  -- PERF-46: the cache key must contain every parameter that influences the
+  -- result. A switch to a different engine (:Sandbox engine set, or a
+  -- `.sandboxrc`-pinning `:cd`) must not keep serving the previous engine's
+  -- reading just because the TTL has not expired yet.
+  local ok_engine, current_engine = pcall(function()
+    return require("sandbox").resolve_engine_name()
+  end)
+  local engine_name = ok_engine and current_engine or nil
+  if not cache or cache.engine ~= engine_name or (now - cache.at) >= ttl_ms() then
     refresh()
   end
   -- Stale value on the first redraw after expiry, correct one on the next --

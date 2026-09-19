@@ -53,13 +53,24 @@ end
 local list_cache = {}
 
 ---@internal
+--- PERF-46: the cache key must contain every parameter that influences the
+--- result. `get_engine()` resolves through `vim.g.sandbox_engine`, the cwd's
+--- `.sandboxrc` and the config -- none of which was part of the key before,
+--- so switching engines (or `:cd`-ing into a repo that pins the other one)
+--- kept handing back the previous engine's object names until the entry
+--- aged out.
 ---@param key string
 ---@param fetch fun(): table[]
 ---@param to_name fun(item: table): string
 ---@return string[]
 local function cached_names(key, fetch, to_name)
+  local ok_engine, engine_name = pcall(function()
+    return require("sandbox").resolve_engine_name()
+  end)
+  local full_key = key .. ":" .. (ok_engine and tostring(engine_name) or "?")
+
   local now = vim.uv.now()
-  local entry = list_cache[key]
+  local entry = list_cache[full_key]
   if entry and (now - entry.at) < cache_ttl_ms() then
     return entry.items
   end
@@ -88,7 +99,7 @@ local function cached_names(key, fetch, to_name)
     end
   end
 
-  list_cache[key] = { items = names, at = now }
+  list_cache[full_key] = { items = names, at = now }
   return names
 end
 
