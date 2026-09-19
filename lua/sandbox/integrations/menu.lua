@@ -1,5 +1,7 @@
 ---@module 'sandbox.integrations.menu'
----@brief Context-menu entries for nvzone/menu (soft, opt-in integration).
+---@brief Context-menu entries for ui.contextmenu (ui.nvim). nvzone/menu is
+--- only ui.contextmenu's preferred *renderer*, not a hard requirement for
+--- the menu to appear — absent, ui.kit.menu draws the same entries.
 ---@description
 --- sandbox.nvim "owns" every list-view buffer it creates (container/image/
 --- volume/network), so the trigger lives centrally in
@@ -31,7 +33,7 @@ local function capitalize(desc)
   return (desc:gsub("^%l", string.upper))
 end
 
---- Build nvzone/menu entries from a list-view's `keys` table, bound to
+--- Build ui.contextmenu entries from a list-view's `keys` table, bound to
 --- `item` (the row under the cursor, or nil when the cursor isn't on one).
 ---@param keys Sandbox.ListActions.Keymap[]
 ---@param item table|nil

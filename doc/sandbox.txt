@@ -48,6 +48,11 @@ Requirements                                             *sandbox-requirements*
   `:Sandbox`/`:Sbx` command tree is built on `lib.nvim.bindings.usercmd.composer`,
   and the buffer/window views under `lua/sandbox/ui/` depend on
   `lib.nvim.window` directly. The plugin does not run without it.
+- ui.nvim (https://github.com/StefanBartl/ui.nvim) — REQUIRED. `ui.contextmenu`
+  and `ui.kit` (the right-click menu's item builders and renderer, plus
+  `kit.input()`/`kit.confirm()`'s scripted prompts) are `require()`d
+  unconditionally from `lua/sandbox/integrations/menu.lua`,
+  `lua/sandbox/util/confirm.lua`, and `lua/sandbox/ui/list_actions.lua`.
 - At least one of: podman, docker, or nerdctl on `$PATH`, WITH ITS DAEMON
   RUNNING. Being on `$PATH` says an engine is installed; it says nothing
   about a daemon being up, and detection skips one that does not answer.
@@ -55,8 +60,10 @@ Requirements                                             *sandbox-requirements*
 - (Optional) telescope.nvim — only needed for the `:Telescope sandbox`
   picker extension, an alternative front end to the list views described
   under |sandbox-keymaps|. Everything else works without it.
-- (Optional) nvzone/menu — the right-click context menu on list-view
-  buffers, see |sandbox-config-menu|.
+- (Optional) nvzone/menu — preferred renderer for the right-click
+  context menu on list-view buffers; `ui.kit.menu` draws it otherwise, so
+  the menu itself is not optional (see ui.nvim above), only this choice
+  of renderer. See |sandbox-config-menu|.
 - (Optional) hover.nvim — image previews under the cursor, see
   |sandbox-config-hover|.
 - (Optional, Windows only) `wsl.exe` on `$PATH` — enables the `wsl`
@@ -101,9 +108,9 @@ engine ~
                                           *sandbox-config-confirm_destructive*
 confirm_destructive ~
     Type: `boolean`  Default: `true`
-    Ask for confirmation (via `vim.ui.select`/lib.nvim's confirm kit)
-    before `remove`, `prune`, or `kill`. Set to `false` to skip the
-    prompt and act immediately.
+    Ask for confirmation (via ui.nvim's `ui.kit.confirm`) before `remove`,
+    `prune`, or `kill`. Set to `false` to skip the prompt and act
+    immediately.
 
                                                *sandbox-config-default_shell*
 default_shell ~
@@ -182,9 +189,9 @@ completion_cache_ttl_ms ~
 menu ~
     Type: `{ enable: boolean }`  Default: `{ enable = true }`
     Bind `<RightMouse>` on list-view buffers to a context menu mirroring
-    that buffer's own keymaps, via nvzone/menu (a soft dependency). Off by
-    itself when nvzone/menu is not installed; `enable = false` drops the
-    trigger entirely.
+    that buffer's own keymaps, via ui.contextmenu (ui.nvim). nvzone/menu
+    is only its preferred renderer: when absent, the menu still renders,
+    via `ui.kit.menu`. `enable = false` drops the trigger entirely.
 
                                                    *sandbox-config-keymaps*
 keymaps ~
