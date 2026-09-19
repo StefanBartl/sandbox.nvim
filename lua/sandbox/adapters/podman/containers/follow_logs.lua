@@ -38,7 +38,8 @@ function M.follow_logs(container_id, on_line, on_exit)
     end
   end
 
-  local job = vim.system(
+  local spawn_ok, job = pcall(
+    vim.system,
     { "podman", "logs", "-f", container_id },
     { stdout = make_on_output(stdout_buf), stderr = make_on_output(stderr_buf) },
     function(obj)
@@ -61,6 +62,23 @@ function M.follow_logs(container_id, on_line, on_exit)
       end
     end
   )
+
+  if not spawn_ok then
+    -- `vim.system` throws synchronously (uv.spawn ENOENT and friends)
+    -- instead of reporting a failed spawn through the exit callback --
+    -- without this, the caller's `handle` assignment never completes, so it
+    -- never binds `q` or the BufWipeout kill-handler on the buffer it
+    -- already opened.
+    vim.schedule(function()
+      on_line("-- failed to start log stream: " .. tostring(job) .. " --")
+      if on_exit then
+        on_exit(nil)
+      end
+    end)
+    return {
+      stop = function() end,
+    }
+  end
 
   return {
     stop = function()

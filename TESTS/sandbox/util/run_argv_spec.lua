@@ -40,6 +40,34 @@ describe("util.run_argv", function()
     assert.is_not_nil(done_output:find("hello", 1, true))
   end)
 
+  -- ERR-01: `vim.system` throws synchronously (uv.spawn ENOENT and friends)
+  -- instead of reporting a failed spawn through its exit callback. Unguarded,
+  -- that would skip `on_done` entirely and leave any progress indicator
+  -- started above it stuck in the statusline for the rest of the session.
+  it("run_async_captured reports a failed spawn through on_done instead of throwing", function()
+    local done_ok, done_output
+    local handle
+    local ok = pcall(function()
+      handle = run_argv.run_async_captured({ "sandbox-nvim-definitely-not-a-real-binary" }, function(ok_, output)
+        done_ok, done_output = ok_, output
+      end)
+    end)
+
+    assert.is_true(ok, "must not throw synchronously")
+    assert.is_not_nil(handle)
+    assert.is_function(handle.stop)
+
+    vim.wait(2000, function()
+      return done_ok ~= nil
+    end, 10)
+
+    assert.is_false(done_ok)
+    assert.is_not_nil(done_output)
+    assert.has_no.errors(function()
+      handle.stop()
+    end)
+  end)
+
   --- Both paths have to hand callers the same bytes, or an adapter that
   --- parses the output gets different data depending on whether its caller
   --- passed `on_done`. The blocking path gets LF endings from `vim.system`'s
