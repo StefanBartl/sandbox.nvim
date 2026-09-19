@@ -244,7 +244,7 @@ describe("usrcmds engine_commands", function()
     }
     package.loaded["sandbox.util.project_config"] = {
       read_engine_override = function()
-        return (opts or {}).sandboxrc
+        return (opts or {}).sandboxrc, (opts or {}).sandboxrc_invalid or false
       end,
     }
     package.loaded["sandbox.bindings.usrcmds.engine_commands"] = nil
@@ -339,6 +339,19 @@ describe("usrcmds engine_commands", function()
     H.mod.get()
 
     assert.is_truthy(notice_of(H, "info").msg:find("(config)", 1, true))
+  end)
+
+  -- ERR-10: an invalid .sandboxrc value must not be reported as if the file
+  -- had nothing to say -- that is what "kein Argument" vs. "ungültiges
+  -- Argument" was collapsed into before the fix.
+  it("names the ignored invalid .sandboxrc value as the source, not the plain config", function()
+    local H = load_engine_cmds({ sandboxrc_invalid = true })
+
+    H.mod.get()
+
+    local msg = notice_of(H, "info").msg
+    assert.is_truthy(msg:find("invalid", 1, true), msg)
+    assert.is_truthy(msg:find(".sandboxrc", 1, true), msg)
   end)
 end)
 
