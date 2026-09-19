@@ -65,10 +65,16 @@ end
 function M.get()
   local name = require("sandbox").resolve_engine_name()
   local source = "config"
+  local project_engine, project_invalid = require("sandbox.util.project_config").read_engine_override()
   if vim.g.sandbox_engine then
     source = "session override (:Sandbox engine set)"
-  elseif require("sandbox.util.project_config").read_engine_override() then
+  elseif project_engine then
     source = ".sandboxrc"
+  elseif project_invalid then
+    -- ERR-10: distinguish "the file has nothing to say" from "the file says
+    -- something invalid, and it was ignored" -- the latter must not be
+    -- reported as if it were the former.
+    source = "config (ignoring invalid 'engine=' in .sandboxrc)"
   end
   notify.info("Active engine: " .. tostring(name) .. " (" .. source .. ")")
 end

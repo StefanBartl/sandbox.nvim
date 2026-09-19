@@ -20,11 +20,13 @@ describe("util.project_config", function()
     end
   end
 
-  it("returns nil when no .sandboxrc exists", function()
+  it("returns nil, false when no .sandboxrc exists", function()
     with_cwd(tmpdir, function()
       package.loaded["sandbox.util.project_config"] = nil
       local M = require("sandbox.util.project_config")
-      assert.is_nil(M.read_engine_override())
+      local name, invalid = M.read_engine_override()
+      assert.is_nil(name)
+      assert.is_false(invalid)
     end)
   end)
 
@@ -34,17 +36,36 @@ describe("util.project_config", function()
       with_cwd(tmpdir, function()
         package.loaded["sandbox.util.project_config"] = nil
         local M = require("sandbox.util.project_config")
-        assert.are.equal(engine, M.read_engine_override())
+        local name, invalid = M.read_engine_override()
+        assert.are.equal(engine, name)
+        assert.is_false(invalid)
       end)
     end
   end)
 
-  it("ignores an invalid engine value", function()
+  -- ERR-10: an invalid value must be reported as "argument there, but
+  -- invalid" (nil, true), distinct from "no argument at all" (nil, false) --
+  -- a typo in a file written specifically to pin an engine must not behave
+  -- exactly like never having written the file.
+  it("reports an invalid engine value as invalid, not as absent", function()
     vim.fn.writefile({ "engine=bogus" }, tmpdir .. "/.sandboxrc")
     with_cwd(tmpdir, function()
       package.loaded["sandbox.util.project_config"] = nil
       local M = require("sandbox.util.project_config")
-      assert.is_nil(M.read_engine_override())
+      local name, invalid = M.read_engine_override()
+      assert.is_nil(name)
+      assert.is_true(invalid)
+    end)
+  end)
+
+  it("reports a trailing stray token as invalid instead of silently not matching the line", function()
+    vim.fn.writefile({ "engine = podman extra-token" }, tmpdir .. "/.sandboxrc")
+    with_cwd(tmpdir, function()
+      package.loaded["sandbox.util.project_config"] = nil
+      local M = require("sandbox.util.project_config")
+      local name, invalid = M.read_engine_override()
+      assert.is_nil(name)
+      assert.is_true(invalid)
     end)
   end)
 
@@ -53,7 +74,9 @@ describe("util.project_config", function()
     with_cwd(tmpdir, function()
       package.loaded["sandbox.util.project_config"] = nil
       local M = require("sandbox.util.project_config")
-      assert.are.equal("podman", M.read_engine_override())
+      local name, invalid = M.read_engine_override()
+      assert.are.equal("podman", name)
+      assert.is_false(invalid)
     end)
   end)
 end)
