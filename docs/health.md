@@ -4,8 +4,20 @@
 :checkhealth sandbox
 ```
 
-Five checks, in order. The first that fails hard stops the rest, because
+Several checks, in order. The first that fails hard stops the rest, because
 everything after it would be answering a question that no longer applies.
+
+## lib.nvim installed
+
+lib.nvim is a **required** dependency (see [installation.md](installation.md))
+— the command layer and every buffer/window view depend on it directly. This
+runs first because nothing else below can run without it; its absence is
+reported plainly here instead of surfacing as a raw "module not found"
+traceback wherever some other section happens to need it first.
+
+| Report | Meaning |
+|---|---|
+| `ERROR lib.nvim is not installed` | Install it — nothing else in this healthcheck, or the plugin, runs without it |
 
 ## Container engine in use
 

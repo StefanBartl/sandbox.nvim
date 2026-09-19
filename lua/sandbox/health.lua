@@ -7,9 +7,35 @@ local engine_utils = require("sandbox.engine_utils")
 
 local M = {}
 
+---@internal
+--- A seam of its own (rather than a bare `pcall(require, "lib.nvim")` inline
+--- in `M.check`) so a spec can stub the "absent" case without touching the
+--- real module cache: forcing an actual `require` failure through
+--- `package.preload` here does not just fail once -- Neovim's Lua loader
+--- keeps failing that same module name afterwards even once the trap is
+--- removed, poisoning every later test in the same process.
+---@return boolean
+function M._lib_nvim_installed()
+  return pcall(require, "lib.nvim")
+end
+
 --- Perform plugin health check
 function M.check()
   health.start("sandbox.nvim healthcheck")
+
+  -- docs/installation.md documents lib.nvim as **required** -- the command
+  -- layer and every buffer/window view depend on it directly, unlike the
+  -- handful of soft `pcall(require, "lib.nvim...")` fallbacks elsewhere.
+  -- Without it, `require("sandbox")` below throws deep inside an adapter's
+  -- own unguarded `require("lib.nvim...")` -- reported here plainly, before
+  -- that happens, instead of as a raw "module not found" traceback that
+  -- never names lib.nvim as the thing to install.
+  if not M._lib_nvim_installed() then
+    health.error("lib.nvim is not installed", {
+      "Install https://github.com/StefanBartl/lib.nvim -- sandbox.nvim requires it",
+    })
+    return
+  end
 
   -- The *resolved* engine, not the configured default: a session override or
   -- a project's `.sandboxrc` is what commands actually use, and a healthcheck

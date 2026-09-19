@@ -119,6 +119,31 @@ describe("sandbox.health", function()
     package.loaded["sandbox"] = nil
   end)
 
+  -- LUA-01: docs/installation.md declares lib.nvim a hard dependency, so its
+  -- absence must be *reported*, not just left to throw wherever the first
+  -- unguarded `require("lib.nvim...")` inside an adapter happens to sit.
+  --
+  -- Stubs `M._lib_nvim_installed` rather than forcing a real `require`
+  -- failure through `package.preload`: lib.nvim is genuinely on the rtp in
+  -- this test run, and Neovim's Lua loader keeps failing a module name after
+  -- one forced failure even once the trap is removed, which would poison
+  -- every later test in this same process.
+  it("reports lib.nvim missing before anything else, instead of throwing", function()
+    local health =
+      load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+    health._lib_nvim_installed = function()
+      return false
+    end
+
+    local ok = pcall(health.check)
+
+    assert.is_true(ok, "must report, not throw")
+    assert.is_not_nil(find("error", "lib.nvim is not installed"))
+    -- Nothing after the early return.
+    assert.is_nil(find("ok", "Container engine in use"))
+    assert.is_nil(find("composer", "Sandbox"))
+  end)
+
   it("stops at the first error when no engine resolves at all", function()
     local health = load_health({ engine = nil, installed = {}, live = {}, hover = true })
 
