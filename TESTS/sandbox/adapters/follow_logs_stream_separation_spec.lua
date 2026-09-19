@@ -96,3 +96,59 @@ describe("adapters.*.containers.follow_logs stream separation", function()
     end)
   end
 end)
+
+-- ERR-01: `vim.system` throws synchronously (uv.spawn ENOENT and friends)
+-- rather than reporting a failed spawn through the exit callback, unlike
+-- `vim.fn.jobstart`'s adapters which merely return -1. Unguarded, that throw
+-- would land between the caller opening its scratch buffer and binding `q`
+-- and the BufWipeout kill-handler on it, leaving a stuck, keyless buffer.
+describe("adapters.*.containers.follow_logs spawn failure", function()
+  local real_system
+
+  before_each(function()
+    real_system = vim.system
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.system = function()
+      error("uv_spawn: ENOENT: no such file or directory")
+    end
+  end)
+
+  after_each(function()
+    vim.system = real_system
+  end)
+
+  local ENGINES = { "docker", "podman", "nerdctl" }
+
+  for _, engine in ipairs(ENGINES) do
+    it(engine .. ": a synchronous spawn throw is reported through on_line/on_exit, not raised", function()
+      local M = require("sandbox.adapters." .. engine .. ".containers.follow_logs")
+      local lines = {}
+      local exit_code, exit_seen
+      local handle
+
+      local ok = pcall(function()
+        handle = M.follow_logs("abc123", function(line)
+          lines[#lines + 1] = line
+        end, function(code)
+          exit_code = code
+          exit_seen = true
+        end)
+      end)
+
+      assert.is_true(ok, engine .. ": follow_logs must not throw when the spawn itself throws")
+      assert.is_not_nil(handle, engine .. ": a handle must still come back, so the caller can bind close/BufWipeout")
+      assert.is_function(handle.stop)
+      assert.has_no.errors(function()
+        handle.stop()
+      end)
+
+      vim.wait(10, function()
+        return exit_seen
+      end)
+      assert.is_true(exit_seen, engine .. ": on_exit must still run")
+      assert.is_nil(exit_code)
+      assert.are.equal(1, #lines, engine .. ": on_line must report the failure")
+      assert.is_not_nil(lines[1]:find("failed to start", 1, true))
+    end)
+  end
+end)

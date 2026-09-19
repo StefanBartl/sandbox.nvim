@@ -152,7 +152,7 @@ function M.run_async_captured(cmd, on_done, opts)
   if ok_env then
     spawn_opts = spawn_env.apply(spawn_opts)
   end
-  local job = vim.system(cmd, spawn_opts, function(obj)
+  local spawn_ok, job = pcall(vim.system, cmd, spawn_opts, function(obj)
     vim.schedule(function()
       -- A cancelled job also exits non-zero, but `request_cancel` already
       -- closed the indicator with its own message - reporting "failed" on top
@@ -169,6 +169,21 @@ function M.run_async_captured(cmd, on_done, opts)
       on_done(obj.code == 0, normalize_eol(table.concat(chunks)), obj.code)
     end)
   end)
+
+  if not spawn_ok then
+    -- `vim.system` throws synchronously (uv.spawn ENOENT and friends) rather
+    -- than reporting a failed spawn through the exit callback -- without this,
+    -- the progress indicator this function started above would sit in the
+    -- statusline forever and `on_done` would never run.
+    local err = tostring(job)
+    if progress then
+      progress:finish(progress_label(cmd) .. " failed to start (" .. err .. ")")
+    end
+    vim.schedule(function()
+      on_done(false, err, -1)
+    end)
+    return { stop = function() end }
+  end
 
   local function stop()
     job:kill("sigterm")
