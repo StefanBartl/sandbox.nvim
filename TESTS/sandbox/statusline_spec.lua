@@ -99,6 +99,37 @@ describe("sandbox.statusline", function()
     assert.are.equal(1, calls.list)
   end)
 
+  -- PERF-46: the cache key must contain every parameter that influences the
+  -- result -- here, which engine answered. Without the engine in the key, a
+  -- switch (`:Sandbox engine set`, or a `.sandboxrc`-pinning `:cd`) kept
+  -- serving the previous engine's reading until the TTL happened to expire.
+  it("does not serve the previous engine's reading after a switch, even within the TTL", function()
+    local current_engine = "docker"
+
+    package.loaded["sandbox.statusline"] = nil
+    package.loaded["sandbox.config"] = nil
+    require("sandbox.config").options.status_cache_ttl_ms = 60000
+
+    package.loaded["sandbox"] = {
+      resolve_engine_name = function()
+        return current_engine
+      end,
+      get_engine = function()
+        return {
+          list_containers = function(on_done)
+            on_done(current_engine == "docker" and RUNNING_TWO_OF_FIVE or {})
+          end,
+        }
+      end,
+    }
+    local statusline = require("sandbox.statusline")
+
+    assert.are.equal("docker (2/5)", statusline.status())
+
+    current_engine = "podman"
+    assert.are.equal("podman (0/0)", statusline.status())
+  end)
+
   it("never stacks up a second ps while the first is still in flight", function()
     local statusline = fresh({ engine_name = "docker", containers = {}, ttl = 0, defer = true })
 

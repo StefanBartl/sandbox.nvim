@@ -368,6 +368,29 @@ describe("bindings.usrcmds completion types", function()
     assert.are.equal(2, fetches.containers)
   end)
 
+  -- PERF-46: the cache key must contain every parameter that influences the
+  -- result -- here, which engine answered. Without the engine in the key,
+  -- `<Tab>` kept offering the previous engine's names after `:Sandbox
+  -- engine set` or a `.sandboxrc`-pinning `:cd`, until the entry aged out.
+  it("keys the cache by the resolved engine, not just the list kind", function()
+    install({ containers = { { name = "web" } } })
+    package.loaded["sandbox"].resolve_engine_name = function()
+      return "docker"
+    end
+
+    assert.are.same({ "web" }, types.CONTAINER_ID.complete(""))
+
+    package.loaded["sandbox"].resolve_engine_name = function()
+      return "podman"
+    end
+    package.loaded["sandbox.core.usecases.containers.list_containers"] = function()
+      fetches.containers = fetches.containers + 1
+      return { { name = "postgres" } }
+    end
+
+    assert.are.same({ "postgres" }, types.CONTAINER_ID.complete(""))
+  end)
+
   it("degrades to no candidates when the engine is unusable, and stays silent", function()
     -- A notify(ERROR) fired while Neovim computes <Tab> candidates surfaces
     -- as a hard error to the caller, which is why the fetch runs with notify
