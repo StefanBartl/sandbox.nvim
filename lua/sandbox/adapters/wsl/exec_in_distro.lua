@@ -3,7 +3,6 @@
 
 local M = {}
 
----@diagnostic disable-next-line
 local unpack = table.unpack or unpack
 local api = vim.api
 
