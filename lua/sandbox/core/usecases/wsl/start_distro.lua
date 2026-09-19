@@ -1,4 +1,4 @@
----@module 'sandbox.core.usecases.wsl.start_distros'
+---@module 'sandbox.core.usecases.wsl.start_distro'
 
 ---@param engine WslEngine
 ---@param name string
