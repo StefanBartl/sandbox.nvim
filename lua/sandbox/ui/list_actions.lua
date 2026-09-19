@@ -427,15 +427,29 @@ function M.setup_autorefresh(bufnr, refresh_fn)
     vim.b[bufnr].sandbox_autorefresh_active = nil
     return
   end
+
+  --- @internal
+  --- Stop and close the timer, and clear the idempotency flag. Without
+  --- clearing the flag, closing the *window* (rather than wiping the
+  --- buffer) left "a timer is running" set on a buffer that survives --
+  --- `open_named_scratch` reuses it by name, so every later open of this
+  --- list kind returned early above and never armed a timer again.
+  local function stop()
+    if not timer:is_closing() then
+      timer:stop()
+      timer:close()
+    end
+    if vim.api.nvim_buf_is_valid(bufnr) then
+      vim.b[bufnr].sandbox_autorefresh_active = nil
+    end
+  end
+
   timer:start(
     interval,
     interval,
     vim.schedule_wrap(function()
       if not vim.api.nvim_buf_is_valid(bufnr) or vim.fn.bufwinid(bufnr) == -1 then
-        if not timer:is_closing() then
-          timer:stop()
-          timer:close()
-        end
+        stop()
         return
       end
       refresh_fn()
@@ -443,10 +457,7 @@ function M.setup_autorefresh(bufnr, refresh_fn)
   )
 
   autocmd.create("BufWipeout", function()
-    if not timer:is_closing() then
-      timer:stop()
-      timer:close()
-    end
+    stop()
   end, {
     group = autocmd.group("sandbox_ui"),
     buffer = bufnr,
