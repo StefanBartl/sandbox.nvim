@@ -270,6 +270,29 @@ describe("adapters.docker.containers.run_container", function()
     assert.is_false(ok)
     assert.are.equal("Unable to find image 'nope:latest' locally", result)
   end)
+
+  -- PRIN-20/ERR-03: `jobstart` returning <= 0 means `on_exit` never fires at
+  -- all (0: invalid arguments, -1: cmd[1] not executable) -- without
+  -- checking the return, this function returned as if a container had
+  -- started, and the caller reported neither success nor failure.
+  it("reports a failed spawn through on_done instead of returning as if one had started", function()
+    ---@diagnostic disable-next-line: duplicate-set-field
+    vim.fn.jobstart = function()
+      return -1
+    end
+    local E = require("sandbox.adapters.docker.engine")
+    local ok, result
+    run_and_settle(function()
+      E.run_container({ image = "alpine" }, function(o, r)
+        ok, result = o, r
+      end)
+    end, function()
+      return ok ~= nil
+    end)
+
+    assert.is_false(ok)
+    assert.is_not_nil(result)
+  end)
 end)
 
 describe("adapters.docker: blocking commands propagate the captured output as err", function()

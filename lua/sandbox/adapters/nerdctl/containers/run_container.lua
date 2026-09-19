@@ -28,7 +28,7 @@ function M.run_container(opts, on_done)
   local stdout_lines = {}
   local stderr_lines = {}
 
-  vim.fn.jobstart(cmd, {
+  local job_id = vim.fn.jobstart(cmd, {
     stdout_buffered = true,
     stderr_buffered = true,
     on_stdout = function(_, data)
@@ -55,6 +55,15 @@ function M.run_container(opts, on_done)
       end)
     end,
   })
+
+  -- `jobstart` returning <= 0 means `on_exit` never fires (0: invalid
+  -- arguments, -1: cmd[1] not executable) -- report it the same way a
+  -- failed run would, instead of returning as if one had started.
+  if job_id <= 0 and on_done then
+    vim.schedule(function()
+      on_done(false, "Failed to start " .. cmd[1] .. " (jobstart returned " .. job_id .. ")")
+    end)
+  end
 end
 
 return M
