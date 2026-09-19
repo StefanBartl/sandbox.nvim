@@ -14,6 +14,35 @@ local contextmenu = require("ui.contextmenu")
 
 local M = {}
 
+---@internal
+--- Close (or, for a tabpage's last window, repoint) every window showing
+--- `bufnr` before wiping it, instead of leaving Neovim to improvise its own
+--- alternate-buffer fallback. These are single-purpose scratch splits (list
+--- views, inspect/log-follow views) with nothing else worth showing in
+--- them, so closing the window is preferred over redirecting it -- except
+--- for a tabpage's last window, which cannot be closed at all.
+---@param bufnr integer
+local function close_buffer_and_its_windows(bufnr)
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
+      local tabpage = vim.api.nvim_win_get_tabpage(win)
+      if #vim.api.nvim_tabpage_list_wins(tabpage) > 1 then
+        vim.api.nvim_win_close(win, true)
+      else
+        local alt = vim.fn.bufnr("#")
+        if alt ~= -1 and alt ~= bufnr and vim.api.nvim_buf_is_valid(alt) then
+          vim.api.nvim_win_set_buf(win, alt)
+        else
+          vim.api.nvim_win_set_buf(win, vim.api.nvim_create_buf(true, false))
+        end
+      end
+    end
+  end
+  if vim.api.nvim_buf_is_valid(bufnr) then
+    vim.api.nvim_buf_delete(bufnr, { force = true })
+  end
+end
+
 ---@param items table[] items in the same order as the rendered lines
 ---@param header_offset integer|nil number of leading non-item lines
 ---@return table|nil
@@ -184,7 +213,7 @@ function M.set_keymaps(bufnr, keys, items, header_offset, opts)
       desc = "close list buffer",
       opts = { nowait = true, silent = true },
       rhs = function()
-        vim.api.nvim_buf_delete(bufnr, { force = true })
+        close_buffer_and_its_windows(bufnr)
       end,
     },
 
@@ -309,9 +338,7 @@ function M.bind_close(bufnr, surface, desc, before)
           if before then
             before()
           end
-          if vim.api.nvim_buf_is_valid(bufnr) then
-            vim.api.nvim_buf_delete(bufnr, { force = true })
-          end
+          close_buffer_and_its_windows(bufnr)
         end,
       },
     },

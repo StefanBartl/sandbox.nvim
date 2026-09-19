@@ -340,6 +340,20 @@ describe("ui.list_actions.set_keymaps", function()
     assert.is_false(vim.api.nvim_buf_is_valid(bufnr))
   end)
 
+  -- UI-55: a bare `nvim_buf_delete` leaves the window standing, and Neovim
+  -- repoints it to the alternate buffer (or a fresh empty scratch) on its
+  -- own -- the window itself must go, not just the buffer.
+  it("`q` closes the window too, instead of leaving it repointed at another buffer", function()
+    local list_actions = configure(nil)
+    local bufnr = buffer_with({ "one", "two" })
+    local winid = vim.fn.bufwinid(bufnr)
+    bind_two_actions(list_actions, bufnr, {}, { surface = "containers" })
+
+    press("q")
+
+    assert.is_false(vim.api.nvim_win_is_valid(winid))
+  end)
+
   it("`E` cycles the engine and re-renders when the view knows how", function()
     local list_actions = configure(nil)
     local refreshed = 0
@@ -477,6 +491,19 @@ describe("ui.list_actions.bind_close", function()
     press("q")
 
     assert.is_false(vim.api.nvim_buf_is_valid(bufnr))
+  end)
+
+  -- UI-55: same requirement as `set_keymaps`' shared close key -- the split
+  -- (log-follow, inspect) must not survive repointed at whatever Neovim
+  -- picks on its own.
+  it("closes the window too, instead of leaving it repointed at another buffer", function()
+    local bufnr = buffer_with({ "log line" })
+    local winid = vim.fn.bufwinid(bufnr)
+    require("sandbox.ui.list_actions").bind_close(bufnr, "logs", "stop following logs")
+
+    press("q")
+
+    assert.is_false(vim.api.nvim_win_is_valid(winid))
   end)
 
   it("runs the `before` hook first, so a stream is stopped before its buffer goes", function()
