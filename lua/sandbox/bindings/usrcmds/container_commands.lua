@@ -94,6 +94,9 @@ end
 ---@param workdir? string  # working directory inside the container (`-w`)
 function M.exec(id, shell, workdir)
   local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
   local usecase = require("sandbox.core.usecases.containers.exec_in_container")
 
   if not id or id == "" then
@@ -116,6 +119,9 @@ end
 ---@param workdir string|nil  # working directory inside the container (`-w`)
 function M.exec_once(id, command, workdir)
   local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
   local usecase = require("sandbox.core.usecases.containers.exec_in_container")
 
   if not id or id == "" then
@@ -499,6 +505,9 @@ end
 ---@param id string
 function M.inspect(id)
   local engine = require("sandbox").get_engine()
+  if not engine then
+    return
+  end
   local usecase = require("sandbox.core.usecases.containers.inspect_container")
   local view = require("sandbox.ui.inspect_view")
 
