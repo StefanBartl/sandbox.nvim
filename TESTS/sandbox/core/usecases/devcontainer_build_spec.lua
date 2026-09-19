@@ -317,4 +317,82 @@ describe("core.usecases.devcontainer.build", function()
       assert.are.same({}, opts.env)
     end)
   end)
+
+  -- PRIN-25/LUA-16: devcontainer.json is external input -- a checked-out
+  -- repository's file, not just the user's own typo -- and JSONC `null`
+  -- decodes to `vim.NIL` rather than Lua `nil`. A malformed or null-bearing
+  -- field must be rejected with a named cause instead of reaching a
+  -- concatenation and dying with no offending key named.
+  describe("malformed fields", function()
+    it("rejects a non-table config instead of throwing at the first field access", function()
+      local build = load_usecase()
+      local engine = fake_engine()
+      local compose = fake_compose()
+
+      local ok, err
+      ---@diagnostic disable-next-line: param-type-mismatch
+      build(engine, compose, "docker", "not a table", WORKSPACE, "c", function(o, e)
+        ok, err = o, e
+      end)
+
+      assert.is_false(ok)
+      assert.is_truthy(err:find("not a table", 1, true), err)
+    end)
+
+    it("rejects a non-string image instead of concatenating it into a path", function()
+      local build = load_usecase()
+      local engine, engine_log = fake_engine()
+      local compose = fake_compose()
+
+      local ok, err
+      build(engine, compose, "docker", { image = vim.NIL }, WORKSPACE, "c", function(o, e)
+        ok, err = o, e
+      end)
+
+      assert.is_false(ok)
+      assert.is_truthy(err:find("image", 1, true), err)
+      assert.is_nil(engine_log.pulled)
+    end)
+
+    it("rejects a non-string build.dockerfile", function()
+      local build = load_usecase()
+      local engine, engine_log = fake_engine()
+      local compose = fake_compose()
+
+      local ok, err
+      build(engine, compose, "docker", { build = { dockerfile = vim.NIL } }, WORKSPACE, "c", function(o, e)
+        ok, err = o, e
+      end)
+
+      assert.is_false(ok)
+      assert.is_truthy(err:find("build.dockerfile", 1, true), err)
+      assert.is_nil(engine_log.run_container)
+    end)
+
+    it("rejects a non-string dockerComposeFile", function()
+      local build = load_usecase()
+      local engine = fake_engine()
+      local compose, compose_log = fake_compose()
+
+      local ok, err
+      build(engine, compose, "docker", { dockerComposeFile = vim.NIL }, WORKSPACE, "c", function(o, e)
+        ok, err = o, e
+      end)
+
+      assert.is_false(ok)
+      assert.is_truthy(err:find("dockerComposeFile", 1, true), err)
+      assert.is_nil(compose_log.up_file)
+    end)
+
+    it("falls back to the default workspaceFolder when it decoded to vim.NIL", function()
+      local build = load_usecase()
+      local engine, engine_log = fake_engine()
+      local compose = fake_compose()
+      engine_log.pull_ok = true
+
+      build(engine, compose, "docker", { image = "alpine", workspaceFolder = vim.NIL }, WORKSPACE, "c", function() end)
+
+      assert.are.same({ WORKSPACE .. ":/workspaces/my project" }, engine_log.run_container.volumes)
+    end)
+  end)
 end)
