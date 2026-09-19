@@ -99,6 +99,19 @@ function M.check()
     end
   end
 
+  -- ERR-22: an invalid single config value must degrade to its default
+  -- (setup_autorefresh treats a non-number the same as the nil default: no
+  -- timer armed) rather than aborting the whole plugin -- and be surfaced
+  -- here, since nothing at the point of use would otherwise say which key
+  -- was responsible.
+  local refresh_interval = config.options.refresh_interval
+  if refresh_interval ~= nil and type(refresh_interval) ~= "number" then
+    health.warn(
+      "refresh_interval is not a number (" .. vim.inspect(refresh_interval) .. ") -- list-view auto-refresh disabled",
+      { "Set refresh_interval to a number of milliseconds, or remove it to leave auto-refresh off" }
+    )
+  end
+
   -- WSL availability check (informational, not an error if absent)
   if engine_utils.is_executable("wsl") then
     health.ok("WSL executable found – the `:Sandbox wsl` subcommands are registered")

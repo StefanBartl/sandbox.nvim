@@ -604,6 +604,19 @@ describe("ui.list_actions.setup_autorefresh", function()
     assert.is_nil(vim.b[bufnr].sandbox_autorefresh_active)
   end)
 
+  -- ERR-22: an invalid single config value degrades to its default (nil,
+  -- i.e. disabled) instead of raising out of the numeric comparison and
+  -- taking the rest of the view's own rendering down with it.
+  it("degrades to disabled instead of raising when refresh_interval is not a number", function()
+    local list_actions = configure("2000")
+    local bufnr = buffer_with({ "one" })
+
+    assert.has_no.errors(function()
+      list_actions.setup_autorefresh(bufnr, function() end)
+    end)
+    assert.is_nil(vim.b[bufnr].sandbox_autorefresh_active)
+  end)
+
   it("re-runs the refresh while the buffer is on screen", function()
     local list_actions = configure(20)
     local bufnr = buffer_with({ "one" })

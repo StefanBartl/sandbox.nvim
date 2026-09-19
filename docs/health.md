@@ -49,6 +49,17 @@ nothing.
 | `ERROR <name> does not answer -- every command will fail` | Another engine does answer, and the check names it. `:Sandbox engine set <that one>` for this session, or put it in `setup()` to make it permanent |
 | `ERROR <name> does not answer -- is its daemon running?` | Nothing answers. Start the daemon, then `:Sandbox engine reset` so the answer is asked again |
 
+## refresh_interval
+
+An invalid `refresh_interval` degrades to its default (auto-refresh off)
+rather than raising out of the list views that read it — this is where that
+degradation is surfaced, since nothing at the point of use otherwise says
+which config key was responsible.
+
+| Report | Meaning |
+|---|---|
+| `WARN refresh_interval is not a number (<value>)` | List-view auto-refresh is disabled until it is set to a number of milliseconds, or removed |
+
 ## WSL
 
 Informational, never an error. `wsl.exe` on `PATH` is what registers the

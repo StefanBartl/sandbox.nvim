@@ -238,6 +238,32 @@ describe("sandbox.health", function()
     assert.is_nil(find("error", "WSL"))
   end)
 
+  -- ERR-22: an invalid refresh_interval degrades to its default (auto-refresh
+  -- off) rather than aborting the plugin, and that degradation must be
+  -- visible here -- setup_autorefresh itself has no other way to say which
+  -- config key it silently ignored.
+  it("warns about a non-number refresh_interval", function()
+    local health =
+      load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+    require("sandbox.config").options.refresh_interval = "2000"
+
+    health.check()
+
+    assert.is_not_nil(find("warn", "refresh_interval is not a number"))
+  end)
+
+  it("says nothing about refresh_interval when it is a number or nil", function()
+    for _, value in ipairs({ nil, 0, 2000 }) do
+      local health =
+        load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+      require("sandbox.config").options.refresh_interval = value
+
+      health.check()
+
+      assert.is_nil(find("warn", "refresh_interval"), "value " .. tostring(value))
+    end
+  end)
+
   describe("the hover section names which of the three reasons applies", function()
     it("opts.hover = false", function()
       local health = load_health({
