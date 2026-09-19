@@ -28,11 +28,25 @@ return function()
   ---@return string display, string ref
   local function describe(img)
     if is_podman then
-      local name = (img.Names or {})[1] or "<none>:<none>"
+      -- Same vim.NIL exposure as image_list_view_podman.lua: a null Names
+      -- slice or Id string decodes to userdata, which an `or` default does
+      -- not catch.
+      local names = img.Names
+      if names == vim.NIL or type(names) ~= "table" then
+        names = {}
+      end
+      local name = names[1]
+      if name == vim.NIL or type(name) ~= "string" then
+        name = "<none>:<none>"
+      end
       local repo, tag = name:match("^(.-):([^:]+)$")
       repo, tag = repo or "<none>", tag or "<none>"
-      local id = (img.Id or ""):sub(1, 12)
-      local ref = (repo ~= "<none>") and (repo .. ":" .. tag) or img.Id
+      local raw_id = img.Id
+      if raw_id == vim.NIL or type(raw_id) ~= "string" then
+        raw_id = ""
+      end
+      local id = raw_id:sub(1, 12)
+      local ref = (repo ~= "<none>") and (repo .. ":" .. tag) or raw_id
       return string.format("[%s:%s] %s", repo, tag, id), ref
     end
 

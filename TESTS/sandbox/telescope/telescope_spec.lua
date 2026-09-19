@@ -481,6 +481,20 @@ describe("sandbox.telescope.images", function()
     captured.keys[3].fn(captured.items[1])
     assert.are.equal("0123456789abcdef", removed)
   end)
+
+  -- LUA-16: `podman images --format json` marshals a nil Names slice as JSON
+  -- `null`, which vim.fn.json_decode turns into vim.NIL -- truthy userdata
+  -- that an `or {}`/`or "<none>..."` default does not catch.
+  it("survives a podman image whose Names/Id decoded to vim.NIL", function()
+    local run = load({
+      is_podman = true,
+      images = { { Id = vim.NIL, Names = vim.NIL } },
+    })
+    run()
+
+    local e = captured.entry(captured.items[1])
+    assert.is_truthy(e.display:find("<none>", 1, true), e.display)
+  end)
 end)
 
 describe("sandbox.telescope.wsl", function()

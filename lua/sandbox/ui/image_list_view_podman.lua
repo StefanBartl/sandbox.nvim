@@ -15,14 +15,29 @@ return function(images)
   ---@return string repo
   ---@return string tag
   local function repo_tag(img)
-    local name = (img.Names or {})[1] or "<none>:<none>"
+    -- `podman images --format json` marshals a nil Names slice as JSON
+    -- `null`, which vim.fn.json_decode turns into vim.NIL (truthy userdata)
+    -- -- an `or {}`/`or "<none>..."` default does not catch it, so it has to
+    -- be checked explicitly before indexing/matching.
+    local names = img.Names
+    if names == vim.NIL or type(names) ~= "table" then
+      names = {}
+    end
+    local name = names[1]
+    if name == vim.NIL or type(name) ~= "string" then
+      name = "<none>:<none>"
+    end
     local repo, tag = name:match("^(.-):([^:]+)$")
     return repo or "<none>", tag or "<none>"
   end
 
   for _, img in ipairs(images) do
     local repo, tag = repo_tag(img)
-    local id = (img.Id or ""):sub(1, 12)
+    local raw_id = img.Id
+    if raw_id == vim.NIL or type(raw_id) ~= "string" then
+      raw_id = ""
+    end
+    local id = raw_id:sub(1, 12)
     local size = format_bytes(tonumber(img.Size) or 0)
 
     table.insert(lines, string.format("%-26s %-11s %-15s %s", repo, tag, id, size))

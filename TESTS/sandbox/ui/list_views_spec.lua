@@ -319,6 +319,16 @@ describe("ui list views", function()
     assert.is_truthy(rendered:find("<none>", 1, true), rendered)
   end)
 
+  -- LUA-16: `podman images --format json` marshals a nil Names slice as JSON
+  -- `null`, which vim.fn.json_decode turns into vim.NIL -- truthy userdata
+  -- that an `or {}`/`or "<none>..."` default does not catch, unlike Lua nil.
+  it("the podman image view survives an image whose Names/Id decoded to vim.NIL", function()
+    require("sandbox.ui.image_list_view_podman")({ { Id = vim.NIL, Names = vim.NIL, Size = 0 } })
+
+    local rendered = lines_of(vim.api.nvim_get_current_buf())[3]
+    assert.is_truthy(rendered:find("<none>", 1, true), rendered)
+  end)
+
   describe("a list that is not a list", function()
     local GUARDED = {
       { name = "list_view", module = "sandbox.ui.list_view", says = "Invalid container list" },
