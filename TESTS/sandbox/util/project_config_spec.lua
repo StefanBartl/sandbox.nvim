@@ -79,4 +79,55 @@ describe("util.project_config", function()
       assert.is_false(invalid)
     end)
   end)
+
+  -- This is the function `sandbox.resolve_engine_name()` falls through to on
+  -- every call that has no `vim.g.sandbox_engine` session override -- which
+  -- includes statusline.status() on every redraw. Without a per-cwd cache
+  -- that is a filereadable()/readfile() pair against `.sandboxrc` on every
+  -- single redraw, cwd unchanged or not.
+  it("answers from cache for a cwd it already read, not from a fresh file read", function()
+    vim.fn.writefile({ "engine=podman" }, tmpdir .. "/.sandboxrc")
+    with_cwd(tmpdir, function()
+      package.loaded["sandbox.util.project_config"] = nil
+      local M = require("sandbox.util.project_config")
+
+      local first_name = M.read_engine_override()
+      assert.are.equal("podman", first_name)
+
+      -- The file changes but the cwd does not -- a cached answer must keep
+      -- returning the value it read on first entry into this cwd.
+      vim.fn.writefile({ "engine=docker" }, tmpdir .. "/.sandboxrc")
+      local second_name = M.read_engine_override()
+      assert.are.equal("podman", second_name)
+    end)
+  end)
+
+  it("re-reads once the cwd actually changes", function()
+    local other = vim.fn.tempname()
+    vim.fn.mkdir(other, "p")
+    vim.fn.writefile({ "engine=podman" }, tmpdir .. "/.sandboxrc")
+
+    local orig = vim.fn.getcwd()
+    vim.cmd("cd " .. vim.fn.fnameescape(tmpdir))
+    package.loaded["sandbox.util.project_config"] = nil
+    local M = require("sandbox.util.project_config")
+    local ok, err = pcall(function()
+      assert.are.equal("podman", M.read_engine_override())
+
+      -- Leaving for a cwd with no override and back again must pick the
+      -- current file content back up, not keep serving the first cwd's
+      -- entry from a cache that never distinguished cwds.
+      vim.cmd("cd " .. vim.fn.fnameescape(other))
+      assert.is_nil((M.read_engine_override()))
+
+      vim.fn.writefile({ "engine=docker" }, tmpdir .. "/.sandboxrc")
+      vim.cmd("cd " .. vim.fn.fnameescape(tmpdir))
+      assert.are.equal("docker", M.read_engine_override())
+    end)
+    vim.cmd("cd " .. vim.fn.fnameescape(orig))
+    vim.fn.delete(other, "rf")
+    if not ok then
+      error(err, 0)
+    end
+  end)
 end)
