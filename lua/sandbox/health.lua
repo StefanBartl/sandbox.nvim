@@ -112,6 +112,21 @@ function M.check()
     )
   end
 
+  -- ERR-22: same shape of bug, same fix, for list_size -- `list_actions
+  -- .window_opts()` (the single point every list view reads it through)
+  -- degrades anything that is not a positive integer to nil, i.e. Neovim's
+  -- own split-size default, instead of reaching `nvim_win_set_width`/
+  -- `nvim_win_set_height` with a value they raise on. Surfaced here for the
+  -- same reason as refresh_interval above: the degrade site has no way to
+  -- say which config key it silently ignored.
+  local list_size = config.options.list_size
+  if list_size ~= nil and (type(list_size) ~= "number" or list_size ~= math.floor(list_size) or list_size <= 0) then
+    health.warn(
+      "list_size is not a positive integer (" .. vim.inspect(list_size) .. ") -- using Neovim's default split size",
+      { "Set list_size to a positive integer (width for left/right, height for above/below), or remove it" }
+    )
+  end
+
   -- WSL availability check (informational, not an error if absent)
   if engine_utils.is_executable("wsl") then
     health.ok("WSL executable found – the `:Sandbox wsl` subcommands are registered")

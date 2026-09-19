@@ -13,11 +13,11 @@ return function(data, container_id)
     lines = data -- already an error string[]
   end
 
-  local list_opts = require("sandbox.config").options
+  local list_opts = require("sandbox.ui.list_actions").window_opts()
   local bufnr, winid = require("lib.nvim.window").open_named_scratch(
     "sandbox.nvim://inspect/" .. container_id,
     lines,
-    { filetype = "lua", split = list_opts.list_split, size = list_opts.list_size }
+    { filetype = "lua", split = list_opts.split, size = list_opts.size }
   )
 
   vim.wo[winid].foldmethod = "indent"

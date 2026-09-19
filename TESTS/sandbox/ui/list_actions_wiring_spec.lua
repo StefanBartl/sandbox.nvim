@@ -750,3 +750,51 @@ describe("ui.list_actions.setup_autorefresh", function()
     end)
   end)
 end)
+
+describe("ui.list_actions.window_opts", function()
+  --- @param list_split any
+  --- @param list_size any
+  local function configure(list_split, list_size)
+    package.loaded["sandbox.config"] = nil
+    local config = require("sandbox.config")
+    config.options.list_split = list_split
+    config.options.list_size = list_size
+    package.loaded["sandbox.ui.list_actions"] = nil
+    return require("sandbox.ui.list_actions")
+  end
+
+  after_each(function()
+    package.loaded["sandbox.config"] = nil
+    package.loaded["sandbox.ui.list_actions"] = nil
+  end)
+
+  it("passes a valid split/size straight through", function()
+    local list_actions = configure("left", 50)
+    assert.are.same({ split = "left", size = 50 }, list_actions.window_opts())
+  end)
+
+  it("passes split through untouched regardless of type -- open_named_scratch already degrades it", function()
+    for _, list_split in ipairs({ "sideways", 5, false, true, {} }) do
+      local list_actions = configure(list_split, nil)
+      assert.are.equal(list_split, list_actions.window_opts().split)
+    end
+  end)
+
+  -- ERR-22: `size` reaches `nvim_win_set_width`/`nvim_win_set_height`
+  -- directly whenever it is non-nil, and those throw on a non-number or a
+  -- non-integral float instead of degrading -- confirmed via a headless
+  -- repro against lib.nvim.window.open_named_scratch before this guard
+  -- existed. A bad value must degrade to nil (Neovim's own default) rather
+  -- than reach that call at all.
+  it("degrades size to nil instead of raising when it is not a positive integer", function()
+    for _, list_size in ipairs({ "wide", 3.7, {}, true, -5, 0 }) do
+      local list_actions = configure("left", list_size)
+      assert.is_nil(list_actions.window_opts().size, "list_size " .. vim.inspect(list_size))
+    end
+  end)
+
+  it("leaves size nil when unset", function()
+    local list_actions = configure("left", nil)
+    assert.is_nil(list_actions.window_opts().size)
+  end)
+end)
