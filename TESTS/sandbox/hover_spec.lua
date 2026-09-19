@@ -165,6 +165,45 @@ describe("sandbox.hover", function()
       assert.is_false(registered)
     end)
 
+    -- LUA-92: `require` is the load trigger under a lazy manager, so
+    -- `setup()` must never call it -- it only reads `package.loaded`, and
+    -- when hover.nvim has not loaded yet, defers to lazy.nvim's own `User
+    -- LazyLoad` event instead of forcing the load itself.
+    it("defers registration to hover.nvim's own load under lazy.nvim, never requiring it itself", function()
+      local saved_lazy = package.loaded["lazy"]
+      local saved_registry = package.loaded["hover.registry"]
+      local saved_preload = package.preload["hover.registry"]
+
+      local ok, err = pcall(function()
+        package.loaded["lazy"] = {} -- pretend a lazy.nvim session
+        package.loaded["hover.registry"] = nil -- hover.nvim not loaded yet
+        package.preload["hover.registry"] = function()
+          error("hover.setup() must never require hover.registry directly")
+        end
+
+        assert.is_false(hover.setup(), "must not force-load hover.nvim")
+        -- Calling it again before hover.nvim loads must not arm a second
+        -- retry (and must not require either).
+        assert.is_false(hover.setup())
+
+        -- hover.nvim finishes loading later, the way its own setup() would
+        -- (it requires its own registry as one of its first steps).
+        local R = fake_registry()
+        package.loaded["hover.registry"] = R
+        vim.api.nvim_exec_autocmds("User", { pattern = "LazyLoad", data = "hover.nvim" })
+
+        assert.is_true(hover.registered())
+        assert.is_not_nil(R.positions["sandbox.nvim"])
+      end)
+
+      package.preload["hover.registry"] = saved_preload
+      package.loaded["hover.registry"] = saved_registry
+      package.loaded["lazy"] = saved_lazy
+      if not ok then
+        error(err, 0)
+      end
+    end)
+
     -- A registry that simply ignored an unknown key would look identical to
     -- one that honours it, so the probe asks by behaviour. Registering into
     -- such a registry would put a 300-to-750 ms engine start on every

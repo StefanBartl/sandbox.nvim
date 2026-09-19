@@ -54,6 +54,12 @@ local api = vim.api
 ---@type boolean
 local _registered = false
 
+---@type boolean
+--- Whether a `User LazyLoad` retry has already been armed, so a second
+--- `M.setup()` call (e.g. a repeated `require("sandbox").setup()`) before
+--- hover.nvim has loaded does not stack up duplicate autocmds.
+local _deferred_armed = false
+
 ---@internal
 --- The `name:tag` the cursor is inside, split, or nil.
 ---
@@ -188,26 +194,12 @@ local function content_for(name, tag, result)
   return { lines = lines, title = reference }
 end
 
---- Register the position preview with hover.nvim, if it is installed.
----
---- **Declines against a hover.nvim that predates `on_request`.** Registering
---- there would put a 200-to-500 ms engine start on every trigger -- worse
---- than the feature is worth, and a stutter nobody would connect back to
---- here.
----
---- Checked by behaviour rather than by a version or a function name: a
---- registry that simply ignored an unknown key would look identical to one
---- that honours it. So a probe is registered that must *not* be called, the
---- automatic path is exercised once, and the answer is whether it stayed
---- quiet.
+---@internal
+--- Register the position preview into an already-loaded hover.nvim registry.
+---@param registry table
 ---@return boolean registered
-function M.setup()
-  if _registered then
-    return true
-  end
-
-  local ok, registry = pcall(require, "hover.registry")
-  if not ok or type(registry) ~= "table" or type(registry.register) ~= "function" then
+local function do_register(registry)
+  if type(registry) ~= "table" or type(registry.register) ~= "function" then
     return false
   end
   if type(registry.position_at) ~= "function" then
@@ -247,6 +239,56 @@ function M.setup()
 
   _registered = true
   return true
+end
+
+--- Register the position preview with hover.nvim, if it is installed.
+---
+--- **Declines against a hover.nvim that predates `on_request`.** Registering
+--- there would put a 200-to-500 ms engine start on every trigger -- worse
+--- than the feature is worth, and a stutter nobody would connect back to
+--- here.
+---
+--- Checked by behaviour rather than by a version or a function name: a
+--- registry that simply ignored an unknown key would look identical to one
+--- that honours it. So a probe is registered that must *not* be called, the
+--- automatic path is exercised once, and the answer is whether it stayed
+--- quiet.
+---
+--- **Never `require`s hover.nvim itself.** Under a lazy manager a bare
+--- `require("hover.registry")` here would be the load trigger, pulling
+--- hover.nvim into every startup regardless of its own `keys`/`cmd` spec.
+--- `package.loaded` only reads what is already there: if hover.nvim has not
+--- loaded yet, registration is deferred to lazy.nvim's `User LazyLoad`
+--- event instead of forced now -- hover.nvim's own `setup()` requires its
+--- registry as one of its first steps, so `package.loaded["hover.registry"]`
+--- is populated by the time that event fires.
+---@return boolean registered
+function M.setup()
+  if _registered then
+    return true
+  end
+
+  ---@diagnostic disable-next-line: undefined-field
+  local registry = package.loaded["hover.registry"]
+  if registry then
+    return do_register(registry)
+  end
+
+  if not _deferred_armed and package.loaded["lazy"] then
+    _deferred_armed = true
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "LazyLoad",
+      callback = function(ev)
+        if ev.data == "hover.nvim" then
+          ---@diagnostic disable-next-line: undefined-field
+          do_register(package.loaded["hover.registry"])
+        end
+      end,
+      desc = "[sandbox] Register the hover.nvim position preview once hover.nvim loads",
+    })
+  end
+
+  return false
 end
 
 ---@internal
@@ -308,6 +350,7 @@ end
 ---@return nil
 function M._reset()
   _registered = false
+  _deferred_armed = false
 end
 
 return M
