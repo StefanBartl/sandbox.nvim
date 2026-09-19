@@ -264,6 +264,33 @@ describe("sandbox.health", function()
     end
   end)
 
+  -- ERR-22: same shape of bug, same fix, for list_size -- see
+  -- `ui.list_actions.window_opts` and its own spec for the degrade itself;
+  -- this only covers that the healthcheck names the responsible key.
+  it("warns about a list_size that is not a positive integer", function()
+    for _, value in ipairs({ "wide", 3.7, -5, 0 }) do
+      local health =
+        load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+      require("sandbox.config").options.list_size = value
+
+      health.check()
+
+      assert.is_not_nil(find("warn", "list_size is not a positive integer"), "value " .. tostring(value))
+    end
+  end)
+
+  it("says nothing about list_size when it is a positive integer or nil", function()
+    for _, value in ipairs({ nil, 40, 2000 }) do
+      local health =
+        load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
+      require("sandbox.config").options.list_size = value
+
+      health.check()
+
+      assert.is_nil(find("warn", "list_size"), "value " .. tostring(value))
+    end
+  end)
+
   describe("the hover section names which of the three reasons applies", function()
     it("opts.hover = false", function()
       local health = load_health({

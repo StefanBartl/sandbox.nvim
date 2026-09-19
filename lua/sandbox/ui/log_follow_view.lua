@@ -7,11 +7,11 @@
 --- @param engine table active ContainerEngine implementation
 --- @param container_id string
 return function(engine, container_id)
-  local list_opts = require("sandbox.config").options
+  local list_opts = require("sandbox.ui.list_actions").window_opts()
   local bufnr = require("lib.nvim.window").open_named_scratch(
     "sandbox.nvim://logs/" .. container_id,
     { "-- following logs, press q to stop --" },
-    { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
+    { filetype = "log", split = list_opts.split, size = list_opts.size }
   )
   vim.bo[bufnr].modifiable = false
 

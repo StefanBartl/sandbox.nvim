@@ -32,11 +32,11 @@ return function(containers, all)
     )
   end
 
-  local list_opts = require("sandbox.config").options
+  local list_opts = list_actions.window_opts()
   local bufnr = require("lib.nvim.window").open_named_scratch(
     "sandbox.nvim://container-list",
     lines,
-    { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
+    { filetype = "log", split = list_opts.split, size = list_opts.size }
   )
 
   -- `vim.hl` is the 0.11 rename of `vim.highlight`; README.md/installation.md

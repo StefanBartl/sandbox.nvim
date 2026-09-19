@@ -432,6 +432,29 @@ function M.bulk_confirm_then(label, noun, items, ref, fn)
   end)
 end
 
+--- ERR-22: `open_named_scratch`'s `split`/`size` opts, read straight from
+--- `config.options.list_split`/`list_size`.
+---
+--- `split` degrades safely on its own -- `open_named_scratch` looks it up in
+--- a fixed table and falls back to `"belowright split"` on anything it
+--- doesn't recognize, whatever the type -- so it is passed through as-is.
+--- `size`, though, reaches `nvim_win_set_width`/`nvim_win_set_height`
+--- directly whenever it is non-nil (`if opts.size then ...`), and those
+--- throw on a non-number or a non-integral float ("wide", `3.7`) instead of
+--- degrading -- confirmed via a headless repro before this guard existed.
+--- Every list-view module shares this rather than re-deriving it seven
+--- times over, the same reasoning as `setup_autorefresh` below being here
+--- rather than duplicated per view.
+---@return { split: any, size: integer|nil }
+function M.window_opts()
+  local opts = require("sandbox.config").options
+  local size = opts.list_size
+  if type(size) ~= "number" or size ~= math.floor(size) or size <= 0 then
+    size = nil
+  end
+  return { split = opts.list_split, size = size }
+end
+
 --- Periodically re-run `refresh_fn` (e.g. `container_commands.list`) while
 --- `bufnr` is visible in a window, governed by `config.options.refresh_interval`
 --- (ms; nil/0 disables). Safe to call on every render since `open_named_scratch`

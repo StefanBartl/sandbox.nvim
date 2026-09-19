@@ -25,11 +25,11 @@ return function(images)
     )
   end
 
-  local list_opts = require("sandbox.config").options
+  local list_opts = list_actions.window_opts()
   local bufnr = require("lib.nvim.window").open_named_scratch(
     "sandbox.nvim://image-list",
     lines,
-    { filetype = "log", split = list_opts.list_split, size = list_opts.list_size }
+    { filetype = "log", split = list_opts.split, size = list_opts.size }
   )
 
   local image_cmds = require("sandbox.bindings.usrcmds.image_commands")
