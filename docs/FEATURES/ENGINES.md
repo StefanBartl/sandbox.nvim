@@ -51,6 +51,11 @@ installed where one project specifically needs the other.
 - **Module:** `util/project_config.lua` (`read_engine_override`), consumed by `bindings/usrcmds/engine_commands.lua`
 - **Config:** a `.sandboxrc` in the repo root, `engine=docker|podman|nerdctl`
 - **Usercmds:** `:Sandbox engine get` reports which source won
+- An `engine=` line whose value is not one of the three known engines (a
+  typo, for example) is ignored, falling through to the next source in the
+  precedence order — but `:Sandbox engine get` names it as an ignored,
+  invalid `.sandboxrc` value rather than reporting as if the file had
+  nothing to say at all
 
 ## Runtime engine switching
 
