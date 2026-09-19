@@ -10,12 +10,22 @@ local M = {}
 --- through to this function whenever no `vim.g.sandbox_engine` session
 --- override is set, which is the common case. Without caching, that meant a
 --- `filereadable()`/`readfile()` pair against `<cwd>/.sandboxrc` on every
---- single redraw, cwd unchanged or not. The answer only ever depends on the
---- cwd and that file's contents, so it is cached per cwd and re-read only
---- when the cwd actually changes -- the same event (`:cd`) that is the only
---- documented way this override is meant to change at all.
----@type { cwd: string, name: Sandbox.Engine|nil, invalid: boolean }|nil
+--- single redraw, cwd unchanged or not.
+---
+--- `resolve_engine_name()` is not only the statusline's hot path, though --
+--- it also backs `:Sandbox engine get`/`get_engine()`/`get_compose_engine()`,
+--- which are meant to see a `.sandboxrc` someone just edited in the *same*
+--- cwd (fixing a typo, pinning a different engine) without requiring a `:cd`
+--- away and back first. So this is a short TTL, not an unbounded per-cwd
+--- cache keyed on `:cd` alone: long enough to collapse a redraw burst down
+--- to about one read every `CACHE_TTL_MS`, short enough that a deliberate
+--- re-check after editing the file is never stuck behind a stale answer for
+--- the rest of the session.
+---@type { cwd: string, name: Sandbox.Engine|nil, invalid: boolean, at: integer }|nil
 local cache = nil
+
+--- How long a cached answer stays valid, in ms. See the PERF note above.
+local CACHE_TTL_MS = 500
 
 --- Read an `engine=docker|podman|nerdctl` override from `.sandboxrc` in the cwd.
 ---
@@ -27,7 +37,8 @@ local cache = nil
 --- @return boolean invalid  true when an `engine=` line exists but its value is not one of the three known engines
 function M.read_engine_override()
   local cwd = vim.fn.getcwd()
-  if cache and cache.cwd == cwd then
+  local now = vim.uv.now()
+  if cache and cache.cwd == cwd and (now - cache.at) < CACHE_TTL_MS then
     return cache.name, cache.invalid
   end
 
@@ -50,7 +61,7 @@ function M.read_engine_override()
     end
   end
 
-  cache = { cwd = cwd, name = name, invalid = invalid }
+  cache = { cwd = cwd, name = name, invalid = invalid, at = now }
   return name, invalid
 end
 

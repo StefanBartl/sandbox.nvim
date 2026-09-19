@@ -94,11 +94,36 @@ describe("util.project_config", function()
       local first_name = M.read_engine_override()
       assert.are.equal("podman", first_name)
 
-      -- The file changes but the cwd does not -- a cached answer must keep
-      -- returning the value it read on first entry into this cwd.
+      -- The file changes but the cwd does not -- within the TTL, a cached
+      -- answer must keep returning the value it read on first entry into
+      -- this cwd rather than re-reading on every call.
       vim.fn.writefile({ "engine=docker" }, tmpdir .. "/.sandboxrc")
       local second_name = M.read_engine_override()
       assert.are.equal("podman", second_name)
+    end)
+  end)
+
+  -- `:Sandbox engine get`/`get_engine()` also fall through to this function,
+  -- and are meant to see a `.sandboxrc` someone just fixed in the *same* cwd
+  -- without forcing a `:cd` away and back first -- so the cache must not be
+  -- good for the rest of the session, only for the redraw-burst timescale it
+  -- exists to collapse.
+  it("re-reads once the cache entry's TTL has elapsed, cwd unchanged", function()
+    vim.fn.writefile({ "engine=podman" }, tmpdir .. "/.sandboxrc")
+    with_cwd(tmpdir, function()
+      package.loaded["sandbox.util.project_config"] = nil
+      local M = require("sandbox.util.project_config")
+
+      local first_name = M.read_engine_override()
+      assert.are.equal("podman", first_name)
+
+      vim.fn.writefile({ "engine=docker" }, tmpdir .. "/.sandboxrc")
+      -- vim.wait (not vim.uv.sleep) so the event loop actually turns --
+      -- vim.uv.now() is the loop's cached time and only advances on an
+      -- iteration, which a raw blocking sleep never triggers.
+      vim.wait(600) -- past CACHE_TTL_MS (500ms)
+      local second_name = M.read_engine_override()
+      assert.are.equal("docker", second_name)
     end)
   end)
 
