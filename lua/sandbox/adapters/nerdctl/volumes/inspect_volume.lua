@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to inspect a volume
+---@module 'sandbox.adapters.nerdctl.volumes.inspect_volume'
+--- Nerdctl Adapter: Function to inspect a volume
 
 local run_argv = require("sandbox.util.run_argv")
 

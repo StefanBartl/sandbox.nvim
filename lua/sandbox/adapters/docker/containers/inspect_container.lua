@@ -1,4 +1,5 @@
--- Docker Adapter: Function to inspect a container
+---@module 'sandbox.adapters.docker.containers.inspect_container'
+--- Docker Adapter: Function to inspect a container
 
 local run_argv = require("sandbox.util.run_argv")
 

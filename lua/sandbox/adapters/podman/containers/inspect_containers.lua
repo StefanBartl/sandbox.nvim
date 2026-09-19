@@ -1,4 +1,5 @@
--- Podman Adapter: Function to inspect a container
+---@module 'sandbox.adapters.podman.containers.inspect_containers'
+--- Podman Adapter: Function to inspect a container
 
 local run_argv = require("sandbox.util.run_argv")
 

@@ -1,4 +1,5 @@
--- Use case: Insect a container
+---@module 'sandbox.core.usecases.containers.inspect_container'
+--- Use case: Inspect a container
 --- @param engine table: must implement inspect_container
 --- @param container_id string
 --- @param on_done? fun(...) Passed straight through: when given, the adapter

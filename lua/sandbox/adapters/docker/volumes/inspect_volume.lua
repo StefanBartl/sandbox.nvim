@@ -1,4 +1,5 @@
--- Docker Adapter: Function to inspect a volume
+---@module 'sandbox.adapters.docker.volumes.inspect_volume'
+--- Docker Adapter: Function to inspect a volume
 
 local run_argv = require("sandbox.util.run_argv")
 

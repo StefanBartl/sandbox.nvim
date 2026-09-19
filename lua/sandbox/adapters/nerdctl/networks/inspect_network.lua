@@ -1,4 +1,5 @@
--- Nerdctl Adapter: Function to inspect a network
+---@module 'sandbox.adapters.nerdctl.networks.inspect_network'
+--- Nerdctl Adapter: Function to inspect a network
 
 local run_argv = require("sandbox.util.run_argv")
 

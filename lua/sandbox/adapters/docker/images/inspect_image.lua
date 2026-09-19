@@ -1,4 +1,5 @@
--- Docker Adapter: Function to inspect an image
+---@module 'sandbox.adapters.docker.images.inspect_image'
+--- Docker Adapter: Function to inspect an image
 
 local run_argv = require("sandbox.util.run_argv")
 

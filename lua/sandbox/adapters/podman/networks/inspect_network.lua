@@ -1,4 +1,5 @@
--- Podman Adapter: Function to inspect a network
+---@module 'sandbox.adapters.podman.networks.inspect_network'
+--- Podman Adapter: Function to inspect a network
 
 local run_argv = require("sandbox.util.run_argv")
 
