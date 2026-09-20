@@ -716,7 +716,9 @@ describe("ui.list_actions.setup_autorefresh", function()
     end)
 
     vim.api.nvim_win_close(vim.fn.bufwinid(bufnr), true)
-    vim.wait(60) -- let the timer notice the window is gone and self-stop
+    vim.wait(2000, function()
+      return vim.b[bufnr].sandbox_autorefresh_active == nil
+    end)
 
     assert.is_nil(vim.b[bufnr].sandbox_autorefresh_active, "the flag must be cleared, not just the timer")
 
@@ -727,7 +729,7 @@ describe("ui.list_actions.setup_autorefresh", function()
     list_actions.setup_autorefresh(bufnr, function()
       refreshed_again = refreshed_again + 1
     end)
-    vim.wait(200, function()
+    vim.wait(2000, function()
       return refreshed_again >= 1
     end)
 
@@ -805,6 +807,27 @@ describe("ui.list_actions.window_opts", function()
 
   it("degrades a negative-infinity size to nil", function()
     local list_actions = configure("left", -math.huge)
+    assert.is_nil(list_actions.window_opts().size)
+  end)
+
+  -- Adversarial follow-up to the math.huge fix above: a large-but-finite
+  -- double is not math.huge, so `size == math.huge` never catches it, yet it
+  -- overflows the int64 nvim_win_set_width/_height convert into and raises
+  -- the identical "Number is not integral" -- confirmed via headless repro
+  -- (1e20, 2^63, 1e300, 9223372036854775808 all raise; 9.22e18, just under
+  -- 2^63, does not).
+  it("degrades a large-but-finite size (not math.huge, but still overflowing) to nil", function()
+    for _, list_size in ipairs({ 1e20, 2 ^ 63, 1e300, 9223372036854775808 }) do
+      local list_actions = configure("left", list_size)
+      assert.is_nil(list_actions.window_opts().size, "list_size " .. tostring(list_size))
+    end
+  end)
+
+  -- NaN is not caught by a dedicated clause -- it doesn't need one. NaN is
+  -- never equal to itself under IEEE-754, so `size ~= math.floor(size)`
+  -- (NaN ~= NaN) is already true, same as any other non-integral float.
+  it("degrades NaN (0/0) to nil via the existing non-integral check", function()
+    local list_actions = configure("left", 0 / 0)
     assert.is_nil(list_actions.window_opts().size)
   end)
 
