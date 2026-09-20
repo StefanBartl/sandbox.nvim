@@ -293,7 +293,11 @@ describe("sandbox.health", function()
   -- `ui.list_actions.window_opts` and its own spec for the degrade itself;
   -- this only covers that the healthcheck names the responsible key.
   it("warns about a list_size that is not a positive integer", function()
-    for _, value in ipairs({ "wide", 3.7, -5, 0, math.huge, -math.huge }) do
+    -- Includes 1e20/2^63: large-but-finite doubles that are not math.huge
+    -- but still overflow the int64 nvim_win_set_width/_height convert into
+    -- (see list_actions_wiring_spec.lua), plus NaN (0/0), which the
+    -- non-integral check already catches since NaN ~= NaN under IEEE-754.
+    for _, value in ipairs({ "wide", 3.7, -5, 0, math.huge, -math.huge, 1e20, 2 ^ 63, 0 / 0 }) do
       local health =
         load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
       require("sandbox.config").options.list_size = value

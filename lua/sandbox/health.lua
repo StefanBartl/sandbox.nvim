@@ -129,15 +129,17 @@ function M.check()
   -- same reason as refresh_interval above: the degrade site has no way to
   -- say which config key it silently ignored.
   --
-  -- Mirrors `window_opts()`'s predicate exactly, including its
-  -- `size == math.huge` clause -- `math.floor(math.huge) == math.huge`, so
-  -- positive infinity is otherwise indistinguishable from a genuine positive
-  -- integer to this check, yet still raises at the nvim_win_set_width/height
-  -- call `window_opts()` guards.
+  -- Mirrors `window_opts()`'s predicate exactly, including its `size >=
+  -- 2^63` clause -- that bound catches `math.huge` (its own floor under
+  -- IEEE-754, so `~= math.floor()` never sees it) but also any large-but-
+  -- finite double (`1e20`, `2^63` itself, ...): those overflow the int64
+  -- `nvim_win_set_width`/`_height` convert into and raise the same "Number
+  -- is not integral" error, yet look like a genuine positive integer to
+  -- this check otherwise.
   local list_size = config.options.list_size
   if
     list_size ~= nil
-    and (type(list_size) ~= "number" or list_size ~= math.floor(list_size) or list_size <= 0 or list_size == math.huge)
+    and (type(list_size) ~= "number" or list_size ~= math.floor(list_size) or list_size <= 0 or list_size >= 2 ^ 63)
   then
     health.warn(
       "list_size is not a positive integer (" .. vim.inspect(list_size) .. ") -- using Neovim's default split size",
