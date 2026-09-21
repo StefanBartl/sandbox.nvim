@@ -23,3 +23,8 @@ prepend_env("LIB_NVIM_PATH")
 prepend_env("UI_NVIM_PATH")
 
 vim.cmd("runtime plugin/plenary.vim")
+
+-- Swap and shada stay off for the whole suite, including plenary's child
+-- processes that reuse this file: stale swap files fail suites with E326.
+vim.o.swapfile = false
+vim.o.shadafile = "NONE"
