@@ -15,7 +15,7 @@ local M = {}
 
 ---@internal
 ---@return table|nil config, string|nil path
-local function find_and_parse()
+local function load_devcontainer_config()
   local devcontainer_file = require("sandbox.util.devcontainer_file")
   local path = devcontainer_file.find()
   if not path then
@@ -41,7 +41,7 @@ end
 
 --- Build (or pull) the devcontainer's image and start a container from it.
 function M.build()
-  local config, path = find_and_parse()
+  local config, path = load_devcontainer_config()
   if not config or not path then
     return
   end
@@ -71,7 +71,7 @@ end
 
 --- Exec a shell into the running devcontainer for the project in cwd.
 function M.attach()
-  local config, path = find_and_parse()
+  local config, path = load_devcontainer_config()
   if not config or not path then
     return
   end
