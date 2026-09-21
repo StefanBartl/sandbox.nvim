@@ -23,7 +23,7 @@ local M = {}
 --- them, so closing the window is preferred over redirecting it -- except
 --- for a tabpage's last window, which cannot be closed at all.
 ---@param bufnr integer
-local function close_buffer_and_its_windows(bufnr)
+local function close_buffer_safely(bufnr)
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_buf(win) == bufnr then
       local tabpage = vim.api.nvim_win_get_tabpage(win)
@@ -214,7 +214,7 @@ function M.set_keymaps(bufnr, keys, items, header_offset, opts)
       desc = "close list buffer",
       opts = { nowait = true, silent = true },
       rhs = function()
-        close_buffer_and_its_windows(bufnr)
+        close_buffer_safely(bufnr)
       end,
     },
 
@@ -339,7 +339,7 @@ function M.bind_close(bufnr, surface, desc, before)
           if before then
             before()
           end
-          close_buffer_and_its_windows(bufnr)
+          close_buffer_safely(bufnr)
         end,
       },
     },
