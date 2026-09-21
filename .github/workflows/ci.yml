@@ -72,6 +72,7 @@ jobs:
         with:
           repository: StefanBartl/ui.nvim
           path: ui.nvim
+          ref: ci-verified
 
       - uses: rhysd/action-setup-vim@v1
         with:
