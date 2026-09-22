@@ -161,6 +161,7 @@ commands (`postCreateCommand`, ...), or `remoteUser` support yet.
 |---|---|---|
 | `build` | — | Build/pull the devcontainer's image and start a container from it |
 | `attach` | — | Open a shell in the running devcontainer for the project in cwd |
+| `lazygit` | — | Open gitsuite.nvim's lazygit for the devcontainer's workspace (optional) |
 
 ## `:Sandbox wsl <subcommand>` (alias: `:Sbx wsl ...`)
 

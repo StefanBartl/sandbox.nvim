@@ -899,6 +899,14 @@ local function devcontainer_routes()
         devcontainer_cmds.attach()
       end,
     },
+
+    {
+      path = { "devcontainer", "lazygit" },
+      desc = "Open gitsuite.nvim's lazygit for the devcontainer's workspace (optional)",
+      run = function(_ctx)
+        devcontainer_cmds.lazygit()
+      end,
+    },
   }
 end
 

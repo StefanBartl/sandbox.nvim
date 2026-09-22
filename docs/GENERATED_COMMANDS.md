@@ -35,6 +35,7 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sandbox container unpause {id:CONTAINER_ID}` | Resume a paused container's processes |
 | `:Sandbox devcontainer attach` | Open a shell in the running devcontainer for the project in cwd |
 | `:Sandbox devcontainer build` | Build/pull a .devcontainer/devcontainer.json's image and start a container from it |
+| `:Sandbox devcontainer lazygit` | Open gitsuite.nvim's lazygit for the devcontainer's workspace (optional) |
 | `:Sandbox docs generate` | Regenerate docs/GENERATED_COMMANDS.md from the live route table, so docs/BINDINGS.md (hand-maintained) can be diffed against it to catch drift |
 | `:Sandbox engine get` | Show the currently active engine and why |
 | `:Sandbox engine reset` | Clear the session engine override, falling back to .sandboxrc/config |
@@ -107,6 +108,7 @@ sandbox.nvim: container, image, volume, network, compose, and WSL distro operati
 | `:Sbx container unpause {id:CONTAINER_ID}` | Resume a paused container's processes |
 | `:Sbx devcontainer attach` | Open a shell in the running devcontainer for the project in cwd |
 | `:Sbx devcontainer build` | Build/pull a .devcontainer/devcontainer.json's image and start a container from it |
+| `:Sbx devcontainer lazygit` | Open gitsuite.nvim's lazygit for the devcontainer's workspace (optional) |
 | `:Sbx docs generate` | Regenerate docs/GENERATED_COMMANDS.md from the live route table, so docs/BINDINGS.md (hand-maintained) can be diffed against it to catch drift |
 | `:Sbx engine get` | Show the currently active engine and why |
 | `:Sbx engine reset` | Clear the session engine override, falling back to .sandboxrc/config |

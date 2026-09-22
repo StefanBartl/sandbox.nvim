@@ -40,7 +40,9 @@ Optional:
 - [gitsuite.nvim](https://github.com/StefanBartl/gitsuite.nvim) — a preflight
   check before `:Sandbox devcontainer build` refuses to bake a workspace with
   unresolved merge-conflict markers into an image. Without it, the check is
-  skipped and the build proceeds as before.
+  skipped and the build proceeds as before. `:Sandbox devcontainer lazygit`
+  also opens its lazygit float for the devcontainer's workspace directory —
+  without it, that one command reports "not installed".
 
 ## lazy.nvim
 
