@@ -37,6 +37,10 @@ Optional:
   containers from it. Registered request-only, so it never slows the
   automatic trigger; `:checkhealth sandbox` says whether it is active. See
   [docs/FEATURES/HOVER.md](FEATURES/HOVER.md).
+- [gitsuite.nvim](https://github.com/StefanBartl/gitsuite.nvim) — a preflight
+  check before `:Sandbox devcontainer build` refuses to bake a workspace with
+  unresolved merge-conflict markers into an image. Without it, the check is
+  skipped and the build proceeds as before.
 
 ## lazy.nvim
 

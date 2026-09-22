@@ -94,6 +94,7 @@ local function cleanup()
     "sandbox.bindings.usrcmds.devcontainer_commands",
     "sandbox.bindings.usrcmds.wsl_commands",
     "sandbox.bindings.usrcmds.container_commands",
+    "gitsuite.features.conflict",
   }) do
     package.loaded[name] = nil
   end
@@ -506,6 +507,54 @@ describe("usrcmds devcontainer_commands", function()
     H.mod.build()
 
     assert.are.same({}, H.build_calls)
+  end)
+
+  describe("conflict preflight (gitsuite.nvim, optional)", function()
+    it("builds normally when gitsuite.nvim is not installed -- fails open", function()
+      local H = load_devcontainer({
+        path = "/proj/.devcontainer/devcontainer.json",
+        config = { image = "alpine" },
+      })
+
+      H.mod.build()
+
+      assert.are.equal(1, #H.build_calls)
+    end)
+
+    it("builds once gitsuite.nvim reports no unresolved conflicts", function()
+      local H = load_devcontainer({
+        path = "/proj/.devcontainer/devcontainer.json",
+        config = { image = "alpine" },
+      })
+      package.loaded["gitsuite.features.conflict"] = {
+        list = function(on_done)
+          on_done(0)
+        end,
+      }
+
+      H.mod.build()
+
+      assert.are.equal(1, #H.build_calls)
+    end)
+
+    it("aborts the build and never mounts the workspace when conflicts remain", function()
+      local H = load_devcontainer({
+        path = "/proj/.devcontainer/devcontainer.json",
+        config = { image = "alpine" },
+      })
+      package.loaded["gitsuite.features.conflict"] = {
+        list = function(on_done)
+          on_done(2)
+        end,
+      }
+
+      H.mod.build()
+
+      assert.are.same({}, H.build_calls)
+      local err = notice_of(H, "error")
+      assert.is_truthy(err.msg:find("aborted", 1, true))
+      assert.is_truthy(err.msg:find("2 files", 1, true))
+    end)
   end)
 end)
 

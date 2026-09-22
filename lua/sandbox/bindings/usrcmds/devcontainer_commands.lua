@@ -39,6 +39,33 @@ local function container_name_for(workspace_dir)
   return "sandbox-devcontainer-" .. vim.fs.basename(workspace_dir):gsub("[^%w_.-]", "_")
 end
 
+---@internal
+---Preflight check (gitsuite.nvim, optional): refuse to bake a mid-merge
+---working tree into an image unnoticed. Fails open -- proceeds with
+---`run_build()` when gitsuite.nvim is not installed, since this is a
+---courtesy check, not a security boundary.
+---@param run_build fun()
+---@return nil
+local function preflight_conflicts(run_build)
+  local ok, conflict = pcall(require, "gitsuite.features.conflict")
+  if not ok then
+    run_build()
+    return
+  end
+  conflict.list(function(count)
+    if count > 0 then
+      notify.error(
+        ("Devcontainer build aborted: %d file%s with unresolved merge conflicts would be baked into the image"):format(
+          count,
+          count == 1 and "" or "s"
+        )
+      )
+      return
+    end
+    run_build()
+  end)
+end
+
 --- Build (or pull) the devcontainer's image and start a container from it.
 function M.build()
   local config, path = load_devcontainer_config()
@@ -57,15 +84,17 @@ function M.build()
   local workspace_dir = devcontainer_file.workspace_dir(path)
   local name = container_name_for(workspace_dir)
 
-  notify.info("Building devcontainer...")
-  local usecase = require("sandbox.core.usecases.devcontainer.build")
-  local engine_name = sandbox.resolve_engine_name() or "docker"
-  usecase(engine, compose_engine, engine_name, config, workspace_dir, name, function(ok, result)
-    if not ok then
-      notify.error("Devcontainer build failed: " .. friendly_error(result), { err = result })
-      return
-    end
-    notify.info("Devcontainer ready. Run :Sandbox devcontainer attach to open a shell.")
+  preflight_conflicts(function()
+    notify.info("Building devcontainer...")
+    local usecase = require("sandbox.core.usecases.devcontainer.build")
+    local engine_name = sandbox.resolve_engine_name() or "docker"
+    usecase(engine, compose_engine, engine_name, config, workspace_dir, name, function(ok, result)
+      if not ok then
+        notify.error("Devcontainer build failed: " .. friendly_error(result), { err = result })
+        return
+      end
+      notify.info("Devcontainer ready. Run :Sandbox devcontainer attach to open a shell.")
+    end)
   end)
 end
 
