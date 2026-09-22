@@ -95,6 +95,7 @@ local function cleanup()
     "sandbox.bindings.usrcmds.wsl_commands",
     "sandbox.bindings.usrcmds.container_commands",
     "gitsuite.features.conflict",
+    "gitsuite.features.ui",
   }) do
     package.loaded[name] = nil
   end
@@ -554,6 +555,54 @@ describe("usrcmds devcontainer_commands", function()
       local err = notice_of(H, "error")
       assert.is_truthy(err.msg:find("aborted", 1, true))
       assert.is_truthy(err.msg:find("2 files", 1, true))
+    end)
+  end)
+
+  describe("lazygit (gitsuite.nvim, optional, GS-27)", function()
+    it("opens lazygit for the devcontainer's workspace_dir", function()
+      local H = load_devcontainer({
+        path = "/proj/.devcontainer/devcontainer.json",
+        config = { image = "alpine" },
+        workspace = "/home/me/my-app",
+      })
+      local calls = {}
+      package.loaded["gitsuite.features.ui"] = {
+        lazygit = function(dir)
+          calls[#calls + 1] = dir
+        end,
+      }
+
+      H.mod.lazygit()
+
+      assert.are.same({ "/home/me/my-app" }, calls)
+    end)
+
+    it("reports gitsuite.nvim is not installed instead of erroring", function()
+      local H = load_devcontainer({
+        path = "/proj/.devcontainer/devcontainer.json",
+        config = { image = "alpine" },
+      })
+      package.loaded["gitsuite.features.ui"] = nil
+      local orig_preload = package.preload["gitsuite.features.ui"]
+      package.preload["gitsuite.features.ui"] = function()
+        error("no gitsuite.nvim here")
+      end
+
+      local ok = pcall(H.mod.lazygit)
+
+      package.preload["gitsuite.features.ui"] = orig_preload
+
+      assert.is_true(ok, "must not raise, just report an error")
+      local err = notice_of(H, "error")
+      assert.is_truthy(err.msg:find("gitsuite.nvim is not installed", 1, true))
+    end)
+
+    it("says what it looked for when there is no devcontainer.json", function()
+      local H = load_devcontainer({ path = nil })
+
+      H.mod.lazygit()
+
+      assert.is_truthy(notice_of(H, "warn").msg:find("No .devcontainer/devcontainer.json", 1, true))
     end)
   end)
 end)

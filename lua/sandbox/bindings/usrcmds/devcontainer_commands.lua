@@ -120,4 +120,28 @@ function M.attach()
   require("sandbox.bindings.usrcmds.container_commands").exec(name)
 end
 
+--- Open gitsuite.nvim's lazygit float for the devcontainer's workspace (GS-27)
+--- -- the HOST directory mounted into the container, not a path inside it,
+--- since lazygit itself always runs on the host. Optional soft dependency:
+--- gitsuite.nvim is never required by sandbox.nvim as a whole.
+function M.lazygit()
+  local config, path = load_devcontainer_config()
+  if not config or not path then
+    return
+  end
+
+  local devcontainer_file = require("sandbox.util.devcontainer_file")
+  local workspace_dir = devcontainer_file.workspace_dir(path)
+
+  local ok, ui = pcall(require, "gitsuite.features.ui")
+  if not ok then
+    notify.error(
+      'gitsuite.nvim is not installed -- install "StefanBartl/gitsuite.nvim" to use :Sandbox devcontainer lazygit'
+    )
+    return
+  end
+
+  ui.lazygit(workspace_dir)
+end
+
 return M

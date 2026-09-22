@@ -55,7 +55,7 @@ local MODULES = {
   compose_commands = { "up", "down", "restart", "ps", "services", "logs" },
   engine_commands = { "set", "get", "reset", "cycle" },
   registry_commands = { "login", "logout" },
-  devcontainer_commands = { "build", "attach" },
+  devcontainer_commands = { "build", "attach", "lazygit" },
   wsl_commands = {
     "list",
     "start",

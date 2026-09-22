@@ -4,12 +4,12 @@ VS Code-style Dev Containers support under `:Sandbox devcontainer
 <subcommand>` (alias `:Sbx devcontainer ...`). **Experimental** — see
 [Scope](#scope) below for what it does not cover yet.
 
-## Devcontainer build/attach
+## Devcontainer build/attach/lazygit
 
 - **Module:** `sandbox/core/usecases/devcontainer/build.lua`,
   `sandbox/bindings/usrcmds/devcontainer_commands.lua`
 - **Usercmds:** `:Sandbox devcontainer build`, `:Sandbox devcontainer
-  attach`
+  attach`, `:Sandbox devcontainer lazygit`
 
 Detects `.devcontainer/devcontainer.json` or `.devcontainer.json` in cwd or
 an ancestor directory. JSONC is supported directly — `//` and `/* */`
@@ -31,6 +31,13 @@ predictable name, `sandbox-devcontainer-<workspace-dir-basename>`, so
 
 `attach` opens a shell in the running devcontainer for the project detected
 in the current cwd.
+
+`lazygit` opens [gitsuite.nvim](https://github.com/StefanBartl/gitsuite.nvim)'s
+lazygit float for the devcontainer's `workspace_dir` -- the HOST directory
+mounted into the container, not a path inside it, since lazygit itself
+always runs on the host. Optional soft dependency: without gitsuite.nvim
+installed, this one command reports "not installed" and nothing else is
+affected.
 
 ### Scope
 
