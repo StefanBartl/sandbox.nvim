@@ -11,7 +11,7 @@ local logger = require("sandbox.logger")
 
 local ok, lib_notify = pcall(require, "lib.nvim.notify")
 
-local base = ok and lib_notify.create("[sandbox.nvim]")
+local base = ok and lib_notify.create("[sandbox.nvim]", { popup = true, source = "sandbox" })
   or {
     info = function(msg)
       vim.notify("[sandbox.nvim] " .. msg, vim.log.levels.INFO)
