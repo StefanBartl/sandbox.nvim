@@ -23,4 +23,24 @@ return {
   -- which stops at the leading nil and asserts nothing. The old runner let them pass; they are reported as
   -- warnings here. Remove this line once the specs iterate with an explicit count.
   assertions = "warn",
+  -- Guards (safety nets, see testing.nvim docs/GUARDS.md). The suite is clean for fs, scheduled errors,
+  -- prompts and deprecations, so those fail the run; process_net is switched on and only lets the
+  -- allowlisted spawns below through.
+  guards = {
+    fs = "error",
+    scheduled_error = "error",
+    prompt = "error",
+    deprecation = "error",
+    process_net = "error",
+    -- Real leaks between cases remain (about 266 warnings): the usrcmds/container and list/log/inspect
+    -- view specs leave scratch buffers, windows and floating windows open, and the lib.nvim logger and
+    -- kit surface/toast autocmd groups, the :LibLogger and :KitPreview commands and timers behind.
+    -- Stays "warn" until those specs close what they open.
+    state = "warn",
+  },
+  guard_allow = {
+    -- run_argv_spec starts real processes through cmd.exe (echo, ping as a delay) and a deliberately
+    -- non-existent binary to test the failed-spawn path; both are the subject of the spec.
+    spawn = { "cmd", "sandbox-nvim-definitely-not-a-real-binary" },
+  },
 }
