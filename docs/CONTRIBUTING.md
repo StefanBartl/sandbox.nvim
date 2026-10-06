@@ -39,8 +39,8 @@ the repository so every step can be compared with the real thing.
 
 ## Tests
 
-`TESTS/` is a [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
-busted-style suite. Adapters run against a faked `run_argv` instead of a real
+`TESTS/` is a busted-style suite run by [testing.nvim](https://github.com/StefanBartl/testing.nvim).
+Adapters run against a faked `run_argv` instead of a real
 docker/podman/nerdctl/wsl binary, so no engine has to be installed.
 [`TESTS/README.md`](../TESTS/README.md) has the invocation, plus a coverage
 section: what is covered, which defects are pinned as regression assertions

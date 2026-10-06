@@ -10,7 +10,7 @@ read_globals = {
   table = { fields = { "unpack" } },
 }
 
--- plenary.nvim's busted-style harness (describe/it/...) and luassert's
+-- The busted-style spec API (describe/it/...) and luassert's
 -- runtime-extended `assert` (assert.is_true, assert.are.same, ...) are only
 -- present under TESTS/, so scope them there rather than loosening checks
 -- plugin-wide.

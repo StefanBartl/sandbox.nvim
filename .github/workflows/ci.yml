@@ -36,7 +36,7 @@ jobs:
         run: luacheck lua TESTS
 
   test:
-    name: plenary tests (${{ matrix.os }})
+    name: tests (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
@@ -57,13 +57,6 @@ jobs:
 
       - uses: actions/checkout@v5
         with:
-          repository: nvim-lua/plenary.nvim
-          path: plenary.nvim
-          # Pinned to the 2026-09-20 HEAD; bump deliberately, not by drifting.
-          ref: 74b06c6c75e4eeb3108ec01852001636d85a932b
-
-      - uses: actions/checkout@v5
-        with:
           repository: StefanBartl/lib.nvim
           path: lib.nvim
           ref: ci-verified
@@ -78,16 +71,29 @@ jobs:
         with:
           neovim: true
 
-      - name: Run plenary test suite
+      # Checked out from the branch that only moves once the dependency's own CI is green.
+      - uses: actions/checkout@v5
+        with:
+          repository: "StefanBartl/testing.nvim"
+          path: testing.nvim
+          ref: ci-verified
+      - name: Run test suite (testing.nvim)
         working-directory: sandbox.nvim
         env:
-          PLENARY_PATH: ${{ github.workspace }}/plenary.nvim
-          LIB_NVIM_PATH: ${{ github.workspace }}/lib.nvim
-          UI_NVIM_PATH: ${{ github.workspace }}/ui.nvim
+          LIB_NVIM_DIR: ${{ github.workspace }}/lib.nvim
+          UI_NVIM_DIR: ${{ github.workspace }}/ui.nvim
+          TESTING_NVIM_DIR: ${{ github.workspace }}/testing.nvim
         run: |
           exec > >(tee -a "$RUNNER_TEMP/test-output.log") 2>&1
-          nvim -n -i NONE --headless --noplugin -u TESTS/minimal_init.lua \
-            -c "PlenaryBustedDirectory TESTS/sandbox { minimal_init = 'TESTS/minimal_init.lua', sequential = true }"
+          bash scripts/test.sh --json "$RUNNER_TEMP/testing-ir.json"
+      # The IR is what a reporter or a person reads to find out WHICH case failed on WHICH platform.
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: testing-ir-${{ matrix.os }}
+          path: ${{ runner.temp }}/testing-ir.json
+          if-no-files-found: ignore
+          retention-days: 14
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

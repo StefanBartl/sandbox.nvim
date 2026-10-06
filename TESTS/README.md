@@ -1,56 +1,35 @@
 # sandbox.nvim tests
 
-A [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) busted-style
-suite. Adapters are tested against a faked `sandbox.util.run_argv`
+A busted-style suite (`describe`/`it`/luassert) run by
+[testing.nvim](https://github.com/StefanBartl/testing.nvim). Adapters are
+tested against a faked `sandbox.util.run_argv`
 (`TESTS/sandbox/helpers/fake_run_argv.lua`) instead of a real
 docker/podman/nerdctl/wsl binary — no engine needs to be installed to run
 these.
 
 ## Running locally
 
-Point `PLENARY_PATH`, `LIB_NVIM_PATH` and `UI_NVIM_PATH` at wherever those
-three plugins live in your own setup (e.g. your plugin manager's install
-dir), then:
+testing.nvim, lib.nvim and ui.nvim are looked up, in this order, in
+`$<NAME>_DIR` (`$TESTING_NVIM_DIR`, `$LIB_NVIM_DIR`, `$UI_NVIM_DIR`),
+`.deps/<name>`, a sibling checkout `../<name>`, and
+`stdpath('data')/lazy/<name>`. A dependency that is missing is a loud error
+naming all four places, never a silent skip. Then:
 
 ```bash
-PLENARY_PATH=/path/to/plenary.nvim \
-LIB_NVIM_PATH=/path/to/lib.nvim \
-UI_NVIM_PATH=/path/to/ui.nvim \
-nvim --headless --noplugin -u TESTS/minimal_init.lua \
-  -c "PlenaryBustedDirectory TESTS/sandbox { minimal_init = 'TESTS/minimal_init.lua' }"
+bash scripts/test.sh
 ```
 
-A single file:
+A single file (substring of the file name) or a JSON result for tooling:
 
 ```bash
-PLENARY_PATH=... LIB_NVIM_PATH=... UI_NVIM_PATH=... \
-nvim --headless --noplugin -u TESTS/minimal_init.lua \
-  -c "lua require('plenary.busted').run('TESTS/sandbox/util/run_argv_spec.lua')"
+bash scripts/test.sh --file run_argv
+bash scripts/test.sh --json result.json
 ```
 
-Or a subdirectory:
-
-```bash
-PLENARY_PATH=... LIB_NVIM_PATH=... UI_NVIM_PATH=... \
-nvim --headless --noplugin -u TESTS/minimal_init.lua \
-  -c "PlenaryBustedDirectory TESTS/sandbox/util { minimal_init = 'TESTS/minimal_init.lua' }"
-```
-
-**Not `PlenaryBustedFile`**, even though it looks like the obvious counterpart
-to `PlenaryBustedDirectory`. It spawns a child Neovim to run the file — like
-the directory command does — but it takes no options, so it has no
-`minimal_init` to pass on. The child therefore starts *without* `-u` and loads
-your full personal config instead of `TESTS/minimal_init.lua`, which means
-`PLENARY_PATH`/`LIB_NVIM_PATH`/`UI_NVIM_PATH` are never prepended and the spec
-runs against whatever versions your plugin manager happens to have installed.
-The `-u TESTS/minimal_init.lua` on the outer command only configures the
-parent, which does nothing but spawn.
-
-That fails quietly and asymmetrically: a spec can go red under
-`PlenaryBustedFile` and green in CI (or the reverse) without anything being
-wrong with the spec. `TESTS/sandbox/util/run_argv_spec.lua`'s progress-indicator
-case does exactly that. The two forms above run the spec against the same
-environment CI uses.
+Each spec file runs in its own `nvim --headless` child (`isolated = "file"`
+in `.testing.lua`), started from `TESTS/minimal_init.lua`, so the spec runs
+against the same runtimepath CI uses. `TESTS/sandbox/util/run_argv_spec.lua`'s
+progress-indicator case is the one that depends on that.
 
 The lint gates CI runs are `luacheck lua TESTS` and `stylua --check .` —
 `TESTS/` is part of both.
@@ -67,7 +46,7 @@ The lint gates CI runs are `luacheck lua TESTS` and `stylua --check .` —
   subtree, which is what the aggregators need: `engine.lua` copies its
   sub-aggregators' functions into a table at load time, so re-requiring only
   the top file would hand back functions that closed over the *real* runner.
-- Each spec file runs in its own `nvim --headless` subprocess (plenary
+- Each spec file runs in its own `nvim --headless` subprocess (testing.nvim
   spawns one per file), so faked modules never leak between files — only
   between `it()` blocks *within* the same file, which is why `reload()`
   exists.
@@ -229,7 +208,7 @@ unreachable, because its only caller checks first.
   actual rendering of a picker (`pickers.new({}, ...):find()`) stays
   untested, on the same basis as every other real-UI seam in this suite: it
   needs telescope.nvim actually drawing something, which is neither a
-  dependency of this plugin nor a CI checkout (only plenary, lib.nvim and
+  dependency of this plugin nor a CI checkout (only testing.nvim, lib.nvim and
   ui.nvim are).
 - **`plugin/commands.lua`, `plugin/health.lua`** — a one-line load guard and a
   `runtime`/`helptags` shim; neither is sourced under
