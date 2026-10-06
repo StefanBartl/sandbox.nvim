@@ -39,8 +39,8 @@ return {
     state = "warn",
   },
   guard_allow = {
-    -- run_argv_spec starts real processes through cmd.exe (echo, ping as a delay) and a deliberately
+    -- run_argv_spec starts real trivial processes (cmd on Windows; echo, printf and sleep elsewhere) and a deliberately
     -- non-existent binary to test the failed-spawn path; both are the subject of the spec.
-    spawn = { "cmd", "sandbox-nvim-definitely-not-a-real-binary" },
+    spawn = { "cmd", "echo", "printf", "sleep", "sandbox-nvim-definitely-not-a-real-binary" },
   },
 }
