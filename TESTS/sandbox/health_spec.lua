@@ -278,7 +278,10 @@ describe("sandbox.health", function()
   end)
 
   it("says nothing about refresh_interval when it is a number or nil", function()
-    for _, value in ipairs({ nil, 0, 2000 }) do
+    -- `ipairs` would stop at the leading nil, so carry the length explicitly.
+    local values = { n = 3, nil, 0, 2000 }
+    for i = 1, values.n do
+      local value = values[i]
       local health =
         load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
       require("sandbox.config").options.refresh_interval = value
@@ -309,7 +312,10 @@ describe("sandbox.health", function()
   end)
 
   it("says nothing about list_size when it is a positive integer or nil", function()
-    for _, value in ipairs({ nil, 40, 2000 }) do
+    -- `ipairs` would stop at the leading nil, so carry the length explicitly.
+    local values = { n = 3, nil, 40, 2000 }
+    for i = 1, values.n do
+      local value = values[i]
       local health =
         load_health({ engine = "docker", installed = { docker = true }, live = { docker = true }, hover = true })
       require("sandbox.config").options.list_size = value

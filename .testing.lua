@@ -19,10 +19,6 @@ return {
   -- "c" = child started from a -c command (v:vim_did_enter is 0, <cword> works),
   -- "l" = `nvim -l`.
   host = "c",
-  -- Two cases in TESTS/sandbox/health_spec.lua (lines 280 and 311) loop over `ipairs({ nil, ... })`,
-  -- which stops at the leading nil and asserts nothing. The old runner let them pass; they are reported as
-  -- warnings here. Remove this line once the specs iterate with an explicit count.
-  assertions = "warn",
   -- Guards (safety nets, see testing.nvim docs/GUARDS.md). The suite is clean for fs, scheduled errors,
   -- prompts and deprecations, so those fail the run; process_net is switched on and only lets the
   -- allowlisted spawns below through.

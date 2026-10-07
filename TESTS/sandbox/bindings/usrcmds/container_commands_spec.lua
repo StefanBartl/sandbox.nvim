@@ -1,7 +1,19 @@
 describe("bindings.usrcmds.container_commands.run", function()
   local queue
+  local notices
 
   before_each(function()
+    -- The real sandbox.notify pops up a lib.nvim toast (floating window, kit
+    -- surface autocmd groups, timers) and loads the lib logger (autocmd group,
+    -- :LibLogger). None of that is under test here, so record the notices
+    -- instead of showing them.
+    notices = {}
+    local function record(level)
+      return function(msg)
+        notices[#notices + 1] = { level = level, msg = msg }
+      end
+    end
+    package.loaded["sandbox.notify"] = { info = record("info"), warn = record("warn"), error = record("error") }
     package.loaded["sandbox"] = {
       get_engine = function()
         return "docker"
@@ -43,6 +55,8 @@ describe("bindings.usrcmds.container_commands.run", function()
   end)
 
   after_each(function()
+    package.loaded["sandbox"] = nil
+    package.loaded["sandbox.notify"] = nil
     package.loaded["ui.kit"] = nil
     package.loaded["sandbox.core.usecases.containers.run_container"] = nil
     package.loaded["sandbox.bindings.usrcmds.container_commands"] = nil
@@ -70,6 +84,7 @@ describe("bindings.usrcmds.container_commands.run", function()
     assert.are.same({ "8080:80" }, captured_opts.ports)
     assert.are.same({ "/host:/container" }, captured_opts.volumes)
     assert.are.same({ "FOO=bar" }, captured_opts.env)
+    assert.are.same({ { level = "info", msg = "Container started: abc123" } }, notices)
   end)
 
   it("<Esc> on an optional field behaves like an empty submit, not an abort", function()
@@ -107,5 +122,6 @@ describe("bindings.usrcmds.container_commands.run", function()
     cc.run()
 
     assert.is_false(ran)
+    assert.are.same({ { level = "warn", msg = "Aborted: no image given" } }, notices)
   end)
 end)
