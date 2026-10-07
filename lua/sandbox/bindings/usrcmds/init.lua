@@ -211,7 +211,14 @@ composer.register_type("DISTRO_NAME", {
   end,
 })
 
-local BUFFER_FLAG = { { name = "buffer", short = "b", bool = true } }
+local BUFFER_FLAG = {
+  {
+    name = "buffer",
+    short = "b",
+    bool = true,
+    desc = "Stream the CLI output into a terminal buffer, not a notification",
+  },
+}
 
 ---@internal
 ---@param ctx table composer Ctx
@@ -270,7 +277,7 @@ local function container_routes()
         { name = "id", type = "CONTAINER_ID" },
         { name = "shell", type = "STRING", optional = true, values = { "sh", "bash", "zsh", "dash" } },
       },
-      kv = { { key = "workdir", type = "STRING" } },
+      kv = { { key = "workdir", type = "STRING", desc = "Working directory inside the container" } },
       desc = "Open a shell session inside a running container  [workdir=<path>]",
       run = function(ctx)
         container_cmds.exec(ctx.args.id, ctx.args.shell, exec_workdir(ctx))
@@ -283,7 +290,7 @@ local function container_routes()
         { name = "id", type = "CONTAINER_ID" },
         { name = "command", type = "STRING", optional = true },
       },
-      kv = { { key = "workdir", type = "STRING" } },
+      kv = { { key = "workdir", type = "STRING", desc = "Working directory inside the container" } },
       desc = "Run a one-off command inside a container (non-interactive)  [workdir=<path>]",
       run = function(ctx)
         container_cmds.exec_once(ctx.args.id, command_tail(ctx), exec_workdir(ctx))
