@@ -7,7 +7,44 @@
 -- A new option or argument without one shows up as a bare row in the cheatsheet, so this fails until
 -- it is described. Runs against the real composer and the real route table; nothing reaches an
 -- engine because registering only builds the verb.
+--
+-- `setup()` only builds the nine `wsl` routes where wsl.exe is reachable. This spec must not depend on
+-- the host, or a wsl option added later without a text (or with a bad one) would stay green on every
+-- machine without wsl.exe (the ubuntu/macos CI legs, any Linux dev box): `setup_with_wsl()` pretends
+-- wsl.exe exists for the duration of `setup()` and the spec asserts that the wsl namespace was walked.
 ---@diagnostic disable: undefined-field -- luassert extends `assert` beyond stock Lua's.
+
+--- Run `sandbox.bindings.usrcmds.setup()` as if wsl.exe were reachable, then restore the real probe.
+--- The module is reloaded first so that its `wsl_commands` upvalue is the very table patched here, and
+--- whatever an earlier spec left in `package.loaded` cannot make the stub miss.
+local function setup_with_wsl()
+  package.loaded["sandbox.bindings.usrcmds"] = nil
+  local wsl = require("sandbox.bindings.usrcmds.wsl_commands")
+  local real_available = wsl.available
+  wsl.available = function()
+    return true
+  end
+
+  local ok, err = pcall(function()
+    require("sandbox.bindings.usrcmds").setup()
+  end)
+
+  wsl.available = real_available
+  assert(ok, err)
+end
+
+--- The number of `wsl <verb>` routes of a registered verb.
+---@param handle table
+---@return integer
+local function count_wsl_routes(handle)
+  local n = 0
+  for _, route in ipairs(handle:spec().routes or {}) do
+    if route.path[1] == "wsl" then
+      n = n + 1
+    end
+  end
+  return n
+end
 
 describe("bindings.usrcmds option float", function()
   after_each(function()
@@ -24,10 +61,14 @@ describe("bindings.usrcmds option float", function()
       return
     end
 
-    require("sandbox.bindings.usrcmds").setup()
+    setup_with_wsl()
 
     for _, name in ipairs({ "Sandbox", "Sbx" }) do
       assert.is_not_nil(composer.registry()[name], ":" .. name .. " is registered through the composer")
+      assert.is_true(
+        count_wsl_routes(composer.registry()[name]) > 0,
+        ":" .. name .. " includes the wsl routes whatever host this runs on"
+      )
 
       local missing = {}
       for _, m in ipairs(composer.help.undocumented(name, { args = true })) do
@@ -46,10 +87,11 @@ describe("bindings.usrcmds option float", function()
       return
     end
 
-    require("sandbox.bindings.usrcmds").setup()
+    setup_with_wsl()
 
     local handle = composer.registry().Sandbox
     assert.is_truthy(handle)
+    assert.is_true(count_wsl_routes(handle) > 0, "the wsl routes are walked whatever host this runs on")
 
     -- Every text an argument can bring: its own `desc`, the `desc` of its type, its `enum_desc` values.
     local seen = 0
