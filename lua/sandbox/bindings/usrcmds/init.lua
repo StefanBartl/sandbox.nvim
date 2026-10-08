@@ -120,7 +120,10 @@ local function prefix(list, arg_lead)
   return out
 end
 
+-- `desc` of a custom type is the line lib.nvim's option float shows for every positional argument
+-- of that type that carries no text of its own (one per type, not one per route).
 composer.register_type("CONTAINER_ID", {
+  desc = "Container name or id (Tab lists the existing ones)",
   validate = function(raw)
     return true, raw, nil
   end,
@@ -144,6 +147,7 @@ composer.register_type("CONTAINER_ID", {
 })
 
 composer.register_type("IMAGE_ID", {
+  desc = "Local image as repository:tag or id (Tab lists them)",
   validate = function(raw)
     return true, raw, nil
   end,
@@ -162,6 +166,7 @@ composer.register_type("IMAGE_ID", {
 })
 
 composer.register_type("VOLUME_NAME", {
+  desc = "Name of an existing volume (Tab lists them)",
   validate = function(raw)
     return true, raw, nil
   end,
@@ -180,6 +185,7 @@ composer.register_type("VOLUME_NAME", {
 })
 
 composer.register_type("NETWORK_NAME", {
+  desc = "Name of an existing network (Tab lists them)",
   validate = function(raw)
     return true, raw, nil
   end,
@@ -198,6 +204,7 @@ composer.register_type("NETWORK_NAME", {
 })
 
 composer.register_type("DISTRO_NAME", {
+  desc = "Name of a registered WSL distro (Tab lists them)",
   validate = function(raw)
     return true, raw, nil
   end,
@@ -275,7 +282,13 @@ local function container_routes()
       path = { "container", "exec" },
       args = {
         { name = "id", type = "CONTAINER_ID" },
-        { name = "shell", type = "STRING", optional = true, values = { "sh", "bash", "zsh", "dash" } },
+        {
+          name = "shell",
+          type = "STRING",
+          optional = true,
+          values = { "sh", "bash", "zsh", "dash" },
+          desc = "Shell to start in the container (default: the default_shell option)",
+        },
       },
       kv = { { key = "workdir", type = "STRING", desc = "Working directory inside the container" } },
       desc = "Open a shell session inside a running container  [workdir=<path>]",
@@ -288,7 +301,12 @@ local function container_routes()
       path = { "container", "exec-once" },
       args = {
         { name = "id", type = "CONTAINER_ID" },
-        { name = "command", type = "STRING", optional = true },
+        {
+          name = "command",
+          type = "STRING",
+          optional = true,
+          desc = "Command to run in the container, then its arguments (default: sh)",
+        },
       },
       kv = { { key = "workdir", type = "STRING", desc = "Working directory inside the container" } },
       desc = "Run a one-off command inside a container (non-interactive)  [workdir=<path>]",
@@ -375,7 +393,7 @@ local function container_routes()
       path = { "container", "rename" },
       args = {
         { name = "id", type = "CONTAINER_ID" },
-        { name = "new_name", type = "STRING" },
+        { name = "new_name", type = "STRING", desc = "New name for the container" },
       },
       desc = "Rename a container",
       run = function(ctx)
@@ -404,8 +422,16 @@ local function container_routes()
     {
       path = { "container", "cp" },
       args = {
-        { name = "src", type = "STRING" },
-        { name = "dest", type = "STRING" },
+        {
+          name = "src",
+          type = "STRING",
+          desc = "Source: host path, or <container>:<path> to copy out of one",
+        },
+        {
+          name = "dest",
+          type = "STRING",
+          desc = "Destination: host path, or <container>:<path> to copy into one",
+        },
       },
       desc = "Copy a file/directory between the host and a container (either side may be <id>:<path>)",
       run = function(ctx)
@@ -467,7 +493,7 @@ local function image_routes()
 
     {
       path = { "image", "pull" },
-      args = { { name = "name", type = "STRING" } },
+      args = { { name = "name", type = "STRING", desc = "Image reference to pull (repository[:tag])" } },
       flags = BUFFER_FLAG,
       desc = "Pull an image (--buffer: stream to a terminal buffer)",
       run = function(ctx)
@@ -481,7 +507,7 @@ local function image_routes()
 
     {
       path = { "image", "push" },
-      args = { { name = "name", type = "STRING" } },
+      args = { { name = "name", type = "STRING", desc = "Local image reference to push (repository[:tag])" } },
       desc = "Push an image to a remote registry",
       run = function(ctx)
         image_cmds.push(ctx.args.name)
@@ -492,7 +518,7 @@ local function image_routes()
       path = { "image", "tag" },
       args = {
         { name = "source", type = "IMAGE_ID" },
-        { name = "target", type = "STRING" },
+        { name = "target", type = "STRING", desc = "New repository:tag to give the image" },
       },
       desc = "Tag a local image with a new repository:tag",
       run = function(ctx)
@@ -503,8 +529,8 @@ local function image_routes()
     {
       path = { "image", "build" },
       args = {
-        { name = "tag", type = "STRING" },
-        { name = "path", type = "STRING", optional = true },
+        { name = "tag", type = "STRING", desc = "Tag to give the built image (repository[:tag])" },
+        { name = "path", type = "STRING", optional = true, desc = "Build context directory (default: cwd)" },
       },
       desc = "Build an image from a Dockerfile/Containerfile (streams to a terminal buffer)",
       run = function(ctx)
@@ -516,7 +542,7 @@ local function image_routes()
       path = { "image", "save" },
       args = {
         { name = "image", type = "IMAGE_ID" },
-        { name = "path", type = "STRING" },
+        { name = "path", type = "STRING", desc = "Tarball file to write the image to" },
       },
       desc = "Save (export) an image to a tarball on disk",
       run = function(ctx)
@@ -526,7 +552,7 @@ local function image_routes()
 
     {
       path = { "image", "load" },
-      args = { { name = "path", type = "STRING" } },
+      args = { { name = "path", type = "STRING", desc = "Tarball file to load the image from" } },
       desc = "Load (import) an image from a tarball on disk",
       run = function(ctx)
         image_cmds.load(ctx.args.path)
@@ -583,7 +609,7 @@ local function volume_routes()
 
     {
       path = { "volume", "create" },
-      args = { { name = "name", type = "STRING" } },
+      args = { { name = "name", type = "STRING", desc = "Name for the new volume" } },
       desc = "Create a new named volume",
       run = function(ctx)
         volume_cmds.create(ctx.args.name)
@@ -626,7 +652,7 @@ local function network_routes()
 
     {
       path = { "network", "create" },
-      args = { { name = "name", type = "STRING" } },
+      args = { { name = "name", type = "STRING", desc = "Name for the new network" } },
       desc = "Create a new named network",
       run = function(ctx)
         network_cmds.create(ctx.args.name)
@@ -767,7 +793,12 @@ local function wsl_routes()
       path = { "wsl", "exec" },
       args = {
         { name = "name", type = "DISTRO_NAME" },
-        { name = "command", type = "STRING", optional = true },
+        {
+          name = "command",
+          type = "STRING",
+          optional = true,
+          desc = "Command to run in the distro, then its arguments (default: its shell)",
+        },
       },
       desc = "Open a shell or run a command inside a WSL distro",
       run = function(ctx)
@@ -788,7 +819,13 @@ local function wsl_routes()
       path = { "wsl", "set-version" },
       args = {
         { name = "name", type = "DISTRO_NAME" },
-        { name = "version", type = "STRING", values = { "1", "2" } },
+        {
+          name = "version",
+          type = "STRING",
+          values = { "1", "2" },
+          desc = "WSL version to convert the distro to",
+          enum_desc = { ["1"] = "WSL 1 (translation layer)", ["2"] = "WSL 2 (lightweight VM)" },
+        },
       },
       desc = "Toggle a distro between WSL1/WSL2",
       run = function(ctx)
@@ -800,7 +837,7 @@ local function wsl_routes()
       path = { "wsl", "export" },
       args = {
         { name = "name", type = "DISTRO_NAME" },
-        { name = "path", type = "STRING" },
+        { name = "path", type = "STRING", desc = "Destination .tar file to write" },
       },
       desc = "Export a distro to a tarball on disk",
       run = function(ctx)
@@ -811,9 +848,9 @@ local function wsl_routes()
     {
       path = { "wsl", "import" },
       args = {
-        { name = "name", type = "STRING" },
-        { name = "install_path", type = "STRING" },
-        { name = "tar_path", type = "STRING" },
+        { name = "name", type = "STRING", desc = "Name for the new distro" },
+        { name = "install_path", type = "STRING", desc = "Directory to install the distro's virtual disk into" },
+        { name = "tar_path", type = "STRING", desc = ".tar file to import the distro from" },
       },
       desc = "Import a distro from a tarball",
       run = function(ctx)
@@ -837,7 +874,14 @@ local function engine_routes()
   return {
     {
       path = { "engine", "set" },
-      args = { { name = "name", type = "STRING", values = { "docker", "podman", "nerdctl" } } },
+      args = {
+        {
+          name = "name",
+          type = "STRING",
+          values = { "docker", "podman", "nerdctl" },
+          desc = "Container engine to use for the rest of this session",
+        },
+      },
       desc = "Switch the active engine for this session",
       run = function(ctx)
         engine_cmds.set(ctx.args.name)
@@ -923,7 +967,14 @@ local function registry_routes()
   return {
     {
       path = { "registry", "login" },
-      args = { { name = "registry", type = "STRING", optional = true } },
+      args = {
+        {
+          name = "registry",
+          type = "STRING",
+          optional = true,
+          desc = "Registry host to log in to, e.g. ghcr.io (omit: engine default)",
+        },
+      },
       desc = "Log in to a registry (prompts for username/password)",
       run = function(ctx)
         registry_cmds.login(ctx.args.registry)
@@ -932,7 +983,14 @@ local function registry_routes()
 
     {
       path = { "registry", "logout" },
-      args = { { name = "registry", type = "STRING", optional = true } },
+      args = {
+        {
+          name = "registry",
+          type = "STRING",
+          optional = true,
+          desc = "Registry host to log out of, e.g. ghcr.io (omit: engine default)",
+        },
+      },
       desc = "Log out of a registry",
       run = function(ctx)
         registry_cmds.logout(ctx.args.registry)
