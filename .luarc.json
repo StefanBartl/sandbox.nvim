@@ -35,8 +35,7 @@
         "setup",
         "spy",
         "stub",
-        "teardown",
-        "vim"
+        "teardown"
     ],
     "workspace.useGitIgnore": true,
     "workspace.checkThirdParty": false,
