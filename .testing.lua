@@ -58,13 +58,6 @@ return {
       {
         check = "K6",
         level = "error",
-        text = "podman",
-        reason = "needs a running podman daemon, which the conformance run does not have",
-        expires = "2027-04-14",
-      },
-      {
-        check = "K6",
-        level = "error",
         text = "docker",
         reason = "the container engine (docker) is external; a CI runner may have no CLI or no running daemon",
         expires = "2027-04-14",
