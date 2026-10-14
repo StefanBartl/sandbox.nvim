@@ -39,4 +39,22 @@ return {
     -- non-existent binary to test the failed-spawn path; both are the subject of the spec.
     spawn = { "cmd", "echo", "printf", "sleep", "sandbox-nvim-definitely-not-a-real-binary" },
   },
+  -- Findings the minimal conformance editor cannot avoid (docs/CONFORMANCE.md of testing.nvim); reviewed 2026-10-14.
+  conformance = {
+    waivers = {
+      {
+        check = "K6",
+        level = "error",
+        text = "podman",
+        reason = "needs a running podman daemon, which the conformance run does not have",
+        expires = "2027-04-14",
+      },
+      {
+        check = "K14",
+        text = ":LibLogger",
+        reason = ":LibLogger is registered by lib.nvim's logger when sandbox sets it up, not by sandbox itself",
+        expires = "2027-04-14",
+      },
+    },
+  },
 }
