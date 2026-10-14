@@ -39,6 +39,7 @@
     ],
     "workspace.useGitIgnore": true,
     "workspace.checkThirdParty": false,
+    "workspace.ignoreDir": [".deps"],
     "files.exclude": [
         "**/.git/**",
         "**/node_modules/**",
