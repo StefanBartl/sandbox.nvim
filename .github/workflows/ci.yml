@@ -102,6 +102,18 @@ jobs:
           path: ${{ runner.temp }}/testing-ir.json
           if-no-files-found: ignore
           retention-days: 7
+      # Regression gate for the surface (docs/SURFACE.md of testing.nvim): a command, keymap or autocommand that the specs
+      # exercised when surface.baseline.json was written must still be exercised. Linux only: the baseline comes from
+      # the Linux run. To accept an intended change, rewrite the file from a green Linux run (`scripts/test.sh surface
+      # --from <ir> --write-baseline surface.baseline.json`, IR = the surface-ir artifact) and review the diff.
+      - name: Surface baseline gate
+        if: matrix.os == 'ubuntu-latest'
+        working-directory: sandbox.nvim
+        env:
+          LIB_NVIM_DIR: ${{ github.workspace }}/lib.nvim
+          UI_NVIM_DIR: ${{ github.workspace }}/ui.nvim
+          TESTING_NVIM_DIR: ${{ github.workspace }}/testing.nvim
+        run: bash scripts/test.sh surface --from "$RUNNER_TEMP/testing-ir.json" --baseline surface.baseline.json --require-signed-baseline
       # The IR is what a reporter or a person reads to find out WHICH case failed on WHICH platform.
       - uses: actions/upload-artifact@v7
         if: failure()
