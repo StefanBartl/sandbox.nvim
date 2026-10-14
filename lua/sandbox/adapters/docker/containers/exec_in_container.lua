@@ -20,6 +20,11 @@ function M.exec_in_container(container_id, command, workdir)
   args[#args + 1] = container_id
   vim.list_extend(args, command)
 
+  -- `exec_target = "terminal"`: the session is a terminal.nvim terminal instead of a split.
+  if require("sandbox.util.exec_target").open(args, container_id) then
+    return
+  end
+
   vim.cmd("vnew")
   local buf = vim.api.nvim_get_current_buf()
   -- `jobstart({ term = true })` replaces the deprecated `termopen`, but only

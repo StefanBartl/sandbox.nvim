@@ -7,6 +7,8 @@
 ---@field engine Sandbox.Engine|nil
 ---@field confirm_destructive boolean|nil ask before remove/prune/kill (default true)
 ---@field default_shell string|nil shell used by `container exec` when none is given (default "sh")
+--- where `container exec` opens its session: a split, or a terminal.nvim terminal (default "split")
+---@field exec_target "split"|"terminal"|nil
 ---@field refresh_interval integer|nil ms between auto-refreshes of list views; nil/0 disables (default nil)
 ---@field list_split "above"|"below"|"left"|"right"|nil window placement for list views (default "left")
 ---@field list_size integer|nil width/height of list view splits; nil uses Neovim's default
