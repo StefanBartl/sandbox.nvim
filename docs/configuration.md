@@ -41,6 +41,7 @@ won.
 |---|---|---|---|
 | `confirm_destructive` | `boolean` | `true` | Ask before `remove`/`prune`/`kill`. `false` acts immediately |
 | `default_shell` | `string` | `"sh"` | Shell `:Sandbox container exec` uses when none is given |
+| `exec_target` | `"split"\|"terminal"` | `"split"` | Where `:Sandbox container exec` opens its session. `"terminal"` makes it a [terminal.nvim](https://github.com/StefanBartl/terminal.nvim) terminal named `sandbox:<container>` (hide, toggle, list, sessions); without terminal.nvim it warns once and uses the split |
 | `max_error_length` | `integer` | `200` | How much of an unrecognized adapter error reaches the notification. The full text always goes to `sandbox.logger`, and the truncated message says where to read it |
 
 ## List views

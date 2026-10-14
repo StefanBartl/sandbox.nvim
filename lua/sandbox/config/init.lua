@@ -32,6 +32,7 @@ local KNOWN = {
   engine = true,
   confirm_destructive = true,
   default_shell = true,
+  exec_target = true,
   refresh_interval = true,
   list_split = true,
   list_size = true,

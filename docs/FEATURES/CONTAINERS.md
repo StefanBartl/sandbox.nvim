@@ -121,6 +121,9 @@ consuming it — failing in a way that reads like the command's own error
 rather than ours. All three engines spell it the same, and
 `TESTS/sandbox/adapters/exec_workdir_spec.lua` pins the ordering for each.
 
+- **Option:** `exec_target = "terminal"` runs the same argv as the job of a terminal.nvim terminal
+  named `sandbox:<container>` (`sandbox/util/exec_target.lua`); the default `"split"` opens the
+  vertical split above.
 - **Module:** `sandbox/core/usecases/containers/exec_in_container.lua`,
   `sandbox/adapters/{docker,podman,nerdctl}/containers/exec_in_container.lua`
 - **Usercmds:** `:Sandbox container exec {id} [shell] [workdir=<path>]`,
