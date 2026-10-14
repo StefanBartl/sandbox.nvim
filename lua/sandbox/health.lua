@@ -172,6 +172,13 @@ function M.check()
     )
   end
 
+  -- gitsuite.nvim: optional courtesy check before a devcontainer build.
+  if pcall(require, "gitsuite.features.conflict") then
+    health.ok("gitsuite.nvim found – devcontainer builds refuse a working tree with unresolved merge conflicts")
+  else
+    health.info("gitsuite.nvim not installed – devcontainer builds skip the merge-conflict preflight (optional)")
+  end
+
   require("lib.nvim.bindings.usercmd.composer").checkhealth("Sandbox")
 end
 
