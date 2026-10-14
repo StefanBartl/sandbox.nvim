@@ -87,6 +87,7 @@ jobs:
           exec > >(tee -a "$RUNNER_TEMP/test-output.log") 2>&1
           bash scripts/test.sh --json "$RUNNER_TEMP/testing-ir.json"
       - name: Conformance gate
+        working-directory: sandbox.nvim
         env:
           LIB_NVIM_DIR: ${{ github.workspace }}/lib.nvim
           UI_NVIM_DIR: ${{ github.workspace }}/ui.nvim
