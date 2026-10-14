@@ -45,6 +45,14 @@ return {
     gate = true,
     waivers = {
       {
+        check = "K15",
+        rule = "NEW-08",
+        file = "lua/sandbox/bindings",
+        level = "warn",
+        reason = "no default global keymaps or autocmds exist; the bindings READMEs say so, a .lua file would be empty",
+        expires = "2027-04-14",
+      },
+      {
         check = "K6",
         level = "error",
         text = "podman",
