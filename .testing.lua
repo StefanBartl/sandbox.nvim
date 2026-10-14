@@ -52,6 +52,19 @@ return {
         expires = "2027-04-14",
       },
       {
+        check = "K6",
+        level = "error",
+        text = "docker",
+        reason = "the container engine (docker) is external; a CI runner may have no CLI or no running daemon",
+        expires = "2027-04-14",
+      },
+      {
+        check = "K2",
+        text = "ui.kit.surface",
+        reason = "a ui.kit surface (a notice window) opened by the second setup() when the container engine is missing; seen on macOS runners",
+        expires = "2027-04-14",
+      },
+      {
         check = "K14",
         text = ":LibLogger",
         reason = ":LibLogger is registered by lib.nvim's logger when sandbox sets it up, not by sandbox itself",
