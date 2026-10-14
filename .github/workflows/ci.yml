@@ -93,6 +93,15 @@ jobs:
           UI_NVIM_DIR: ${{ github.workspace }}/ui.nvim
           TESTING_NVIM_DIR: ${{ github.workspace }}/testing.nvim
         run: bash scripts/test.sh conformance
+      # The IR of the Linux run carries the surface the specs exercised: the baseline (surface.baseline.json) is
+      # written from exactly this artifact, so it matches what the runner measures.
+      - uses: actions/upload-artifact@v7
+        if: matrix.os == 'ubuntu-latest' && always()
+        with:
+          name: surface-ir
+          path: ${{ runner.temp }}/testing-ir.json
+          if-no-files-found: ignore
+          retention-days: 7
       # The IR is what a reporter or a person reads to find out WHICH case failed on WHICH platform.
       - uses: actions/upload-artifact@v7
         if: failure()
