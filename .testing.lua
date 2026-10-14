@@ -41,6 +41,8 @@ return {
   },
   -- Findings the minimal conformance editor cannot avoid (docs/CONFORMANCE.md of testing.nvim); reviewed 2026-10-14.
   conformance = {
+    -- gated: a failed check makes `scripts/test.sh conformance` exit 1
+    gate = true,
     waivers = {
       {
         check = "K6",
