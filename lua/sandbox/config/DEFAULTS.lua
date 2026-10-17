@@ -40,9 +40,9 @@ return {
   -- unless named here.
   keymaps = nil,
   menu = {
-    -- Right-click context menu on list-view buffers (nvzone/menu, soft
-    -- dependency; entries provided by sandbox.integrations.menu). Off
-    -- automatically when nvzone/menu isn't installed -- this only gates
+    -- Right-click context menu on list-view buffers (ui.contextmenu from
+    -- ui.nvim; entries provided by sandbox.integrations.menu). Drawn by
+    -- nvzone/menu when installed, ui.kit.menu otherwise -- this only gates
     -- whether the trigger and entries are offered at all.
     enable = true,
   },

@@ -28,7 +28,7 @@ Clone the repository and either symlink it or add it to your runtime path.
 | `lua/sandbox/adapters/<engine>/` | Docker, Podman, nerdctl and WSL implementations |
 | `lua/sandbox/bindings/usrcmds/` | Handlers and the `:Sandbox` route tree (registered by `plugin/commands.lua`) |
 | `lua/sandbox/ui/` | List, inspect, log and error views |
-| `lua/sandbox/integrations/` | Soft-dependency bridges (nvzone/menu) |
+| `lua/sandbox/integrations/` | Bridges to other plugins (context-menu entries for ui.contextmenu) |
 | `TESTS/` | The spec suite, mirroring `lua/sandbox/`'s paths |
 
 ## Adding an operation

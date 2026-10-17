@@ -51,7 +51,7 @@ won.
 | `list_split` | `"above"\|"below"\|"left"\|"right"` | `"left"` | Where a list view opens |
 | `list_size` | `integer\|nil` | `nil` | Split width (left/right) or height (above/below). `nil` uses Neovim's own sizing |
 | `refresh_interval` | `integer\|nil` | `nil` | Milliseconds between automatic re-runs of a visible list's `list` command. `nil`/`0` disables it; refreshing pauses while the buffer is not shown in any window |
-| `menu.enable` | `boolean` | `true` | Bind `<RightMouse>` to a context menu mirroring that buffer's own keymaps. Needs [nvzone/menu](https://github.com/nvzone/menu); off by itself when that is not installed |
+| `menu.enable` | `boolean` | `true` | Bind `<RightMouse>` to a context menu mirroring that buffer's own keymaps. Drawn through ui.nvim's `ui.contextmenu` (nvzone/menu when installed, `ui.kit.menu` otherwise), so it does not need nvzone/menu |
 
 ## Keymaps
 
