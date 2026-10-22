@@ -65,7 +65,8 @@ return {
       {
         check = "K2",
         text = "ui.kit.surface",
-        reason = "a ui.kit surface (a notice window) opened by the second setup() when the container engine is missing; seen on macOS runners",
+        reason = "a ui.kit surface (a notice window) opened by the second setup() "
+          .. "when the container engine is missing; seen on macOS runners",
         expires = "2027-04-14",
       },
       {
