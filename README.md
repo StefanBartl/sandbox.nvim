@@ -18,10 +18,10 @@
 [![Neovim](https://img.shields.io/badge/Neovim-0.10%2B-57A143?logo=neovim&logoColor=white)](https://neovim.io)
 [![Lua](https://img.shields.io/badge/Lua-5.1%2FLuaJIT-2C2D72?logo=lua&logoColor=white)](https://www.lua.org)
 ![Status](https://img.shields.io/badge/status-beta-orange)
-[![CI](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/StefanBartl/sandbox.nvim/actions/workflows/ci.yml)
-[![wkd](https://img.shields.io/badge/wkd-family-c6ff3d)](https://stefanbartl.github.io/wkd/p/sandbox/)
+[![CI](https://github.com/WKDSteve/sandbox.nvim/actions/workflows/ci.yml/badge.svg)](https://github.com/WKDSteve/sandbox.nvim/actions/workflows/ci.yml)
+[![wkd](https://img.shields.io/badge/wkd-family-c6ff3d)](https://wkdsteve.github.io/wkd/p/sandbox/)
 
-> Part of the [wkd](https://stefanbartl.github.io/wkd/) family — see this plugin's [page](https://stefanbartl.github.io/wkd/p/sandbox/) on the site.
+> Part of the [wkd](https://wkdsteve.github.io/wkd/) family — see this plugin's [page](https://wkdsteve.github.io/wkd/p/sandbox/) on the site.
 
 Manage Podman, Docker and nerdctl containers from inside Neovim. Containers,
 images, volumes, networks, compose projects, registry auth, devcontainers and
@@ -60,7 +60,7 @@ each page answers.
 
 - [Contributing](docs/CONTRIBUTING.md) — what is expected of a change, and where each layer lives.
 - [Adding a use case](docs/add_usecase.md) — the one extension point with a recipe, walked from port to route to spec.
-- [Feedback](https://github.com/StefanBartl/sandbox.nvim/issues) — bug reports, feature requests, usage questions, or an open-ended [discussion](https://github.com/StefanBartl/sandbox.nvim/discussions).
+- [Feedback](https://github.com/WKDSteve/sandbox.nvim/issues) — bug reports, feature requests, usage questions, or an open-ended [discussion](https://github.com/WKDSteve/sandbox.nvim/discussions).
 
 `:help sandbox` is the same reference inside the editor.
 

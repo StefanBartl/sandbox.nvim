@@ -7,7 +7,7 @@
 --- them.
 ---
 --- This registers a **position** preview with
---- [hover.nvim](https://github.com/StefanBartl/hover.nvim), and it is
+--- [hover.nvim](https://github.com/WKDSteve/hover.nvim), and it is
 --- `on_request` -- asked only for `:Hover show` or a key bound to it, never
 --- on the automatic trigger.
 ---

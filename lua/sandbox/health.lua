@@ -32,7 +32,7 @@ function M.check()
   -- never names lib.nvim as the thing to install.
   if not M._lib_nvim_installed() then
     health.error("lib.nvim is not installed", {
-      "Install https://github.com/StefanBartl/lib.nvim -- sandbox.nvim requires it",
+      "Install https://github.com/WKDSteve/lib.nvim -- sandbox.nvim requires it",
     })
     return
   end

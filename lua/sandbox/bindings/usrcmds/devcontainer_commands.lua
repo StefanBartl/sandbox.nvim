@@ -136,7 +136,7 @@ function M.lazygit()
   local ok, ui = pcall(require, "gitsuite.features.ui")
   if not ok then
     notify.error(
-      'gitsuite.nvim is not installed -- install "StefanBartl/gitsuite.nvim" to use :Sandbox devcontainer lazygit'
+      'gitsuite.nvim is not installed -- install "WKDSteve/gitsuite.nvim" to use :Sandbox devcontainer lazygit'
     )
     return
   end

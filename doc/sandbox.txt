@@ -37,18 +37,18 @@ Architecture is hexagonal (ports & adapters): a `ContainerEngine`/
 Podman, or nerdctl adapter implements it by shelling out to the matching
 CLI. Adding a new engine or a new operation means adding an adapter/port
 method, not touching the command layer. See
-https://github.com/StefanBartl/sandbox.nvim/blob/main/docs/add_usecase.md
+https://github.com/WKDSteve/sandbox.nvim/blob/main/docs/add_usecase.md
 if you want to contribute one.
 
 ==============================================================================
 Requirements                                             *sandbox-requirements*
 
 - Neovim 0.10+
-- lib.nvim (https://github.com/StefanBartl/lib.nvim) — REQUIRED. The
+- lib.nvim (https://github.com/WKDSteve/lib.nvim) — REQUIRED. The
   `:Sandbox`/`:Sbx` command tree is built on `lib.nvim.bindings.usercmd.composer`,
   and the buffer/window views under `lua/sandbox/ui/` depend on
   `lib.nvim.window` directly. The plugin does not run without it.
-- ui.nvim (https://github.com/StefanBartl/ui.nvim) — REQUIRED. `ui.contextmenu`
+- ui.nvim (https://github.com/WKDSteve/ui.nvim) — REQUIRED. `ui.contextmenu`
   and `ui.kit` (the right-click menu's item builders and renderer, plus
   `kit.input()`/`kit.confirm()`'s scripted prompts) are `require()`d
   unconditionally from `lua/sandbox/integrations/menu.lua`,
@@ -77,8 +77,8 @@ to initialize the plugin's configuration; nothing self-registers otherwise.
 
 lazy.nvim, loaded after the UI is ready (recommended): >lua
     {
-      "StefanBartl/sandbox.nvim",
-      dependencies = { "StefanBartl/lib.nvim" },
+      "WKDSteve/sandbox.nvim",
+      dependencies = { "WKDSteve/lib.nvim" },
       event = "VimEnter",
       config = function()
         require("sandbox").setup({
@@ -574,13 +574,13 @@ Five checks, in order:
 Then `lib.nvim`'s composer checks the registered `:Sandbox` routes.
 
 Every line it can print is spelled out in
-https://github.com/StefanBartl/sandbox.nvim/blob/main/docs/health.md
+https://github.com/WKDSteve/sandbox.nvim/blob/main/docs/health.md
 
 ==============================================================================
 About                                                             *sandbox-about*
 
-Repository:  https://github.com/StefanBartl/sandbox.nvim
-Issues:      https://github.com/StefanBartl/sandbox.nvim/issues
+Repository:  https://github.com/WKDSteve/sandbox.nvim
+Issues:      https://github.com/WKDSteve/sandbox.nvim/issues
 Contribution guide and architecture notes live in the repo's `docs/`
 directory (`README.md` indexes it; `CONTRIBUTING.md` and `add_usecase.md`
 are the two for contributors). `LICENSE` is in the repository root.

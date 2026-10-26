@@ -28,7 +28,7 @@ Progress for `up` uses `opts.progress_style` when `lib.nvim` is present.
 `ps` asks the engine what is actually running right now — it needs the
 project to be up (or at least the engine reachable) to answer at all.
 `services` instead reads the compose file itself, via the same
-deliberately minimal YAML decoder [`data.nvim`](https://github.com/StefanBartl/data.nvim)'s
+deliberately minimal YAML decoder [`data.nvim`](https://github.com/WKDSteve/data.nvim)'s
 `:YAML` commands use (`lib.lua.yaml`; no anchors, no flow style — see that
 module's own doc comment). It answers "what would `up` bring up", with no
 engine call, no compose CLI, and no running project required. A compose

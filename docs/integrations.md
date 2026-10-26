@@ -2,7 +2,7 @@
 
 Everything under `lua/sandbox/integrations/` and `lua/sandbox/telescope/` —
 bridges to other plugins. The context menu goes through
-[ui.nvim](https://github.com/StefanBartl/ui.nvim), which sandbox.nvim requires
+[ui.nvim](https://github.com/WKDSteve/ui.nvim), which sandbox.nvim requires
 anyway (see [installation.md](installation.md#prerequisites)); telescope.nvim
 is a soft dependency and nothing is loaded without it.
 

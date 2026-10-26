@@ -3,13 +3,13 @@
 ## Prerequisites
 
 - Neovim 0.10+
-- [`lib.nvim`](https://github.com/StefanBartl/lib.nvim) — **required**. The
+- [`lib.nvim`](https://github.com/WKDSteve/lib.nvim) — **required**. The
   `:Sandbox`/`:Sbx` command layer is built on `lib.nvim.bindings.usercmd.composer`, and
   the buffer/window views under `lua/sandbox/ui/` depend on it directly.
   `sandbox.notify`/`sandbox.util.run_argv` fall back to plain
   `vim.notify`/`vim.fn.system` without it, but the plugin as a whole does not
   run.
-- [`ui.nvim`](https://github.com/StefanBartl/ui.nvim) — **required**.
+- [`ui.nvim`](https://github.com/WKDSteve/ui.nvim) — **required**.
   `ui.contextmenu`/`ui.kit` (the right-click menu's item builders and
   renderer, plus `kit.input()`'s scripted prompts) are `require()`d
   unconditionally by `lua/sandbox/integrations/menu.lua` and
@@ -32,12 +32,12 @@ Optional:
   right-click context menu on the list-view buffers; `ui.kit.menu` draws it
   otherwise, so the menu itself is not optional (see `ui.nvim` above), only
   this specific look.
-- [hover.nvim](https://github.com/StefanBartl/hover.nvim) — an image
+- [hover.nvim](https://github.com/WKDSteve/hover.nvim) — an image
   reference under the cursor answers whether it is pulled, its size, and any
   containers from it. Registered request-only, so it never slows the
   automatic trigger; `:checkhealth sandbox` says whether it is active. See
   [docs/FEATURES/HOVER.md](FEATURES/HOVER.md).
-- [gitsuite.nvim](https://github.com/StefanBartl/gitsuite.nvim) — a preflight
+- [gitsuite.nvim](https://github.com/WKDSteve/gitsuite.nvim) — a preflight
   check before `:Sandbox devcontainer build` refuses to bake a workspace with
   unresolved merge-conflict markers into an image. Without it, the check is
   skipped and the build proceeds as before. `:Sandbox devcontainer lazygit`
@@ -59,8 +59,8 @@ Recommended:
 
 ```lua
 {
-  "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" },
+  "WKDSteve/sandbox.nvim",
+  dependencies = { "WKDSteve/lib.nvim", "WKDSteve/ui.nvim" },
   event = "VimEnter",
   opts = {},
 }
@@ -70,8 +70,8 @@ Eager:
 
 ```lua
 {
-  "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" },
+  "WKDSteve/sandbox.nvim",
+  dependencies = { "WKDSteve/lib.nvim", "WKDSteve/ui.nvim" },
   lazy = false,
   opts = {},
 }
@@ -81,8 +81,8 @@ On first use of a command:
 
 ```lua
 {
-  "StefanBartl/sandbox.nvim",
-  dependencies = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" },
+  "WKDSteve/sandbox.nvim",
+  dependencies = { "WKDSteve/lib.nvim", "WKDSteve/ui.nvim" },
   cmd = { "Sandbox", "Sbx" },
   opts = {},
 }
@@ -96,8 +96,8 @@ to register — `opts = {}` is enough, and every option it accepts is in
 
 ```lua
 use {
-  "StefanBartl/sandbox.nvim",
-  requires = { "StefanBartl/lib.nvim", "StefanBartl/ui.nvim" }, -- both required
+  "WKDSteve/sandbox.nvim",
+  requires = { "WKDSteve/lib.nvim", "WKDSteve/ui.nvim" }, -- both required
   config = function()
     require("sandbox").setup()
   end,
@@ -107,9 +107,9 @@ use {
 ## vim-plug
 
 ```vim
-Plug 'StefanBartl/lib.nvim' " required
-Plug 'StefanBartl/ui.nvim' " required
-Plug 'StefanBartl/sandbox.nvim'
+Plug 'WKDSteve/lib.nvim' " required
+Plug 'WKDSteve/ui.nvim' " required
+Plug 'WKDSteve/sandbox.nvim'
 
 lua require("sandbox").setup()
 ```

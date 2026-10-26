@@ -3,7 +3,7 @@
 An image reference in a `Dockerfile` or a `compose.yml` is a question the file
 cannot answer: is `nginx:1.27-alpine` pulled, how big is it, is anything
 running from it. The engine knows all three. This wires that answer to the
-cursor, through [hover.nvim](https://github.com/StefanBartl/hover.nvim).
+cursor, through [hover.nvim](https://github.com/WKDSteve/hover.nvim).
 
 - **Module:** `sandbox/hover.lua`
 - **Config:** `opts.hover` (default `true`; a no-op when hover.nvim is absent)

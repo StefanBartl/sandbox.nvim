@@ -41,7 +41,7 @@ won.
 |---|---|---|---|
 | `confirm_destructive` | `boolean` | `true` | Ask before `remove`/`prune`/`kill`. `false` acts immediately |
 | `default_shell` | `string` | `"sh"` | Shell `:Sandbox container exec` uses when none is given |
-| `exec_target` | `"split"\|"terminal"` | `"split"` | Where `:Sandbox container exec` opens its session. `"terminal"` makes it a [terminal.nvim](https://github.com/StefanBartl/terminal.nvim) terminal named `sandbox:<container>` (hide, toggle, list, sessions); without terminal.nvim it warns once and uses the split |
+| `exec_target` | `"split"\|"terminal"` | `"split"` | Where `:Sandbox container exec` opens its session. `"terminal"` makes it a [terminal.nvim](https://github.com/WKDSteve/terminal.nvim) terminal named `sandbox:<container>` (hide, toggle, list, sessions); without terminal.nvim it warns once and uses the split |
 | `max_error_length` | `integer` | `200` | How much of an unrecognized adapter error reaches the notification. The full text always goes to `sandbox.logger`, and the truncated message says where to read it |
 
 ## List views
@@ -87,9 +87,9 @@ after a remap.
 | Key | Type | Default | What it does |
 |---|---|---|---|
 | `progress_style` | `"auto"\|"notify"\|"statusline"\|"fidget"\|"float"\|"kit"` | `"auto"` | Indicator while `pull`/`push`/`build`/`compose`/`prune` run |
-| `hover` | `boolean` | `true` | Register the request-only image preview with [hover.nvim](https://github.com/StefanBartl/hover.nvim) |
+| `hover` | `boolean` | `true` | Register the request-only image preview with [hover.nvim](https://github.com/WKDSteve/hover.nvim) |
 
-`progress_style` needs [lib.nvim](https://github.com/StefanBartl/lib.nvim) and
+`progress_style` needs [lib.nvim](https://github.com/WKDSteve/lib.nvim) and
 is a silent no-op without it. `"auto"` prefers `fidget.nvim` when installed and
 falls back to `vim.notify`. `"statusline"` draws nothing and publishes the text
 for your own statusline to read via

@@ -1,7 +1,7 @@
 # sandbox.nvim tests
 
 A busted-style suite (`describe`/`it`/luassert) run by
-[testing.nvim](https://github.com/StefanBartl/testing.nvim). Adapters are
+[testing.nvim](https://github.com/WKDSteve/testing.nvim). Adapters are
 tested against a faked `sandbox.util.run_argv`
 (`TESTS/sandbox/helpers/fake_run_argv.lua`) instead of a real
 docker/podman/nerdctl/wsl binary — no engine needs to be installed to run

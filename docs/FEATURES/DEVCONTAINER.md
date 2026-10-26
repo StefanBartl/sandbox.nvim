@@ -32,7 +32,7 @@ predictable name, `sandbox-devcontainer-<workspace-dir-basename>`, so
 `attach` opens a shell in the running devcontainer for the project detected
 in the current cwd.
 
-`lazygit` opens [gitsuite.nvim](https://github.com/StefanBartl/gitsuite.nvim)'s
+`lazygit` opens [gitsuite.nvim](https://github.com/WKDSteve/gitsuite.nvim)'s
 lazygit float for the devcontainer's `workspace_dir` -- the HOST directory
 mounted into the container, not a path inside it, since lazygit itself
 always runs on the host. Optional soft dependency: without gitsuite.nvim

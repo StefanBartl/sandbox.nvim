@@ -1,6 +1,6 @@
 # Features
 
-A [`docmap.nvim/docs/FEATURES_FORMAT.md`](https://github.com/StefanBartl/docmap.nvim/blob/main/docs/FEATURES_FORMAT.md)-shaped
+A [`docmap.nvim/docs/FEATURES_FORMAT.md`](https://github.com/WKDSteve/docmap.nvim/blob/main/docs/FEATURES_FORMAT.md)-shaped
 catalog of sandbox.nvim's real, currently-shipped feature set — grouped by
 the resource kind each feature manages, the same grouping
 [`docs/BINDINGS.md`](../BINDINGS.md) already uses for its own command

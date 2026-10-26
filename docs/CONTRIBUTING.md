@@ -1,9 +1,9 @@
 # Contributing to sandbox.nvim
 
 Thank you for your interest! Bugs, ideas and questions are welcome in the
-[issue tracker](https://github.com/StefanBartl/sandbox.nvim/issues), and
+[issue tracker](https://github.com/WKDSteve/sandbox.nvim/issues), and
 anything more open-ended fits a
-[discussion](https://github.com/StefanBartl/sandbox.nvim/discussions); pull
+[discussion](https://github.com/WKDSteve/sandbox.nvim/discussions); pull
 requests very welcome.
 
 Clone the repository and either symlink it or add it to your runtime path.
@@ -39,7 +39,7 @@ the repository so every step can be compared with the real thing.
 
 ## Tests
 
-`TESTS/` is a busted-style suite run by [testing.nvim](https://github.com/StefanBartl/testing.nvim).
+`TESTS/` is a busted-style suite run by [testing.nvim](https://github.com/WKDSteve/testing.nvim).
 Adapters run against a faked `run_argv` instead of a real
 docker/podman/nerdctl/wsl binary, so no engine has to be installed.
 [`TESTS/README.md`](../TESTS/README.md) has the invocation, plus a coverage
