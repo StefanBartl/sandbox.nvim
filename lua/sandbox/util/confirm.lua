@@ -2,8 +2,6 @@
 --- Confirmation gate for destructive actions (remove/prune/kill), skippable
 --- via config.confirm_destructive = false.
 
-local kit = require("ui.kit")
-
 local M = {}
 
 --- Ask for confirmation before running a destructive action.
@@ -16,14 +14,12 @@ function M.destructive(prompt, on_confirm)
     return
   end
 
-  kit.confirm({
-    question = prompt,
-    on_answer = function(yes)
-      if yes then
-        on_confirm()
-      end
-    end,
-  })
+  -- The shared dialog: "No" is the first, focused button; a native question when no float can open.
+  require("lib.nvim.ui.dialog").yesno(prompt, "go ahead", function(yes)
+    if yes then
+      on_confirm()
+    end
+  end, { kind = "danger" })
 end
 
 return M
