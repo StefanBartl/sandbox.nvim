@@ -582,6 +582,28 @@ describe("ui.list_actions.bulk_confirm_then", function()
     assert.is_truthy(asked[1]:find("Kill 1 container?", 1, true), asked[1])
   end)
 
+  it("puts the per-item question back when the action throws", function()
+    local config = require("sandbox.config")
+    config.options.confirm_destructive = true
+
+    local ok, err = pcall(
+      require("sandbox.ui.list_actions").bulk_confirm_then,
+      "Remove",
+      "container",
+      { { name = "web" }, { name = "db" } },
+      ref,
+      function(id)
+        if id == "web" then
+          error("engine gone")
+        end
+      end
+    )
+
+    assert.is_false(ok)
+    assert.is_truthy(tostring(err):find("engine gone", 1, true))
+    assert.is_true(config.options.confirm_destructive, "a later destructive action still asks")
+  end)
+
   it("caps the list at ten and says how many more there are", function()
     local items = {}
     for i = 1, 14 do

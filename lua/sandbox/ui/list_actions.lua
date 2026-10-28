@@ -425,10 +425,17 @@ function M.bulk_confirm_then(label, noun, items, ref, fn)
     local config = require("sandbox.config")
     local prev = config.options.confirm_destructive
     config.options.confirm_destructive = false
-    for _, item in ipairs(items) do
-      fn(ref(item))
-    end
+    -- the batch was confirmed once: the per-item question stays off for it and only for it, also when `fn`
+    -- throws (a left-over `false` would switch the question off for every later destructive action)
+    local ok, err = pcall(function()
+      for _, item in ipairs(items) do
+        fn(ref(item))
+      end
+    end)
     config.options.confirm_destructive = prev
+    if not ok then
+      error(err, 0)
+    end
   end)
 end
 
