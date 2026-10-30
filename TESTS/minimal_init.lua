@@ -2,16 +2,14 @@
 --
 --   nvim -n -i NONE --headless -u TESTS/minimal_init.lua ...
 --
--- Besides the runtimepath it keeps swap and shada off for the whole suite. It runs no spec itself.
--- A dependency that cannot be found is FATAL (NEW-40): the message names all four places that were
--- searched and the process exits with code 1, so that a run which could not load its dependency never
--- looks green. Each dependency <name> is looked up in, in this order:
---   1. $<NAME>_DIR                  (lib.nvim -> $LIB_NVIM_DIR, ui.nvim -> $UI_NVIM_DIR)
+-- It runs nothing itself. A dependency that cannot be found is FATAL (NEW-40): the message names
+-- all four places that were searched and the process exits with code 1, so that a run which could
+-- not load its dependency never looks green. Each dependency <name> is looked up in, in this order:
+--   1. $<NAME>_DIR                  (lib.nvim -> $LIB_NVIM_DIR)
 --   2. <repo>/.deps/<name>          (what CI checks out)
 --   3. <repo>/../<name>             (a sibling checkout)
 --   4. stdpath('data')/lazy/<name>  (what a plugin manager installed)
 -- An override (1) that is set but wrong decides alone; it is never skipped.
--- ui.kit / ui.contextmenu moved out of lib.nvim in the 2026-09 migration: ui.nvim is a dependency too.
 
 local this = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p")
 local root = vim.fs.dirname(vim.fs.dirname(vim.fs.normalize(this)))
@@ -19,11 +17,7 @@ local root = vim.fs.dirname(vim.fs.dirname(vim.fs.normalize(this)))
 local DEPS = { "testing.nvim", "lib.nvim", "ui.nvim" }
 
 ---@type table<string, string>
-local MARKERS = {
-  ["lib.nvim"] = "lua/lib/nvim",
-  ["ui.nvim"] = "lua/ui",
-  ["testing.nvim"] = "lua/testing",
-}
+local MARKERS = { ["lib.nvim"] = "lua/lib/nvim", ["testing.nvim"] = "lua/testing" }
 
 ---@param name string
 ---@return string
