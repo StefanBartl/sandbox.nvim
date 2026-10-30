@@ -55,11 +55,12 @@ describe("bindings.usrcmds option float", function()
   it("describes every flag, key=value pair and positional argument of :Sandbox and :Sbx", function()
     local composer = require("lib.nvim.bindings.usercmd.composer")
 
-    -- A lib.nvim older than `help.undocumented` cannot answer the question; that is a missing
-    -- feature of the dependency, not a defect of this plugin.
-    if type(composer.help.undocumented) ~= "function" then
-      return
-    end
+    -- The case needs `help.undocumented` from lib.nvim: an older checkout fails here by name
+    -- instead of skipping the case silently (NEW-43).
+    assert(
+      type(composer.help.undocumented) == "function",
+      "lib.nvim lacks composer.help.undocumented: update lib.nvim, this case cannot run without it"
+    )
 
     setup_with_wsl()
 
@@ -82,10 +83,11 @@ describe("bindings.usrcmds option float", function()
     local composer = require("lib.nvim.bindings.usercmd.composer")
     local ok, argtypes = pcall(require, "lib.nvim.bindings.usercmd.composer.argtypes")
 
-    -- Same guard as above: the float's argument rows need a lib.nvim that knows `desc` on a type.
-    if not (ok and type(composer.help.undocumented) == "function") then
-      return
-    end
+    -- Same check as above: the float's argument rows need a lib.nvim that knows `desc` on a type.
+    assert(
+      ok and type(composer.help.undocumented) == "function",
+      "lib.nvim lacks composer.help.undocumented / argtypes: update lib.nvim, this case cannot run without it"
+    )
 
     setup_with_wsl()
 
