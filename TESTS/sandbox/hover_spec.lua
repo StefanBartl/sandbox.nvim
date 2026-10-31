@@ -204,6 +204,37 @@ describe("sandbox.hover", function()
       end
     end)
 
+    -- `_reset()` used to only clear the flag, so the armed autocmd stayed and
+    -- the next `setup()` armed a second one next to it.
+    it("takes the armed LazyLoad autocmd back on _reset", function()
+      local function armed()
+        local n = 0
+        for _, au in ipairs(vim.api.nvim_get_autocmds({ event = "User", pattern = "LazyLoad" })) do
+          if (au.desc or ""):find("[sandbox]", 1, true) then
+            n = n + 1
+          end
+        end
+        return n
+      end
+      local saved_lazy = package.loaded["lazy"]
+      local saved_registry = package.loaded["hover.registry"]
+
+      local ok, err = pcall(function()
+        package.loaded["lazy"] = {}
+        package.loaded["hover.registry"] = nil
+        assert.is_false(hover.setup())
+        assert.are.equal(1, armed())
+        hover._reset()
+        assert.are.equal(0, armed())
+      end)
+
+      package.loaded["hover.registry"] = saved_registry
+      package.loaded["lazy"] = saved_lazy
+      if not ok then
+        error(err, 0)
+      end
+    end)
+
     -- A registry that simply ignored an unknown key would look identical to
     -- one that honours it, so the probe asks by behaviour. Registering into
     -- such a registry would put a 300-to-750 ms engine start on every

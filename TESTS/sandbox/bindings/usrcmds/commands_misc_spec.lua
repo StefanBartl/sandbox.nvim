@@ -76,6 +76,8 @@ local function harness(opts)
   return H
 end
 
+local ui_reset = require("TESTS.sandbox.helpers.ui_reset")
+
 local function cleanup()
   for _, name in ipairs({
     "sandbox",
@@ -99,6 +101,7 @@ local function cleanup()
   }) do
     package.loaded[name] = nil
   end
+  ui_reset.restore()
 end
 
 --- @param H table
@@ -627,7 +630,6 @@ describe("usrcmds wsl_commands", function()
 
   after_each(function()
     cleanup()
-    vim.cmd("silent! %bwipeout!")
   end)
 
   it("is available exactly when wsl.exe is on PATH", function()

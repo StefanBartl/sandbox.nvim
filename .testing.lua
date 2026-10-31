@@ -28,11 +28,11 @@ return {
     prompt = "error",
     deprecation = "error",
     process_net = "error",
-    -- Real leaks between cases remain (about 266 warnings): the usrcmds/container and list/log/inspect
-    -- view specs leave scratch buffers, windows and floating windows open, and the lib.nvim logger and
-    -- kit surface/toast autocmd groups, the :LibLogger and :KitPreview commands and timers behind.
-    -- Stays "warn" until those specs close what they open.
-    state = "warn",
+    -- The suite leaves no state behind: the window/buffer specs put the editor back through
+    -- TESTS/sandbox/helpers/ui_reset.lua after each case. The one exception is :LibLogger, which lib.nvim's
+    -- logger registers once per process when sandbox sets it up (its own idempotence flag says so, deleting
+    -- the command would leave that flag lying). Highlight groups and env vars only ever warn.
+    state = { mode = "error", ignore_usercmds = { "LibLogger" } },
   },
   guard_allow = {
     -- run_argv_spec starts real trivial processes (cmd on Windows; echo, printf and sleep elsewhere) and a deliberately

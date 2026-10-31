@@ -8,6 +8,8 @@
 -- whether it was stopped, which is the property that matters.
 ---@diagnostic disable: need-check-nil
 
+local ui_reset = require("TESTS.sandbox.helpers.ui_reset")
+
 local function cleanup()
   for _, name in ipairs({
     "sandbox.config",
@@ -20,7 +22,7 @@ local function cleanup()
   }) do
     package.loaded[name] = nil
   end
-  vim.cmd("silent! %bwipeout!")
+  ui_reset.restore()
 end
 
 --- @param keys string

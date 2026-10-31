@@ -118,6 +118,8 @@ local function harness(opts)
   return H
 end
 
+local ui_reset = require("TESTS.sandbox.helpers.ui_reset")
+
 local function cleanup()
   for _, name in ipairs({
     "sandbox",
@@ -140,6 +142,7 @@ local function cleanup()
   }) do
     package.loaded[name] = nil
   end
+  ui_reset.restore()
 end
 
 --- @param module string
@@ -658,7 +661,6 @@ describe("usrcmds container_commands_buffer", function()
   after_each(function()
     vim.fn.jobstart, vim.fn.termopen, vim.api.nvim_feedkeys = real_jobstart, real_termopen, real_feedkeys
     cleanup()
-    vim.cmd("silent! %bwipeout!")
   end)
 
   --- The terminal variants build their argv themselves instead of going

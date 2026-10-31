@@ -60,6 +60,11 @@ local _registered = false
 --- hover.nvim has loaded does not stack up duplicate autocmds.
 local _deferred_armed = false
 
+--- The id of that armed `User LazyLoad` autocmd, so `_reset()` can take it
+--- back instead of leaving a second one armed by the next `setup()`.
+---@type integer|nil
+local _deferred_autocmd = nil
+
 ---@internal
 --- The `name:tag` the cursor is inside, split, or nil.
 ---
@@ -276,7 +281,7 @@ function M.setup()
 
   if not _deferred_armed and package.loaded["lazy"] then
     _deferred_armed = true
-    vim.api.nvim_create_autocmd("User", {
+    _deferred_autocmd = vim.api.nvim_create_autocmd("User", {
       pattern = "LazyLoad",
       callback = function(ev)
         if ev.data == "hover.nvim" then
@@ -351,6 +356,10 @@ end
 function M._reset()
   _registered = false
   _deferred_armed = false
+  if _deferred_autocmd then
+    pcall(vim.api.nvim_del_autocmd, _deferred_autocmd)
+    _deferred_autocmd = nil
+  end
 end
 
 return M

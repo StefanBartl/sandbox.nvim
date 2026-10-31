@@ -70,6 +70,8 @@ local function stub_notify()
   return notices
 end
 
+local ui_reset = require("TESTS.sandbox.helpers.ui_reset")
+
 local function cleanup()
   for _, name in ipairs({
     "sandbox.notify",
@@ -88,7 +90,7 @@ local function cleanup()
   }) do
     package.loaded[name] = nil
   end
-  vim.cmd("silent! %bwipeout!")
+  ui_reset.restore()
 end
 
 --- Press `keys` in the current window, for real.

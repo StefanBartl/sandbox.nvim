@@ -9,6 +9,7 @@
 --- would have caught that; a hand-built fake selection would not have.
 
 local list_actions = require("sandbox.ui.list_actions")
+local ui_reset = require("TESTS.sandbox.helpers.ui_reset")
 
 local function make_buf(lines)
   local bufnr = vim.api.nvim_create_buf(false, true)
@@ -23,6 +24,9 @@ describe("list_actions.set_visual_bulk_actions", function()
     { name = "b" },
     { name = "c" },
   }
+
+  -- Each case opens a floating scratch window over the list buffer.
+  after_each(ui_reset.restore)
 
   it("captures a forward Visual-line selection (V, j, action)", function()
     local bufnr = make_buf({ "line1", "line2", "line3" })
